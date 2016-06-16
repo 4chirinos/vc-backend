@@ -2,9 +2,9 @@
 exports.seed = function(knex, Promise) {
 
 	var arr = [
-		{identityCard: '4', firstName: 'Pedro', lastName: 'Perez', email: 'pedro.perez'},
-		{identityCard: '5', firstName: 'Maria', lastName: 'Lopez', email: 'maria.lopez'},
-		{identityCard: '6', firstName: 'Jose', lastName: 'Ruiz', email: 'jose.ruiz'}
+		{identityCard: '100', firstName: 'pedro', lastName: 'perez', email: 'pedro.perez@email.com'},
+		{identityCard: '200', firstName: 'maria', lastName: 'lopez', email: 'maria.lopez@email.com'},
+		{identityCard: '300', firstName: 'jose', lastName: 'ruiz', email: 'jose.ruiz@email.com'}
 	];
 
 

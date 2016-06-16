@@ -36,6 +36,16 @@ exports.partialUpdateValidation = {
 	}
 };
 
+exports.getByIdValidation = {
+	'id': {
+		in: 'params',
+		notEmpty: true,
+		isInt: {
+			errorMessage: 'id inválido'
+		}
+	}
+};
+
 exports.updateValidation = {
 	'id': {
 		in: 'params',

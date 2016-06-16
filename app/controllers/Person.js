@@ -12,8 +12,23 @@ module.exports = {
 
 		var fields = _.pick(req.body, admittedFields);
 
+		fields = _.mapValues(fields, _.method('toLowerCase'));
+
 		models.Person.insert(fields, function(err, person) {
-			if(err) res.status(500).send('Internal error');
+			if(err) res.sendStatus(500);
+			res.send(person);
+		});
+
+	},
+
+	getById: function(req, res) {
+
+		var whereFields = {
+			id: req.params.id
+		};
+
+		models.Person.getByFields(whereFields, function(err, person) {
+			if(err) res.sendStatus(500);
 			res.send(person);
 		});
 
@@ -22,7 +37,7 @@ module.exports = {
 	getAll: function(req, res) {
 
 		models.Person.getAll(function(err, people) {
-			if(err) res.status(500).send('Internal error');
+			if(err) res.sendStatus(500);
 			res.send(people);
 		});
 
@@ -36,12 +51,14 @@ module.exports = {
 
 		var fields = _.pick(req.body, admittedFields);
 
+		fields = _.mapValues(fields, _.method('toLowerCase'));
+
 		var whereFields = {
 			id: req.params.id
 		};
 
 		models.Person.update(fields, whereFields, function(err, person) {
-			if(err) res.status(500).send('Internal error');
+			if(err) res.sendStatus(500);
 			res.send(person);
 		});
 
@@ -54,13 +71,15 @@ module.exports = {
 		];
 		
 		var fields = _.pick(req.body, admittedFields);
+
+		fields = _.mapValues(fields, _.method('toLowerCase'));
 		
 		var whereFields = {
 			id: req.params.id
 		};
 
 		models.Person.partialUpdate(fields, whereFields, function(err, person) {
-			if(err) res.status(500).send('Internal error');
+			if(err) res.sendStatus(500);
 			res.send(person);
 		});
 

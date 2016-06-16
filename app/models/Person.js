@@ -19,6 +19,23 @@ module.exports = {
 
 	},
 
+	getByFields: function(whereFields, next) {
+
+		var returningFields = [
+			'id', 'identityCard', 'firstName', 'lastName', 'email'
+		];
+
+		knex('person').where(whereFields).returning(returningFields)
+		.then(function(people) {
+			next(null, people[0]);
+		})
+		.catch(function(err) {
+			console.log(err);
+			next(err);
+		});
+
+	},
+
 	getAll: function(next) {
 
 		var returningFields = [
