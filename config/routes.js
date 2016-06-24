@@ -1,19 +1,18 @@
 var express = require('express'),
 	router = express.Router(),
-	middlewares = require('./middlewares'),
 	controllers = require('../app/controllers');
 
 
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
-	.get(controllers.Person.getAll)
-	.post(middlewares.Person.beforeCreate, controllers.Person.create);
+	.get(controllers.Person.getAll);
+	/*.post(controllers.Person.create);
 
 router.route('/person/:id')
-	.get(middlewares.Person.beforeGetById, controllers.Person.getById)
-	.put(middlewares.Person.beforeUpdate, controllers.Person.update)
-	.patch(middlewares.Person.beforePartialUpdate, controllers.Person.partialUpdate);
+	.get(controllers.Person.getById)
+	.put(controllers.Person.update)
+	.patch(controllers.Person.partialUpdate);
 
 /* ############################################################################################# */
 
@@ -26,13 +25,13 @@ router.route('/person/:id')
 
 router.route('/user')
 	.get(controllers.User.getAll)
-	.post(middlewares.User.beforeCreate, controllers.User.create);
+	.post(controllers.User.create);
 
 router.route('/user/:id')
-	.get(middlewares.User.beforeGetById, controllers.User.getById)
-	.put(middlewares.User.beforeUpdate, controllers.User.update)
-	.patch(middlewares.User.beforePartialUpdate, controllers.User.partialUpdate);
-	//.delete ¿?
+	.get(controllers.User.getById)
+	.put(controllers.User.update)
+	.patch(controllers.User.partialUpdate);
+	//.delete ¿deshabilitar usuario?
 
 /* ############################################################################################## */
 
@@ -43,25 +42,48 @@ router.route('/user/:id')
 
 /* #################################### PERFILES #################################### */
 
-router.route('/profile/:profile')
-	.get(middlewares.Profile.beforeGetAllByProfile, controllers.Profile.getAllByType);
+router.route('/profile/type/:type')
+	.get(controllers.Profile.getByType);
 
 
 /* ################################################################################### */
 
 
 
+/* ################################### MANEJO DE PRESUPUESTO ############################### */
+
+router.route('/budget/person/:id')
+	.get(controllers.Budget.getByPersonId);
+
+router.route('/item/:id')
+	.patch(controllers.Item.partialUpdate);
+
+
+/* ######################################################################################### */
 
 
 
-/* #################################### PERFILES DE USUARIO #################################### */
 
-router.route('/profile/:profile/:id')
-	.post(middlewares.Profile.beforeAddOrDeleteProfile, controllers.Profile.addProfile)
-	.delete(middlewares.Profile.beforeAddOrDeleteProfile, controllers.Profile.deleteProfile);
+/* ################################### MANEJO DE PREGUNTAS ############################### */
+
+router.route('/question')
+	.get(controllers.Question.getAll)
+	.post(controllers.Question.create);
+
+router.route('/question/:id')
+	.put(controllers.Question.update)
+	.patch(controllers.Question.partialUpdate);
+
+/* ######################################################################################### */
 
 
-/* ############################################################################################# */
+
+
+router.route('/answer')
+	.post(controllers.Answer.create);
+
+router.route('/answer/:id')
+	.put(controllers.Answer.update);
 
 
 

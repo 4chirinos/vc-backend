@@ -1,116 +1,127 @@
-exports.partialUpdateValidation = {
+exports.partialUpdate = {
 	'id': {
 		in: 'params',
 		notEmpty: true,
 		isInt: {
 			errorMessage: 'id inválido'
-		}
+		},
+		errorMessage: 'Parámetro requerido'
 	},
 	'identityCard': {
-		optional: true,
 		in: 'body',
+		optional: true,
 		isNumeric: {
 			errorMessage: 'Cédula inválida'
 		}
 	},
 	'firstName': {
-		optional: true,
 		in: 'body',
+		optional: true,
 		isAlpha: {
 			errorMessage: 'Nombre inválido'
 		}
 	},
 	'lastName': {
-		optional: true,
 		in: 'body',
+		optional: true,
 		isAlpha: {
 			errorMessage: 'Apellido inválido'
 		}
 	},
 	'email': {
-		optional: true,
 		in: 'body',
+		optional: true,
 		isEmail: {
 			errorMessage: 'Email inválido'
 		}
 	}
 };
 
-exports.getByIdValidation = {
+exports.getById = {
 	'id': {
 		in: 'params',
 		notEmpty: true,
 		isInt: {
 			errorMessage: 'id inválido'
-		}
+		},
+		errorMessage: 'Parámetro requerido'
 	}
 };
 
-exports.updateValidation = {
+exports.update = {
 	'id': {
 		in: 'params',
 		notEmpty: true,
 		isInt: {
 			errorMessage: 'id inválido'
-		}
+		},
+		errorMessage: 'Parámetro requerido'
 	},
 	'identityCard': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isNumeric: {
 			errorMessage: 'Cédula inválida'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'firstName': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isAlpha: {
 			errorMessage: 'Nombre inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'lastName': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isAlpha: {
 			errorMessage: 'Apellido inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'email': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isEmail: {
 			errorMessage: 'Email inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	}
 };
 
-exports.createValidation = {
+exports.create = {
 	'identityCard': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isNumeric: {
 			errorMessage: 'Cédula inválida'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'firstName': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isAlpha: {
 			errorMessage: 'Nombre inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'lastName': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isAlpha: {
 			errorMessage: 'Apellido inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	},
 	'email': {
-		notEmpty: true,
 		in: 'body',
+		notEmpty: true,
 		isEmail: {
 			errorMessage: 'Email inválido'
-		}
+		},
+		errorMessage: 'Campo requerido'
 	}
 };

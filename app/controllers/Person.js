@@ -4,19 +4,30 @@ var models = require('../models'),
 
 module.exports = {
 
+	getAll: function(req, res) {
+
+		models.Person.getAll(function(err, people) {
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(people);
+		});
+
+	},
+
 	create: function(req, res) {
 
 		var admittedFields = [
-			'identityCard', 'firstName', 'lastName', 'email'
+			'identityCard', 'firstName', 'lastName', 'email', 'profileId'
 		];
 
 		var fields = _.pick(req.body, admittedFields);
 
 		fields = _.mapValues(fields, _.method('toLowerCase'));
 
-		models.Person.insert(fields, function(err, person) {
+		models.Person.insert(fields, function(err, people) {
 			if(err) res.sendStatus(500);
-			res.send(person);
+			res.send(people[0]);
 		});
 
 	},
@@ -27,18 +38,9 @@ module.exports = {
 			id: req.params.id
 		};
 
-		models.Person.getByFields(whereFields, function(err, person) {
+		models.Person.getBy(whereFields, function(err, people) {
 			if(err) res.sendStatus(500);
-			res.send(person);
-		});
-
-	},
-
-	getAll: function(req, res) {
-
-		models.Person.getAll(function(err, people) {
-			if(err) res.sendStatus(500);
-			res.send(people);
+			res.send(people[0]);
 		});
 
 	},
@@ -46,7 +48,7 @@ module.exports = {
 	update: function(req, res) {
 
 		var admittedFields = [
-			'identityCard', 'firstName', 'lastName', 'email'
+			'identityCard', 'firstName', 'lastName', 'email', 'profileId'
 		];
 
 		var fields = _.pick(req.body, admittedFields);
@@ -57,9 +59,9 @@ module.exports = {
 			id: req.params.id
 		};
 
-		models.Person.update(fields, whereFields, function(err, person) {
+		models.Person.update(fields, whereFields, function(err, people) {
 			if(err) res.sendStatus(500);
-			res.send(person);
+			res.send(people[0]);
 		});
 
 	},
@@ -67,7 +69,7 @@ module.exports = {
 	partialUpdate: function(req, res) {
 
 		var admittedFields = [
-			'identityCard', 'firstName', 'lastName', 'email'
+			'identityCard', 'firstName', 'lastName', 'email', 'profileId'
 		];
 		
 		var fields = _.pick(req.body, admittedFields);
@@ -78,9 +80,9 @@ module.exports = {
 			id: req.params.id
 		};
 
-		models.Person.partialUpdate(fields, whereFields, function(err, person) {
+		models.Person.update(fields, whereFields, function(err, people) {
 			if(err) res.sendStatus(500);
-			res.send(person);
+			res.send(people[0]);
 		});
 
 	}

@@ -1,98 +1,35 @@
 var models = require('../models'),
-	_ = require('lodash');
+	_ = require('lodash'),
+	validator = require('./validators/Profile');
 
 module.exports = {
 
-	getAllByType: function(req, res) {
+	getByType: function(req, res) {
 
-		var profile = req.params.profile.toLowerCase();
+		req.check(validator.getByTypeId);
 
-		if(profile == 'user') {
+		var errors = req.validationErrors();
 
-			models.Profile.getUserProfiles(function(err, profiles) {
-				if(err) res.sendStatus(500);
-				res.send(profiles);
-			});
+		if(errors) {
 
-		} else if(profile == 'person') {
-
-			models.Profile.getPersonProfiles(function(err, profiles) {
-				if(err) res.sendStatus(500);
-				res.send(profiles);
-			});
+			res.status(400).send(errors);
 
 		} else {
 
-			res.sendStatus(404);
+			var whereFields = {
+				type: req.params.type.toLowerCase()
+			};
+
+			models.Profile.getByType(whereFields, function(err, profiles) {
+
+				if(err)
+					res.sendStatus(500);
+				else
+					res.send(profiles);
+
+			});
 
 		}
-
-	},
-
-	addProfile: function(req, res) {
-
-		var whereFields = {
-			profile: req.params.profile.toLowerCase()
-		};
-
-		models.Profile.getUserProfileByFields(whereFields, function(err, profile) {
-
-			var whereFields = {
-				id: req.params.id,
-				profileId: profile.id
-			};
-
-			models.Profile.getProfilesOfUserByFields(whereFields, function(err, records) {
-
-				if(!records.length) {
-
-					if(err) res.sendStatus(500);
-
-					if(profile) {
-
-						var record = {
-							id: req.params.id,
-							profileId: profile.id
-						};
-
-						models.Profile.addProfileToUser(record, function(err) {
-							if(err) res.sendStatus(500);
-							res.sendStatus(200);
-						});
-
-					} else {
-						res.sendStatus(404);
-					}
-
-				} else {
-					res.sendStatus(200);
-				}
-
-			});
-
-		});
-
-	},
-
-	deleteProfile: function(req, res) {
-
-		var whereFields = {
-			profile: req.params.profile.toLowerCase()
-		};
-
-		models.Profile.getUserProfileByFields(whereFields, function(err, profile) {
-
-			var whereFields = {
-				id: req.params.id,
-				profileId: profile.id
-			};
-
-			models.Profile.deleteProfilesOfUserByFields(whereFields, function(err) {
-				if(err) res.sendStatus(500);
-				res.sendStatus(200);
-			});
-
-		});
 
 	}
 

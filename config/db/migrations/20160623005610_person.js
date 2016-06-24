@@ -6,6 +6,7 @@ exports.up = function(knex, Promise) {
   	t.string('firstName').notNullable();
   	t.string('lastName').notNullable();
   	t.string('email').unique().notNullable();
+  	t.integer('profileId').references('id').inTable('profile').notNullable();
   });
 };
 

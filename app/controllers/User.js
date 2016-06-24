@@ -1,86 +1,25 @@
 var models = require('../models'),
 	_ = require('lodash'),
-	bcrypt = require('bcrypt-nodejs');
+	bcrypt = require('bcrypt-nodejs'),
+	validator = require('./validators/User');
 
 module.exports = {
 
 	create: function(req, res) {
 
-		var admittedFields = [
-			'personId', 'password'
-		];
+		req.check(validator.create);
 
-		var password = req.body.password;
-		password = bcrypt.hashSync(password);
+		var errors = req.validationErrors();
 
-		var fields = _.pick(req.body, admittedFields);
+		if(errors) {
 
-		fields = _.mapValues(fields, stringToLowerCase);
+			res.status(400).send(errors);
 
-		fields.password = password;
+		} else {
 
-		models.User.insert(fields, function(err, user) {
-			if(err) res.sendStatus(500);
-			res.send(user);
-		});
-
-	},
-
-	getById: function(req, res) {
-
-		var whereFields = {
-			id: req.params.id
-		};
-
-		models.User.getById(whereFields, function(err, user) {
-			if(err) res.sendStatus(500);
-			res.send(user);
-		});
-
-	},
-
-	getAll: function(req, res) {
-
-		models.User.getAll(function(err, users) {
-			if(err) res.sendStatus(500);
-			res.send(users);
-		});
-
-	},
-
-	update: function(req, res) {
-
-		var admittedFields = [
-			'password', 'available'
-		];
-
-		var password = req.body.password;
-		password = bcrypt.hashSync(password);
-
-		var fields = _.pick(req.body, admittedFields);
-
-		fields = _.mapValues(fields, stringToLowerCase);
-
-		fields.password = password;
-
-		var whereFields = {
-			id: req.params.id
-		};
-
-		models.User.update(fields, whereFields, function(err, user) {
-			if(err) res.sendStatus(500);
-			res.send(user);
-		});
-
-	},
-
-	partialUpdate: function(req, res) {
-
-		var admittedFields = [
-			'password', 'available'
-		];
-		
-		if(req.body.password) {
+			var admittedFields = [
+				'personId', 'password', 'profileId'
+			];
 
 			var password = req.body.password;
 			password = bcrypt.hashSync(password);
@@ -91,22 +30,142 @@ module.exports = {
 
 			fields.password = password;
 
+			models.User.insert(fields, function(err, users) {
+				if(err)
+					res.sendStatus(500);
+				else
+					res.send(users[0]);
+			});
+
+		}
+
+	},
+
+	getById: function(req, res) {
+
+		req.check(validator.getById);
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+
+			res.status(400).send(errors);
+
 		} else {
+
+			var whereFields = {
+				id: req.params.id
+			};
+
+			models.User.getBy(whereFields, function(err, users) {
+				if(err)
+					res.sendStatus(500);
+				else
+					res.send(users[0]);
+			});
+
+		}
+
+	},
+
+	getAll: function(req, res) {
+
+		models.User.getAll(function(err, users) {
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(users);
+		});
+
+	},
+
+	update: function(req, res) {
+
+		req.check(validator.update);
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+
+			res.status(400).send(errors);
+
+		} else {
+
+			var admittedFields = [
+				'password', 'available', 'profileId'
+			];
+
+			var password = req.body.password;
+			password = bcrypt.hashSync(password);
 
 			var fields = _.pick(req.body, admittedFields);
 
 			fields = _.mapValues(fields, stringToLowerCase);
 
-		}
-		
-		var whereFields = {
-			id: req.params.id
-		};
+			fields.password = password;
 
-		models.User.partialUpdate(fields, whereFields, function(err, user) {
-			if(err) res.sendStatus(500);
-			res.send(user);
-		});
+			var whereFields = {
+				id: req.params.id
+			};
+
+			models.User.update(fields, whereFields, function(err, users) {
+				if(err)
+					res.sendStatus(500);
+				else
+					res.send(users[0]);
+			});
+
+		}
+
+	},
+
+	partialUpdate: function(req, res) {
+
+		req.check(validator.partialUpdate);
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+
+			res.status(400).send(errors);
+
+		} else {
+
+			var admittedFields = [
+				'password', 'available', 'profileId'
+			];
+			
+			if(req.body.password) {
+
+				var password = req.body.password;
+				password = bcrypt.hashSync(password);
+
+				var fields = _.pick(req.body, admittedFields);
+
+				fields = _.mapValues(fields, stringToLowerCase);
+
+				fields.password = password;
+
+			} else {
+
+				var fields = _.pick(req.body, admittedFields);
+
+				fields = _.mapValues(fields, stringToLowerCase);
+
+			}
+			
+			var whereFields = {
+				id: req.params.id
+			};
+
+			models.User.update(fields, whereFields, function(err, users) {
+				if(err)
+					res.sendStatus(500);
+				else
+					res.send(users[0]);
+			});
+
+		}
 
 	}
 
