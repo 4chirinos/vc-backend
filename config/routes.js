@@ -6,13 +6,13 @@ var express = require('express'),
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
-	.get(controllers.Person.getAll);
+	.get(controllers.Person.getAll)
 	/*.post(controllers.Person.create);
 
 router.route('/person/:id')
 	.get(controllers.Person.getById)
 	.put(controllers.Person.update)
-	.patch(controllers.Person.partialUpdate);
+	.patch(controllers.Person.partialUpdate);*/
 
 /* ############################################################################################# */
 
@@ -40,23 +40,30 @@ router.route('/user/:id')
 
 
 
-/* #################################### PERFILES #################################### */
+/* #################################### PERFILES y STATUS #################################### */
 
 router.route('/profile/type/:type')
 	.get(controllers.Profile.getByType);
 
+router.route('/status/type/:type')
+	.get(controllers.Status.getByType);
 
-/* ################################################################################### */
+
+/* ########################################################################################### */
 
 
 
-/* ################################### MANEJO DE PRESUPUESTO ############################### */
+/* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
 router.route('/budget/person/:id')
 	.get(controllers.Budget.getByPersonId);
 
 router.route('/item/:id')
 	.patch(controllers.Item.partialUpdate);
+
+
+router.route('/guaranteeLetter/:id')
+	.get(controllers.GuaranteeLetter.getById);
 
 
 /* ######################################################################################### */

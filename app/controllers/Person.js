@@ -26,8 +26,10 @@ module.exports = {
 		fields = _.mapValues(fields, _.method('toLowerCase'));
 
 		models.Person.insert(fields, function(err, people) {
-			if(err) res.sendStatus(500);
-			res.send(people[0]);
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(people[0]);
 		});
 
 	},
@@ -39,8 +41,10 @@ module.exports = {
 		};
 
 		models.Person.getBy(whereFields, function(err, people) {
-			if(err) res.sendStatus(500);
-			res.send(people[0]);
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(people[0]);
 		});
 
 	},
@@ -60,8 +64,10 @@ module.exports = {
 		};
 
 		models.Person.update(fields, whereFields, function(err, people) {
-			if(err) res.sendStatus(500);
-			res.send(people[0]);
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(people[0]);
 		});
 
 	},
@@ -81,8 +87,10 @@ module.exports = {
 		};
 
 		models.Person.update(fields, whereFields, function(err, people) {
-			if(err) res.sendStatus(500);
-			res.send(people[0]);
+			if(err)
+				res.sendStatus(500);
+			else
+				res.send(people[0]);
 		});
 
 	}
