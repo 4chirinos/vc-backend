@@ -41,7 +41,7 @@ module.exports = {
 
 	},
 
-	update: function(fields, whereFields, next) {
+	update: function(whereFields, fields, next) {
 
 		knex('person').where(whereFields).update(fields).returning('*')
 		.then(function(people) {

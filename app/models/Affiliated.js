@@ -5,7 +5,7 @@ module.exports = {
 	getBy: function(whereFields, next) {
 
 		knex('affiliated').where(whereFields).returning('*')
-		.then(function(budgets) {
+		.then(function(affiliated) {
 			next(null, affiliated);
 		})
 		.catch(function(err) {

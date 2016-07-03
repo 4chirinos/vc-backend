@@ -108,7 +108,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.User.update(fields, whereFields, function(err, users) {
+			models.User.update(whereFields, fields, function(err, users) {
 				if(err)
 					res.sendStatus(500);
 				else
@@ -158,7 +158,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.User.update(fields, whereFields, function(err, users) {
+			models.User.update(whereFields, fields, function(err, users) {
 				if(err)
 					res.sendStatus(500);
 				else

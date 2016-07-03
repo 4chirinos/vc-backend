@@ -74,7 +74,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.Question.update(fields, whereFields, function(err, questions) {
+			models.Question.update(whereFields, fields, function(err, questions) {
 				if(err)
 					res.sendStatus(500);
 				else
@@ -109,7 +109,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.Question.update(fields, whereFields, function(err, questions) {
+			models.Question.update(whereFields, fields, function(err, questions) {
 				if(err)
 					res.sendStatus(500);
 				else

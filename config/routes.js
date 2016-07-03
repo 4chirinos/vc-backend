@@ -55,9 +55,6 @@ router.route('/status/type/:type')
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
-router.route('/budget/person/:id')
-	.get(controllers.Budget.getByPersonId);
-
 router.route('/item/:id')
 	.patch(controllers.Item.partialUpdate);
 

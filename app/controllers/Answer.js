@@ -55,7 +55,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.Answer.update(fields, whereFields, function(err, answers) {
+			models.Answer.update(whereFields, fields, function(err, answers) {
 				if(err)
 					res.sendStatus(500);
 				else

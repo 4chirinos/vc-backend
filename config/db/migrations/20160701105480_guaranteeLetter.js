@@ -5,7 +5,6 @@ exports.up = function(knex, Promise) {
   	t.integer('ownerId').references('id').inTable('person').notNullable();
   	t.integer('beneficiaryId').references('id').inTable('person').notNullable();
   	t.integer('budgetId').references('id').inTable('budget').notNullable();
-  	t.integer('affiliatedId').references('id').inTable('affiliated').notNullable();
   	t.integer('statusId').references('id').inTable('status').notNullable();
   	t.string('path').unique().notNullable();
   });

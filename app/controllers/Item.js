@@ -28,7 +28,7 @@ module.exports = {
 				id: req.params.id
 			};
 
-			models.Item.update(fields, whereFields, function(err, items) {
+			models.Item.update(whereFields, fields, function(err, items) {
 
 				if(err)
 					res.sendStatus(500);

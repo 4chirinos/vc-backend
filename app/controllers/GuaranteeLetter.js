@@ -46,21 +46,21 @@ module.exports = {
 								return;
 							}
 
-							models.Affiliated.getBy({id: letters[0].affiliatedId}, function(err, affiliated) {
+							models.Budget.getBy({id: letters[0].budgetId}, function(err, budgets) {
 
 								if(err) {
 									res.sendStatus(500);
 									return;
 								}
 
-								models.Budget.getBy({id: letters[0].budgetId}, function(err, budgets) {
+								models.Affiliated.getBy({id: budgets[0].affiliatedId}, function(err, affiliated) {
 
 									if(err) {
 										res.sendStatus(500);
 										return;
 									}
 
-									models.Item.getBy({budgetId: budgets[0].id}, function(err, items) {
+									models.Item.getBy({budgetId: letters[0].budgetId}, function(err, items) {
 
 										if(err) {
 											res.sendStatus(500);
@@ -72,6 +72,7 @@ module.exports = {
 										result.owner = owners[0];
 										result.beneficiary = beneficiaries[0];
 										result.budget = items;
+										result.affiliated = affiliated[0];
 
 										res.send(result);
 
