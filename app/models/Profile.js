@@ -5,9 +5,9 @@ module.exports = {
 
 	getByType: function(whereFields, next) {
 
-		knex('profileType').where(whereFields).returning('*')
+		knex('profileType').where(whereFields).select('*')
 		.then(function(types) {
-			knex('profile').where({typeId: types[0].id}).returning('*')
+			knex('profile').where({typeId: types[0].id}).select('*')
 			.then(function(profiles) {
 				next(null, profiles);
 			}).catch(function(err) {

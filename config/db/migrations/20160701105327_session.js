@@ -1,9 +1,9 @@
 
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('session', function(t) {
-  	t.integer('id').references('id').inTable('user').notNullable();
+  	t.integer('userId').references('id').inTable('user').unique().notNullable();
   	t.string('token').unique().notNullable();
-  	t.primary(['id', 'token']);
+  	t.primary(['userId', 'token']);
   });
 };
 

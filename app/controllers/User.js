@@ -22,7 +22,7 @@ module.exports = {
 			];
 
 			var password = req.body.password;
-			password = bcrypt.hashSync(password);
+			password = bcrypt.hashSync(password); // hacer asíncrono
 
 			var fields = _.pick(req.body, admittedFields);
 
@@ -167,7 +167,17 @@ module.exports = {
 
 		}
 
+	},
+
+	comparePassword: function(candidatePassword, password, next) {
+
+		bcrypt.compare(candidatePassword, password, function(err, match) {
+			if(err) next(err);
+			else next(null, match);
+		});
+
 	}
+
 
 };
 

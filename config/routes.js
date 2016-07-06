@@ -6,7 +6,7 @@ var express = require('express'),
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
-	.get(controllers.Person.getAll)
+	.get(controllers.Session.validSession, controllers.Person.getAll)
 	/*.post(controllers.Person.create);
 
 router.route('/person/:id')
@@ -38,6 +38,15 @@ router.route('/user/:id')
 
 
 
+/* #################################### SESSIONS #################################### */
+
+router.route('/session')
+	.post(controllers.Session.validUser, controllers.Session.create);
+
+
+/* ########################################################################################### */
+
+
 
 
 /* #################################### PERFILES y STATUS #################################### */
@@ -67,6 +76,17 @@ router.route('/guaranteeLetter/:id')
 
 
 
+/* ################################# SOLICITUDES DE VISITA ############################### */
+
+router.route('/request')
+	.get(controllers.Request.getAll)
+	.post(controllers.Request.create);
+
+
+/* ######################################################################################### */
+
+
+
 
 /* ################################### MANEJO DE PREGUNTAS ############################### */
 
@@ -79,8 +99,6 @@ router.route('/question/:id')
 	.patch(controllers.Question.partialUpdate);
 
 /* ######################################################################################### */
-
-
 
 
 router.route('/answer')

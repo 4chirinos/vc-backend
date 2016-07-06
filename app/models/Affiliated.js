@@ -4,7 +4,7 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('affiliated').where(whereFields).returning('*')
+		knex('affiliated').where(whereFields).select('*')
 		.then(function(affiliated) {
 			next(null, affiliated);
 		})

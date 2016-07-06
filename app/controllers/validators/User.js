@@ -68,6 +68,10 @@ exports.update = {
 		isAlphanumeric: {
 			errorMessage: 'Password inválido'
 		},
+		isLength: {
+	      options: [{ min: 6, max: undefined }],
+	      errorMessage: 'La contraseña debe ser mayor a 6 carácteres'  
+	    },
 		errorMessage: 'Campo requerido'
 	},
 	'available': {
@@ -95,6 +99,10 @@ exports.create = {
 		isAlphanumeric: {
 			errorMessage: 'Password inválido. Sólo carácteres alfanuméricos'
 		},
+		isLength: {
+	      options: [{ min: 6, max: undefined }],
+	      errorMessage: 'La contraseña debe ser mayor a 6 carácteres'  
+	    },
 		errorMessage: 'Campo requerido'
 	}
 };

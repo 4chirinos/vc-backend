@@ -4,7 +4,7 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('budget').where(whereFields).returning('*')
+		knex('budget').where(whereFields).select('*')
 		.then(function(budgets) {
 			next(null, budgets);
 		})

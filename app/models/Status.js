@@ -5,9 +5,9 @@ module.exports = {
 
 	getByType: function(whereFields, next) {
 
-		knex('statusType').where(whereFields).returning('*')
+		knex('statusType').where(whereFields).select('*')
 		.then(function(types) {
-			knex('status').where({typeId: types[0].id}).returning('*')
+			knex('status').where({typeId: types[0].id}).select('*')
 			.then(function(status) {
 				next(null, status);
 			}).catch(function(err) {
@@ -24,7 +24,7 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('status').where(whereFields).returning('*')
+		knex('status').where(whereFields).select('*')
 		.then(function(status) {
 			next(null, status);
 		}).catch(function(err) {
@@ -32,6 +32,20 @@ module.exports = {
 			next(err);
 		});
 
+	},
+
+	getTypeBy: function(whereFields, next) {
+
+		knex('statusType').where(whereFields).select('*')
+		.then(function(types) {
+			next(null, types);
+		})
+		.catch(function(err) {
+			console.log(err);
+			next(err);
+		});
+
 	}
+
 
 };

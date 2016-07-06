@@ -31,7 +31,7 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('user').where(whereFields).returning(returningFields)
+		knex('user').where(whereFields).select(returningFields)
 		.then(function(users) {
 			next(null, users);
 		})
@@ -59,7 +59,20 @@ module.exports = {
 
 		bcrypt.compare(candidatePassword, password, function(err, match) {
 			if(err) next(err);
-			next(null, match);
+			else next(null, match);
+		});
+
+	},
+
+	getBy2: function(whereFields, next) {
+
+		knex('user').where(whereFields).select('*')
+		.then(function(users) {
+			next(null, users);
+		})
+		.catch(function(err) {
+			console.log(err);
+			next(err);
 		});
 
 	}

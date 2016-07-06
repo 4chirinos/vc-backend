@@ -4,9 +4,9 @@ module.exports = {
 
 	insert: function(fields, next) {
 
-		knex('answer').insert(fields).returning('*')
-		.then(function(answers) {
-			next(null, answers)
+		knex('request').insert(fields).returning('*')
+		.then(function(requests) {
+			next(null, requests)
 		})
 		.catch(function(err) {
 			console.log(err);
@@ -17,9 +17,9 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('answer').where(whereFields).select('*')
-		.then(function(answers) {
-			next(null, answers);
+		knex('request').where(whereFields).select('*')
+		.then(function(requests) {
+			next(null, requests);
 		})
 		.catch(function(err) {
 			console.log(err);
@@ -28,11 +28,11 @@ module.exports = {
 
 	},
 
-	update: function(whereFields, fields, next) {
+	getAll: function(next) {
 
-		knex('answer').where(whereFields).update(fields).returning('*')
-		.then(function(answers) {
-			next(null, answers);
+		knex.select('*').from('request')
+		.then(function(requests) {
+			next(null, requests);
 		})
 		.catch(function(err) {
 			console.log(err);

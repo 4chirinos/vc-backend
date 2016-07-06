@@ -17,7 +17,7 @@ module.exports = {
 
 	getBy: function(whereFields, next) {
 
-		knex('question').where(whereFields).returning('*')
+		knex('question').where(whereFields).select('*')
 		.then(function(questions) {
 			next(null, questions);
 		})
