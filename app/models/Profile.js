@@ -20,6 +20,18 @@ module.exports = {
 			next(err);
 		});
 
-	}
+	},
+
+	getBy: function(whereFields, next) {
+
+		knex('profile').where(whereFields).select('*')
+		.then(function(profiles) {
+			next(null, profiles);
+		}).catch(function(err) {
+			console.log(err);
+			next(err);
+		});
+
+	},
 
 };

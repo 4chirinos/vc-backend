@@ -15,7 +15,9 @@ module.exports = {
 			}
 
 			if(sessions[0]) {
+
 				res.send(sessions[0]);
+
 			} else {
 
 				var token = req.userId.toString() + randToken.generate(64),
@@ -43,8 +45,8 @@ module.exports = {
 
 	validSession: function(req, res, next) {
 
-		req.checkHeaders('access_token', 'Header requerido').notEmpty();
-		req.checkHeaders('access_token', 'Sólo alfanuméricos').isAlphanumeric();
+		req.checkHeaders('token', 'Header requerido').notEmpty();
+		req.checkHeaders('token', 'Sólo alfanuméricos').isAlphanumeric();
 
 		var errors = req.validationErrors();
 
@@ -53,7 +55,7 @@ module.exports = {
 			return;
 		}
 
-		models.Session.getBy({token: req.headers.access_token}, function(err, sessions) {
+		models.Session.getBy({token: req.headers.token}, function(err, sessions) {
 
 			if(err) {
 				res.sendStatus(500);
@@ -78,7 +80,7 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-			res.status(400).send(errors);
+			res.status(400).send({errors: errors});
 			return;
 		}
 

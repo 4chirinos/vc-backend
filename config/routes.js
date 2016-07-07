@@ -6,13 +6,13 @@ var express = require('express'),
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
-	.get(controllers.Session.validSession, controllers.Person.getAll)
-	/*.post(controllers.Person.create);
+	.get(controllers.Person.getAll)
+	.post(controllers.Person.create);
 
 router.route('/person/:id')
 	.get(controllers.Person.getById)
 	.put(controllers.Person.update)
-	.patch(controllers.Person.partialUpdate);*/
+	.patch(controllers.Person.partialUpdate);
 
 /* ############################################################################################# */
 
@@ -32,6 +32,9 @@ router.route('/user/:id')
 	.put(controllers.User.update)
 	.patch(controllers.User.partialUpdate);
 	//.delete ¿deshabilitar usuario?
+
+router.route('/me/user')
+	.get(controllers.Session.validSession, controllers.User.getMe);
 
 /* ############################################################################################## */
 
