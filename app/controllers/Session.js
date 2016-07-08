@@ -43,6 +43,21 @@ module.exports = {
 
 	},
 
+	delete: function(req, res) {
+
+		models.Session.deleteBy({userId: req.userId}, function(err, sessions) {
+
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+
+			res.sendStatus(200);
+
+		});
+
+	},
+
 	validSession: function(req, res, next) {
 
 		req.checkHeaders('token', 'Header requerido').notEmpty();

@@ -44,7 +44,8 @@ router.route('/me/user')
 /* #################################### SESSIONS #################################### */
 
 router.route('/session')
-	.post(controllers.Session.validUser, controllers.Session.create);
+	.post(controllers.Session.validUser, controllers.Session.create)
+	.delete(controllers.Session.validSession, controllers.Session.delete);
 
 
 /* ########################################################################################### */

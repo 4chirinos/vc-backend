@@ -28,4 +28,18 @@ module.exports = {
 
 	},
 
+	deleteBy: function(whereFields, next) {
+
+		knex('session').where(whereFields).del()
+		.then(function(s) {
+			console.log(s);
+			next(null, s);
+		})
+		.catch(function(err) {
+			console.log(err);
+			next(err);
+		});
+
+	}
+
 };
