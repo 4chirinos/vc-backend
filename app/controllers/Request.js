@@ -1,5 +1,6 @@
 var models = require('../models'),
 	validator = require('./validators/Request'),
+	async = require('async'),
 	_ = require('lodash');
 
 
@@ -12,6 +13,63 @@ module.exports = {
 				res.sendStatus(500);
 			else
 				res.send(requests);
+		});
+
+	},
+
+	getMyRequest: function(req, res) {
+
+		var result = [];
+
+		models.User.getBy({id: req.userId}, function(err, users) {
+
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+
+			models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
+
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+
+				models.Request.getBy({[field[profiles[0].profile]]: users[0].id}, function(err, requests) {
+
+					if(err) {
+						res.sendStatus(500);
+						return;
+					}
+
+					async.forEach(requests, function(request, callback) {
+
+						models.Status.getBy({id: request.statusId}, function(err, status) {
+
+							if(err) callback(err);
+
+							request.status = status[0].status;
+
+							result.push(request);
+							callback();
+
+						});
+
+					}, function(err) {
+
+						if(err) {
+							res.sendStatus(500);
+							return;
+						}
+
+						res.send(result);
+
+					});
+
+				});
+
+			});
+
 		});
 
 	},
@@ -72,3 +130,31 @@ var stringToLowerCase = function(key) {
 		return key.toLowerCase();
 	return key;
 };
+
+var field = {
+	analista: 'analystId',
+	coordinador: 'coordinatorId',
+	visitador: 'visitorId'
+};
+
+/*
+models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
+
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+
+				var whereFields = {
+					[field[profiles[0].profile]]: users[0].id
+				};
+
+				models.Request.getBy(whereFields, function(err, requests) {
+
+					res.send(requests);
+
+				})
+
+			});
+
+*/

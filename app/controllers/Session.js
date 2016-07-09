@@ -88,6 +88,93 @@ module.exports = {
 
 	},
 
+	isAnalyst: function(req, res, next) {
+
+		models.User.getBy({id: req.userId}, function(err, users) {
+
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+
+			models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
+
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+
+				if(profiles[0].profile == 'analista') {
+					req.userProfile = profiles[0].profile
+					next();
+				}
+				else
+					res.sendStatus(403);
+
+			});
+
+		});
+
+	},
+
+	isVisitor: function(req, res, next) {
+
+		models.User.getBy({id: req.userId}, function(err, users) {
+
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+
+			models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
+
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+
+				if(profiles[0].profile == 'visitador') {
+					req.userProfile = profiles[0].profile
+					next();
+				}
+				else
+					res.sendStatus(403);
+
+			});
+
+		});
+
+	},
+
+	isCoordinator: function(req, res, next) {
+
+		models.User.getBy({id: req.userId}, function(err, users) {
+
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+
+			models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
+
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+
+				if(profiles[0].profile == 'coordinador') {
+					req.userProfile = profiles[0].profile
+					next();
+				}
+				else
+					res.sendStatus(403);
+
+			});
+
+		});
+
+	},
+
 	validUser: function(req, res, next) {
 
 		req.check(validator.validUser);

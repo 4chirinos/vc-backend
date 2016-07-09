@@ -3,6 +3,15 @@ var express = require('express'),
 	controllers = require('../app/controllers');
 
 
+/* ############################################# ME ########################################## */
+
+router.route('/me/user')
+	.get(controllers.Session.validSession, controllers.User.getMyUser);
+
+router.route('/me/request')
+	.get(controllers.Session.validSession, controllers.Request.getMyRequest);
+
+
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
@@ -32,9 +41,6 @@ router.route('/user/:id')
 	.put(controllers.User.update)
 	.patch(controllers.User.partialUpdate);
 	//.delete ¿deshabilitar usuario?
-
-router.route('/me/user')
-	.get(controllers.Session.validSession, controllers.User.getMe);
 
 /* ############################################################################################## */
 

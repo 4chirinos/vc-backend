@@ -41,7 +41,7 @@ module.exports = {
 
 	},
 
-	getMe: function(req, res) {
+	getMyUser: function(req, res) {
 
 		models.User.getBy({id: req.userId}, function(err, users) {
 
