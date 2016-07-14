@@ -1,57 +1,14 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 
-module.exports = {
+require('./User');
+require('./Profile');
 
-	insert: function(fields, next) {
-
-		knex('person').insert(fields).returning('*')
-		.then(function(people) {
-			next(null, people)
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('Person', {
+	tableName: 'person',
+	user: function() {
+		return this.hasOne('User', 'personId');
 	},
-
-	getBy: function(whereFields, next) {
-
-		knex('person').where(whereFields).select('*')
-		.then(function(people) {
-			next(null, people);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
-	},
-
-	getAll: function(next) {
-
-		knex.select('*').from('person')
-		.then(function(people) {
-			next(null, people);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
-	},
-
-	update: function(whereFields, fields, next) {
-
-		knex('person').where(whereFields).update(fields).returning('*')
-		.then(function(people) {
-			next(null, people);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	profile: function() {
+		return this.belongsTo('Profile', 'profileId');
 	}
-
-};
+});

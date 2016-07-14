@@ -1,37 +1,14 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 
+require('./Person');
+require('./User');
 
-module.exports = {
-
-	getByType: function(whereFields, next) {
-
-		knex('profileType').where(whereFields).select('*')
-		.then(function(types) {
-			knex('profile').where({typeId: types[0].id}).select('*')
-			.then(function(profiles) {
-				next(null, profiles);
-			}).catch(function(err) {
-				console.log(err);
-				next(err);
-			});
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('Profile', {
+	tableName: 'profile',
+	user: function() {
+		return this.hasOne('User')
 	},
-
-	getBy: function(whereFields, next) {
-
-		knex('profile').where(whereFields).select('*')
-		.then(function(profiles) {
-			next(null, profiles);
-		}).catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	person: function() {
+		return this.hasOne('Person');
 	}
-
-};
+});

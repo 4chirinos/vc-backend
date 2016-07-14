@@ -1,84 +1,49 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 var bcrypt = require('bcrypt-nodejs');
+var Promise = require('bluebird');
 
-module.exports = {
+require('./Person');
+require('./Profile');
+require('./Session');
 
-	insert: function(fields, next) {
-
-		knex('user').insert(fields).returning(returningFields)
-		.then(function(users) {
-			next(null, users)
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('User', {
+	tableName: 'user',
+	initialize: function() {
+		this.on('saving', this.hashPassword, this);
 	},
-
-	getAll: function(next) {
-
-		knex.select(returningFields).from('user')
-		.then(function(users) {
-			next(null, users);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
+	hashPassword: function(model, attrs, options) {
+		return new Promise(function(resolve, reject) {
+			bcrypt.hash(model.attributes.password, null, null, function(err, hash) {
+	     		if(err) reject(err);
+	      		model.set('password', hash);
+	      		resolve(hash);
+	    	});
 		});
-
 	},
-
-	getBy: function(whereFields, next) {
-
-		knex('user').where(whereFields).select(returningFields)
-		.then(function(users) {
-			next(null, users);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
+	comparePassword: function(candidatePassword, model) {
+		return new Promise(function(resolve, reject) {
+			bcrypt.compare(candidatePassword, model.attributes.password, function(err, match) {
+				if(err) reject(err);
+				resolve(match);
+			});
 		});
-
 	},
-
-	update: function(whereFields, fields, next) {
-
-		knex('user').where(whereFields).update(fields).returning(returningFields)
-		.then(function(users) {
-			next(null, users);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	person: function() {
+		return this.belongsTo('Person', 'personId');
 	},
-
-	comparePassword: function(candidatePassword, password, next) {
-
-		bcrypt.compare(candidatePassword, password, function(err, match) {
-			if(err) next(err);
-			else next(null, match);
-		});
-
+	profile: function() {
+		return this.belongsTo('Profile', 'profileId');
 	},
-
-	getBy2: function(whereFields, next) {
-
-		knex('user').where(whereFields).select('*')
-		.then(function(users) {
-			next(null, users);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	session: function() {
+		return this.hasOne('Session', 'userId');
+	},
+	coordinator: function() {
+		return this.hasMany('Request', 'coordinatorId');
+	},
+	visitor: function() {
+		return this.hasMany('Request', 'visitorId');
+	},
+	analyst: function() {
+		return this.hasMany('Request', 'analystId');
 	}
-
-};
-
-var returningFields = [
-	'id', 'personId', 'available', 'profileId'
-];
+});

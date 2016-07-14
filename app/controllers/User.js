@@ -1,6 +1,5 @@
-var models = require('../models'),
-	_ = require('lodash'),
-	bcrypt = require('bcrypt-nodejs'),
+var _ = require('lodash'),
+	UserModel = require('../models/User'),
 	validator = require('./validators/User');
 
 module.exports = {
@@ -12,32 +11,30 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-
 			res.status(400).send(errors);
-
-		} else {
-
-			var admittedFields = [
-				'personId', 'password', 'profileId'
-			];
-
-			var password = req.body.password;
-			password = bcrypt.hashSync(password); // hacer asíncrono
-
-			var fields = _.pick(req.body, admittedFields);
-
-			fields = _.mapValues(fields, stringToLowerCase);
-
-			fields.password = password;
-
-			models.User.insert(fields, function(err, users) {
-				if(err)
-					res.sendStatus(500);
-				else
-					res.send(users[0]);
-			});
-
+			return;
 		}
+
+		var bodyFields = [
+			'personId', 'password', 'profileId'
+		];
+
+		var fields = _.pick(req.body, bodyFields);
+
+		UserModel
+		.forge(fields)
+		.save()
+		.then(function(model) {
+			if(model) {
+				res.send(model.toJSON());
+			} else {
+				res.sendStatus(404);
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 
@@ -89,33 +86,46 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-
 			res.status(400).send(errors);
-
-		} else {
-
-			var whereFields = {
-				id: req.params.id
-			};
-
-			models.User.getBy(whereFields, function(err, users) {
-				if(err)
-					res.sendStatus(500);
-				else
-					res.send(users[0]);
-			});
-
+			return;
 		}
+
+		UserModel
+		.forge({id: req.params.id})
+		.fetch({withRelated: ['person']})
+		.then(function(model) {
+			if(model) {
+				res.send(model.toJSON());
+			} else {
+				res.sendStatus(404);
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 
 	getAll: function(req, res) {
 
-		models.User.getAll(function(err, users) {
-			if(err)
-				res.sendStatus(500);
-			else
-				res.send(users);
+		UserModel
+		.forge()
+		.fetchAll({
+			columns: ['id', 'personId', 'profileId', 'available'],
+			withRelated: ['profile']})
+		.then(function(collection) {
+			if(collection.toJSON().length) {
+				console.log(collection.toJSON()[0].password);
+				delete collection.toJSON()[0].password;
+				res.send(collection.toJSON());
+			} else {
+				res.sendStatus(404);
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
 		});
 
 	},
@@ -127,36 +137,37 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-
 			res.status(400).send(errors);
-
-		} else {
-
-			var admittedFields = [
-				'password', 'available', 'profileId'
-			];
-
-			var password = req.body.password;
-			password = bcrypt.hashSync(password);
-
-			var fields = _.pick(req.body, admittedFields);
-
-			fields = _.mapValues(fields, stringToLowerCase);
-
-			fields.password = password;
-
-			var whereFields = {
-				id: req.params.id
-			};
-
-			models.User.update(whereFields, fields, function(err, users) {
-				if(err)
-					res.sendStatus(500);
-				else
-					res.send(users[0]);
-			});
-
+			return;
 		}
+
+		var bodyFields = [
+			'password', 'available', 'profileId'
+		];
+
+		var fields = _.pick(req.body, bodyFields);
+
+		UserModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+			model.save(fields)
+			.then(function(model) {
+				res.send(model.toJSON());
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 
@@ -167,63 +178,38 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-
 			res.status(400).send(errors);
-
-		} else {
-
-			var admittedFields = [
-				'password', 'available', 'profileId'
-			];
-			
-			if(req.body.password) {
-
-				var password = req.body.password;
-				password = bcrypt.hashSync(password);
-
-				var fields = _.pick(req.body, admittedFields);
-
-				fields = _.mapValues(fields, stringToLowerCase);
-
-				fields.password = password;
-
-			} else {
-
-				var fields = _.pick(req.body, admittedFields);
-
-				fields = _.mapValues(fields, stringToLowerCase);
-
-			}
-			
-			var whereFields = {
-				id: req.params.id
-			};
-
-			models.User.update(whereFields, fields, function(err, users) {
-				if(err)
-					res.sendStatus(500);
-				else
-					res.send(users[0]);
-			});
-
+			return;
 		}
 
-	},
+		var bodyFields = [
+			'password', 'available', 'profileId'
+		];
 
-	comparePassword: function(candidatePassword, password, next) {
+		var fields = _.pick(req.body, bodyFields);
 
-		bcrypt.compare(candidatePassword, password, function(err, match) {
-			if(err) next(err);
-			else next(null, match);
+		UserModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+			model.save(fields)
+			.then(function(model) {
+				res.send(model.toJSON());
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
 		});
 
 	}
 
-
-};
-
-var stringToLowerCase = function(key) {
-	if(_.isString(key)) 
-		return key.toLowerCase();
-	return key;
 };

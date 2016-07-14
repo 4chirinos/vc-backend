@@ -1,18 +1,8 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 
-module.exports = {
-
-	getBy: function(whereFields, next) {
-
-		knex('guaranteeLetter').where(whereFields).select('*')
-		.then(function(letters) {
-			next(null, letters);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('GuaranteeLetter', {
+	tableName: 'GuaranteeLetter',
+	request: function() {
+		return this.hasOne('Request', 'guaranteeLetterId');
 	}
-
-};
+});

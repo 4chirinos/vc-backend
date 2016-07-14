@@ -1,21 +1,24 @@
-var models = require('../models'),
-	_ = require('lodash');
+var PersonModel = require('../models/Person');
 
 
 module.exports = {
 
 	getAll: function(req, res) {
 
-		models.Person.getAll(function(err, people) {
-			if(err)
-				res.sendStatus(500);
-			else
-				res.send(people);
+		PersonModel
+		.forge()
+		.fetchAll({withRelated: ['profile']})
+		.then(function(collection) {
+			res.send(collection);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
 		});
 
-	},
+	}
 
-	create: function(req, res) {
+	/*create: function(req, res) {
 
 		var admittedFields = [
 			'identityCard', 'firstName', 'lastName', 'email', 'profileId'
@@ -93,6 +96,6 @@ module.exports = {
 				res.send(people[0]);
 		});
 
-	}
+	}*/
 
 };

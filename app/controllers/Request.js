@@ -1,6 +1,6 @@
-var models = require('../models'),
-	validator = require('./validators/Request'),
-	async = require('async'),
+var validator = require('./validators/Request'),
+	RequestModel = require('../models/Request'),
+	UserModel = require('../models/User'),
 	_ = require('lodash');
 
 
@@ -8,16 +8,65 @@ module.exports = {
 
 	getAll: function(req, res) {
 
-		models.Request.getAll(function(err, requests) {
-			if(err)
-				res.sendStatus(500);
-			else
-				res.send(requests);
+		RequestModel
+		.forge()
+		.fetchAll({
+			withRelated: ['analyst.person', 'coordinator.person', 'visitor.person']
+		})
+		.then(function(collection) {
+
+			collection = collection.toJSON();
+
+			for(var i = 0; i < collection.length; i++) {
+				delete collection[0].analyst.password;
+				delete collection[0].visitor.password;
+				delete collection[0].coordinator.password;
+			}
+
+			res.send(collection);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
 		});
 
 	},
 
-	getMyRequest: function(req, res) {
+	getAllByMe: function(req, res) {
+
+		UserModel
+		.forge({id: req.userId})
+		.fetch({withRelated: ['profile']})
+		.then(function(model) {
+			var where = {};
+			model = model.toJSON();
+
+			if(model.profile.profile == 'analista')
+				where.analystId = model.id;
+			else if(model.profile.profile == 'coordinador')
+				where.coordinatorId = model.id;
+			else 
+				where.visitorId = model.id;
+
+			RequestModel
+			.query('where', where)
+			.fetchAll({withRelated: ['analyst.person', 'coordinator.person', 'visitor.person']})
+			.then(function(collection) {
+				res.send(collection.toJSON());
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	}
+
+	/*getMyRequest: function(req, res) {
 
 		var result = [];
 
@@ -121,7 +170,7 @@ module.exports = {
 
 		});
 
-	}
+	}*/
 
 };
 

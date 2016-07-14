@@ -1,44 +1,24 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 
-module.exports = {
+require('./User');
+require('./Status');
+require('./GuaranteeLetter');
 
-	insert: function(fields, next) {
-
-		knex('request').insert(fields).returning('*')
-		.then(function(requests) {
-			next(null, requests)
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('Request', {
+	tableName: 'request',
+	coordinator: function() {
+		return this.belongsTo('User', 'coordinatorId');
 	},
-
-	getBy: function(whereFields, next) {
-
-		knex('request').where(whereFields).select('*')
-		.then(function(requests) {
-			next(null, requests);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	visitor: function() {
+		return this.belongsTo('User', 'visitorId');
 	},
-
-	getAll: function(next) {
-
-		knex.select('*').from('request')
-		.then(function(requests) {
-			next(null, requests);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+	analyst: function() {
+		return this.belongsTo('User', 'analystId');
+	},
+	status: function() {
+		return this.belongsTo('Status', 'statusId');
+	},
+	guaranteeLetter: function() {
+		return this.belongsTo('GuaranteeLetter', 'guaranteeLetterId');
 	}
-
-};
+});

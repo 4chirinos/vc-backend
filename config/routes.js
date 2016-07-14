@@ -1,27 +1,24 @@
 var express = require('express'),
 	router = express.Router(),
-	controllers = require('../app/controllers');
+	Session = require('../app/controllers/Session'),
+	Person = require('../app/controllers/Person'),
+	Request = require('../app/controllers/Request'),
+	User = require('../app/controllers/User');
 
 
 /* ############################################# ME ########################################## */
 
-router.route('/me/user')
+/*router.route('/me/user')
 	.get(controllers.Session.validSession, controllers.User.getMyUser);
 
 router.route('/me/request')
-	.get(controllers.Session.validSession, controllers.Request.getMyRequest);
+	.get(controllers.Session.validSession, controllers.Request.getMyRequest);*/
 
 
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
-	.get(controllers.Person.getAll)
-	.post(controllers.Person.create);
-
-router.route('/person/:id')
-	.get(controllers.Person.getById)
-	.put(controllers.Person.update)
-	.patch(controllers.Person.partialUpdate);
+	.get(Person.getAll);
 
 /* ############################################################################################# */
 
@@ -33,13 +30,14 @@ router.route('/person/:id')
 /* ############################################ USUARIOS ####################################### */
 
 router.route('/user')
-	.get(controllers.User.getAll)
-	.post(controllers.User.create);
+	.get(User.getAll)
+	.post(User.create);
+
 
 router.route('/user/:id')
-	.get(controllers.User.getById)
-	.put(controllers.User.update)
-	.patch(controllers.User.partialUpdate);
+	.get(User.getById)
+	.put(User.update)
+	.patch(User.partialUpdate);
 	//.delete ¿deshabilitar usuario?
 
 /* ############################################################################################## */
@@ -50,8 +48,8 @@ router.route('/user/:id')
 /* #################################### SESSIONS #################################### */
 
 router.route('/session')
-	.post(controllers.Session.validUser, controllers.Session.create)
-	.delete(controllers.Session.validSession, controllers.Session.delete);
+	.post(Session.validUser, Session.create)
+	.delete(Session.validSession, Session.delete);
 
 
 /* ########################################################################################### */
@@ -61,11 +59,11 @@ router.route('/session')
 
 /* #################################### PERFILES y STATUS #################################### */
 
-router.route('/profile/type/:type')
+/*router.route('/profile/type/:type')
 	.get(controllers.Profile.getByType);
 
 router.route('/status/type/:type')
-	.get(controllers.Status.getByType);
+	.get(controllers.Status.getByType);*/
 
 
 /* ########################################################################################### */
@@ -74,12 +72,12 @@ router.route('/status/type/:type')
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
-router.route('/item/:id')
+/*router.route('/item/:id')
 	.patch(controllers.Item.partialUpdate);
 
 
 router.route('/guaranteeLetter/:id')
-	.get(controllers.GuaranteeLetter.getById);
+	.get(controllers.GuaranteeLetter.getById);*/
 
 
 /* ######################################################################################### */
@@ -89,8 +87,11 @@ router.route('/guaranteeLetter/:id')
 /* ################################# SOLICITUDES DE VISITA ############################### */
 
 router.route('/request')
-	.get(controllers.Request.getAll)
-	.post(controllers.Request.create);
+	.get(Request.getAll);
+	//.post(controllers.Request.create);*/
+
+router.route('/request/me')
+	.get(Session.validSession, Request.getAllByMe);
 
 
 /* ######################################################################################### */
@@ -100,22 +101,22 @@ router.route('/request')
 
 /* ################################### MANEJO DE PREGUNTAS ############################### */
 
-router.route('/question')
+/*router.route('/question')
 	.get(controllers.Question.getAll)
 	.post(controllers.Question.create);
 
 router.route('/question/:id')
 	.put(controllers.Question.update)
-	.patch(controllers.Question.partialUpdate);
+	.patch(controllers.Question.partialUpdate);*/
 
 /* ######################################################################################### */
 
 
-router.route('/answer')
+/*router.route('/answer')
 	.post(controllers.Answer.create);
 
 router.route('/answer/:id')
-	.put(controllers.Answer.update);
+	.put(controllers.Answer.update);*/
 
 
 
