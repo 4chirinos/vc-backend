@@ -1,18 +1,17 @@
-var knex = require('../../config/db/builder-knex');
+var bookshelf = require('../../config/db/builder-knex');
 
-module.exports = {
+require('./Item');
+require('./Affiliated');
 
-	getBy: function(whereFields, next) {
-
-		knex('budget').where(whereFields).select('*')
-		.then(function(budgets) {
-			next(null, budgets);
-		})
-		.catch(function(err) {
-			console.log(err);
-			next(err);
-		});
-
+module.exports = bookshelf.model('Budget', {
+	tableName: 'budget',
+	item: function() {
+		return this.hasMany('Item', 'budgetId');
+	},
+	affiliated: function() {
+		return this.belongsTo('Affiliated', 'affiliatedId');
+	},
+	guaranteeLetter: function() {
+		return this.hasOne('GuaranteeLetter', 'budgetId');
 	}
-
-};
+});

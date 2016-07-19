@@ -24,9 +24,6 @@ exports.validUser = {
 exports.validSession = {
 	'access_token': {
 		notEmpty: true,
-		isAlphanumeric: {
-			errorMessage: 'access_token inválido. Sólo carácteres alfanuméricos'
-		},
 		errorMessage: 'Header requerido'
 	}
 };

@@ -4,6 +4,9 @@ exports.up = function(knex, Promise) {
   	t.increments('id').primary();
   	t.string('name').unique().notNullable();
   	t.string('address').unique().notNullable();
+  	t.string('phoneNumber').unique().notNullable();
+  	t.string('rif').unique().notNullable();
+  	t.string('portal').unique().nullable();
   });
 };
 

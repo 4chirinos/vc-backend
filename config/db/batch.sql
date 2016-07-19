@@ -18,6 +18,20 @@ delete from "status";
 delete from "statusType";
 
 
+alter sequence "affiliated_id_seq" restart with 100;
+alter sequence "answer_id_seq" restart with 100;
+alter sequence "budget_id_seq" restart with 100;
+alter sequence "form_id_seq" restart with 100;
+alter sequence "guaranteeLetter_id_seq" restart with 100;
+alter sequence "item_id_seq" restart with 100;
+alter sequence "profileType_id_seq" restart with 100;
+alter sequence "profile_id_seq" restart with 100;
+alter sequence "question_id_seq" restart with 100;
+alter sequence "request_id_seq" restart with 100;
+alter sequence "session_id_seq" restart with 100;
+alter sequence "status_id_seq" restart with 100;
+alter sequence "user_id_seq" restart with 100;
+
 
 insert into "statusType" values (1, 'carta aval');
 insert into "statusType" values (2, 'visita');
@@ -58,29 +72,31 @@ insert into "user" values (5, 5, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQj
 insert into "user" values (6, 6, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
 insert into "user" values (7, 7, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
 
-insert into "affiliated" values (1, 'Clinica Caracas', 'Av. Libertador. Centro de Caracas');
-insert into "affiliated" values (2, 'Clinica del Interior', 'Calle Apure. Esquina La Plaza');
-insert into "affiliated" values (3, 'Clinica Parroquial', 'Edificio Central');
+insert into "affiliated" values (1, 'Clinica Caracas', 'Av. Libertador. Centro de Caracas', '0212-1032048', 'J-00168870-1', null);
+insert into "affiliated" values (2, 'Clinica del Interior', 'Calle Apure. Esquina La Plaza', '0212-1032041', 'J-00168870-4', null);
+insert into "affiliated" values (3, 'Clinica Parroquial', 'Edificio Central', '0295-0194599', 'J-00168870-6', null);
 
-insert into "budget" values (1, 1);
-insert into "budget" values (2, 2);
-insert into "budget" values (3, 3);
+insert into "budget" values (1, 1, now(), 12, '0012', '1726', 'Ulcera', 'Extraccion de ulcera', 'Jesus', 'Romero', '451701', 'Josefa', 'Colorado', 'Caracas');
+insert into "budget" values (2, 2, now(), 12, '0013', '7152', 'Apendiciti', 'Extraccion de apendiciti', 'Jose', 'Vargas', '879172', 'Luis', 'Cobos', 'Apure');
+insert into "budget" values (3, 3, now(), 12, '0014', '9172', 'Hernia lumbar', 'Extraccion de hernia', 'Wilber', 'Soto', '71826', 'Qioto', 'Salsido', 'Miranda');
 
-insert into "item" values (1, 1, 'Litro de alchol', 2, 300.09);
-insert into "item" values (2, 1, 'Extraccion de hernia', 4, 700.00);
-insert into "item" values (3, 1, 'Analgesico', 7, 40.99);
-insert into "item" values (4, 1, 'Dia de hospitalizacion', 2, 900.99);
-insert into "item" values (5, 2, 'Litro de alchol', 2, 300.09);
-insert into "item" values (6, 2, 'Extraccion de hernia', 4, 700.00);
-insert into "item" values (7, 2, 'Analgesico', 7, 40.99);
-insert into "item" values (8, 2, 'Dia de hospitalizacion', 2, 900.99);
-insert into "item" values (9, 3, 'Litro de alchol', 2, 300.09);
-insert into "item" values (10, 3, 'Extraccion de hernia', 4, 700.00);
-insert into "item" values (11, 3, 'Analgesico', 7, 40.99);
-insert into "item" values (12, 3, 'Dia de hospitalizacion', 2, 900.99);
+insert into "item" values (1, 1, 'Litro de alchol', 'concepto general', 2, 300.09);
+insert into "item" values (2, 1, 'Cirugia de ulcera', 'concepto general', 4, 700.00);
+insert into "item" values (3, 1, 'Analgesico', 'concepto general', 7, 40.99);
+insert into "item" values (4, 1, 'Dia de hospitalizacion', 'concepto general', 2, 900.99);
+insert into "item" values (5, 2, 'Litro de alchol', 'concepto general', 2, 300.09);
+insert into "item" values (6, 2, 'Cirugia de apendiciti', 'concepto de honorario', 4, 700.00);
+insert into "item" values (7, 2, 'Analgesico', 'concepto general', 7, 40.99);
+insert into "item" values (8, 2, 'Dia de hospitalizacion', 'concepto general', 2, 900.99);
+insert into "item" values (9, 3, 'Litro de alchol', 'concepto general', 2, 300.09);
+insert into "item" values (10, 3, 'Extraccion de hernia', 'concepto general', 4, 700.00);
+insert into "item" values (11, 3, 'Analgesico', 'concepto general', 7, 40.99);
+insert into "item" values (12, 3, 'Dia de hospitalizacion', 'concepto general', 2, 900.99);
 
-insert into "guaranteeLetter" values (1, '001', 'Extraccion de hernia', '100001', 'Jose', 'Camacaro', '100002', 'Teresa', 'Bianco', '100003', 'Carla', 'Duran', 1, 1, 'path1');
-insert into "guaranteeLetter" values (2, '002', 'Extraccion de hernia', '100004', 'Freddy', 'Garcia', '100005', 'Richard', 'Hidalgo', '100006', 'Cait', 'Rubion', 2, 1, 'path2');
-insert into "guaranteeLetter" values (3, '003', 'Extraccion de hernia', '100007', 'Jonny', 'Marin', '100008', 'Sofia', 'Vergara', '100009', 'July', 'Colmenares', 3, 1, 'path3');
+insert into "guaranteeLetter" values (1, '001', '100001', 'Jose', 'Camacaro', '100002', 'Teresa', 'Bianco', 1, 1);
+insert into "guaranteeLetter" values (2, '002', '100004', 'Freddy', 'Garcia', '100005', 'Richard', 'Hidalgo', 2, 1);
+insert into "guaranteeLetter" values (3, '003', '100007', 'Jonny', 'Marin', '100008', 'Sofia', 'Vergara', 3, 1);
 
 insert into "request" values (1, 1, 2, 3, 5, 1, null, now(), null);
+insert into "request" values (2, 2, 2, 4, 6, 2, null, now(), null);
+insert into "request" values (3, 3, 2, 4, 7, 2, null, now(), null);

@@ -93,6 +93,69 @@ module.exports = {
 
 	},
 
+	isCoordinator: function(req, res, next) {
+
+		UserModel
+		.forge({id: req.userId})
+		.fetch({withRelated: 'profile'})
+		.then(function(model) {
+			model = model.toJSON();
+			if(model.profile.profile == 'coordinador')
+				next();
+			else {
+				res.sendStatus(403);
+				return;
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	isAnalyst: function(req, res, next) {
+
+		UserModel
+		.forge({id: req.userId})
+		.fetch({withRelated: 'profile'})
+		.then(function(model) {
+			model = model.toJSON();
+			if(model.profile.profile == 'analista')
+				next();
+			else {
+				res.sendStatus(403);
+				return;
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	isVisitor: function(req, res, next) {
+
+		UserModel
+		.forge({id: req.userId})
+		.fetch({withRelated: 'profile'})
+		.then(function(model) {
+			model = model.toJSON();
+			if(model.profile.profile == 'visitador')
+				next();
+			else {
+				res.sendStatus(403);
+				return;
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
 	validUser: function(req, res, next) {
 
 		req.check(validator.validUser);

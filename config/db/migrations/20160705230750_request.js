@@ -4,12 +4,12 @@ exports.up = function(knex, Promise) {
   	t.increments('id').primary();
   	t.integer('guaranteeLetterId').references('id').inTable('guaranteeLetter').unique().notNullable();
   	t.integer('statusId').references('id').inTable('status').notNullable();
-  	t.integer('coordinatorId').references('id').inTable('user').nullable();
-  	t.integer('visitorId').references('id').inTable('user').nullable();
+  	t.integer('coordinatorId').references('id').inTable('user').nullable().defaultTo(null);
+  	t.integer('visitorId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('analystId').references('id').inTable('user').notNullable();
-    t.integer('formId').references('id').inTable('form').unique().nullable();
-  	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
-  	t.date('endDate').nullable();
+    t.integer('formId').references('id').inTable('form').unique().nullable().defaultTo(null);
+  	t.date('startDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.date('endDate').nullable().defaultTo(null);
   });
 };
 

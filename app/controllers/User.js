@@ -38,47 +38,6 @@ module.exports = {
 
 	},
 
-	getMyUser: function(req, res) {
-
-		models.User.getBy({id: req.userId}, function(err, users) {
-
-			if(err) {
-				res.sendStatus(500);
-				return;
-			}
-
-			models.Person.getBy({id: users[0].personId}, function(err, people) {
-
-				if(err) {
-					res.sendStatus(500);
-					return;
-				}
-
-				models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
-
-					if(err) {
-						res.sendStatus(500);
-						return;
-					}
-
-					var data = {
-						firstName: people[0].firstName,
-						lastName: people[0].lastName,
-						identityCard: people[0].identityCard,
-						email: people[0].email,
-						userProfile: profiles[0].profile
-					};
-
-					res.send(data);
-
-				});
-
-			});
-
-		});
-
-	},
-
 	getById: function(req, res) {
 
 		req.check(validator.getById);

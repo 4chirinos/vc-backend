@@ -3,22 +3,20 @@ var express = require('express'),
 	Session = require('../app/controllers/Session'),
 	Person = require('../app/controllers/Person'),
 	Request = require('../app/controllers/Request'),
+	GuaranteeLetter = require('../app/controllers/GuaranteeLetter'),
+	Budget = require('../app/controllers/Budget'),
 	User = require('../app/controllers/User');
 
-
-/* ############################################# ME ########################################## */
-
-/*router.route('/me/user')
-	.get(controllers.Session.validSession, controllers.User.getMyUser);
-
-router.route('/me/request')
-	.get(controllers.Session.validSession, controllers.Request.getMyRequest);*/
+var jsreport = require('jsreport');
+var ejs = require('ejs');
+var fs = require('fs');
 
 
 /* ############################################ PERSONAS ####################################### */
 
 router.route('/person')
 	.get(Person.getAll);
+
 
 /* ############################################################################################# */
 
@@ -56,28 +54,17 @@ router.route('/session')
 
 
 
-
-/* #################################### PERFILES y STATUS #################################### */
-
-/*router.route('/profile/type/:type')
-	.get(controllers.Profile.getByType);
-
-router.route('/status/type/:type')
-	.get(controllers.Status.getByType);*/
-
-
-/* ########################################################################################### */
-
-
-
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
-/*router.route('/item/:id')
-	.patch(controllers.Item.partialUpdate);
+router.route('/budget')
+	.get(Budget.getAll);
 
+
+router.route('/guaranteeLetter')
+	.get(GuaranteeLetter.getAll);
 
 router.route('/guaranteeLetter/:id')
-	.get(controllers.GuaranteeLetter.getById);*/
+	.get(GuaranteeLetter.getById);
 
 
 /* ######################################################################################### */
@@ -87,11 +74,13 @@ router.route('/guaranteeLetter/:id')
 /* ################################# SOLICITUDES DE VISITA ############################### */
 
 router.route('/request')
-	.get(Request.getAll);
-	//.post(controllers.Request.create);*/
+	.get(Request.getAll)
+	.post(Request.create);
 
 router.route('/request/me')
 	.get(Session.validSession, Request.getAllByMe);
+
+
 
 
 /* ######################################################################################### */
