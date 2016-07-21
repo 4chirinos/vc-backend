@@ -6,14 +6,26 @@ var fs = require('fs');
 
 module.exports = {
 
-	getAll: function(req, res) {
+	getById: function(req, res) {
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+			res.status(400).send(errors);
+			return;
+		}
 
 		BudgetModel
-		.forge()
-		.fetchAll({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
-		.then(function(collection) {
+		.forge({id: req.params.id})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
+		.then(function(model) {
 
-			var data = collection.toJSON()[1];
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			var data = model.toJSON();;
 			data.lastConcept = '';
 
 			var dd = data.startDate.getDate(),
@@ -36,11 +48,11 @@ module.exports = {
 
 			jsreport.render(html).then(function(out) {
 
-				/*res.writeHead(200, {
+				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
 		            'Content-Disposition': 'attachment; filename=out.pdf'
-		        });*/
+		        });
 
 				out.stream.pipe(res);
 

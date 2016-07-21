@@ -8,8 +8,13 @@ module.exports = {
 
 		GuaranteeLetterModel
 		.forge()
+		.query(function(qb) {
+			if(req.query.code) {
+				qb.where({code: req.query.code});
+			}
+		})
 		.fetchAll({
-			withRelated: ['status', 'budget']
+			withRelated: ['status', 'budget.affiliated', 'request']
 		})
 		.then(function(collection) {
 			res.send(collection.toJSON());
@@ -35,7 +40,7 @@ module.exports = {
 		GuaranteeLetterModel
 		.forge({id: req.params.id})
 		.fetch({
-			withRelated: ['status', 'budget']
+			withRelated: ['status', 'budget.affiliated', 'request']
 		})
 		.then(function(model) {
 			if(model)

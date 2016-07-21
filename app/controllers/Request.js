@@ -16,7 +16,12 @@ module.exports = {
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,
-			withRelated: ['status', 'analyst.person', 'coordinator.person', 'visitor.person', 'guaranteeLetter.budget.affiliated']
+			withRelated: ['status', 
+				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
+				'analyst.person', 'coordinator.person', 
+				'visitor.person',
+				'guaranteeLetter.budget.affiliated'
+			]
 		})
 		.then(function(collection) {
 
@@ -67,13 +72,16 @@ module.exports = {
 			.fetchPage({
 				page: page,
 				pageSize: pageSize,
-				withRelated: ['status', 'analyst.person', 'coordinator.person', 'visitor.person', 'guaranteeLetter.budget.affiliated']
+				withRelated: ['status', 
+					{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
+					'analyst.person', 'coordinator.person', 'visitor.person',
+					'guaranteeLetter.budget.affiliated'
+				]
 			})
 			.then(function(collection) {
 				var response = {};
 				response.pageCount = collection.pagination.pageCount;
 				response.requests = collection;
-
 				res.send(response);
 			})
 			.catch(function(err) {
@@ -110,40 +118,61 @@ module.exports = {
 			res.sendStatus(500);
 		});
 
+	},
+
+	partialUpdate: function(req, res) {
+
+		req.check(validator.partialUpdate);
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		var bodyFields = [
+			'statusId', 'visitorId', 'endDate'
+		];
+
+		var fields = _.pick(req.body, bodyFields);
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+			model.save(fields)
+			.then(function(model) {
+				RequestModel
+				.forge({id: req.params.id})
+				.fetch({
+					withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
+					'analyst.person', 'coordinator.person', 'visitor.person',
+					'guaranteeLetter.budget.affiliated'
+				]
+				})
+				.then(function(model) {
+					res.send(model.toJSON());
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				})
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
 	}
 
 };
-
-var stringToLowerCase = function(key) {
-	if(_.isString(key)) 
-		return key.toLowerCase();
-	return key;
-};
-
-var field = {
-	analista: 'analystId',
-	coordinador: 'coordinatorId',
-	visitador: 'visitorId'
-};
-
-/*
-models.Profile.getBy({id: users[0].profileId}, function(err, profiles) {
-
-				if(err) {
-					res.sendStatus(500);
-					return;
-				}
-
-				var whereFields = {
-					[field[profiles[0].profile]]: users[0].id
-				};
-
-				models.Request.getBy(whereFields, function(err, requests) {
-
-					res.send(requests);
-
-				})
-
-			});
-
-*/

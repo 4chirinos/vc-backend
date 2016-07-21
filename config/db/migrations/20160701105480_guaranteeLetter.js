@@ -2,6 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('guaranteeLetter', function(t) {
   	t.increments('id').primary();
+    t.string('code').unique().notNullable();
     t.string('policy').notNullable();
     t.string('holderIdentityCard').notNullable();
     t.string('holderFirstName').notNullable();

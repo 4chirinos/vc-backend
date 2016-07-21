@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
   	t.integer('affiliatedId').references('id').inTable('affiliated').notNullable();
   	t.date('startDate').notNullable();
   	t.integer('days').notNullable();
-  	t.string('budget').unique().notNullable();
+  	t.string('code').unique().notNullable();
   	t.string('history').notNullable();
   	t.string('diagnosis').notNullable();
   	t.string('treatment').notNullable();

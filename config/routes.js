@@ -56,8 +56,8 @@ router.route('/session')
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
-router.route('/budget')
-	.get(Budget.getAll);
+router.route('/budget/:id')
+	.get(Budget.getById);
 
 
 router.route('/guaranteeLetter')
@@ -80,7 +80,8 @@ router.route('/request')
 router.route('/request/me')
 	.get(Session.validSession, Request.getAllByMe);
 
-
+router.route('/request/:id')
+	.patch(Request.partialUpdate);
 
 
 /* ######################################################################################### */

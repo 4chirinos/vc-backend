@@ -1,4 +1,4 @@
-exports.getByPersonId = {
+exports.getById = {
 	'id': {
 		in: 'params',
 		notEmpty: true,

@@ -1,6 +1,7 @@
 var _ = require('lodash'),
 	UserModel = require('../models/User'),
-	validator = require('./validators/User');
+	validator = require('./validators/User'),
+	_ = require('lodash');
 
 module.exports = {
 
@@ -68,25 +69,45 @@ module.exports = {
 
 	getAll: function(req, res) {
 
+		var profile = [];
+
+		if(!Array.isArray(req.query.profile)) {
+			profile.push(req.query.profile);
+		} else {
+			profile = req.query.profile;
+		}
+
+		var profiles = ['7', '8', '9'];
+
+		if(req.query.profile) {
+			profiles = _.intersection(['7', '8', '9'], profile);
+		}
+
+		var page = req.query.page || null,
+			pageSize = req.query.pageSize || null;
+
 		UserModel
 		.forge()
-		.fetchAll({
+		.query(function(qb) {
+			qb.whereIn('profileId', profiles);
+		})
+		.fetchPage({
+			page: page,
+			pageSize: pageSize,
 			columns: ['id', 'personId', 'profileId', 'available'],
-			withRelated: ['profile']})
+			withRelated: ['person', 'profile']
+		})
 		.then(function(collection) {
-			if(collection.toJSON().length) {
-				console.log(collection.toJSON()[0].password);
-				delete collection.toJSON()[0].password;
-				res.send(collection.toJSON());
-			} else {
-				res.sendStatus(404);
-			}
+			var response = {};
+			response.pageCount = collection.pagination.pageCount;
+			response.users = collection.toJSON();
+			res.send(response);
 		})
 		.catch(function(err) {
 			console.log(err);
 			res.sendStatus(500);
 		});
-
+		
 	},
 
 	update: function(req, res) {
