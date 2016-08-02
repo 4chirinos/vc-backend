@@ -1,5 +1,7 @@
 var bookshelf = require('../../config/db/builder-knex');
 
+require('./Policy');
+
 module.exports = bookshelf.model('GuaranteeLetter', {
 	tableName: 'guaranteeLetter',
 	request: function() {
@@ -10,5 +12,11 @@ module.exports = bookshelf.model('GuaranteeLetter', {
 	},
 	budget: function() {
 		return this.belongsTo('Budget', 'budgetId');
+	},
+	policy: function() {
+		return this.belongsTo('Policy', 'policyId');
+	},
+	beneficiary: function() {
+		return this.belongsTo('Person', 'beneficiaryId');
 	}
 });

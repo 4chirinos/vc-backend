@@ -9,7 +9,7 @@ module.exports = {
 	create: function(req, res) {
 
 		SessionModel
-		.forge()
+		.forge({userId: req.userId})
 		.fetch({withRelated: ['user', 'user.profile', 'user.person']})
 		.then(function(model) {
 			if(model) {
@@ -52,7 +52,7 @@ module.exports = {
 	delete: function(req, res) {
 
 		SessionModel
-		.where({userId: req.userId})
+		.where({userId: req.userData.userId})
 		.destroy()
 		.then(function() {
 			res.sendStatus(200);
@@ -77,10 +77,12 @@ module.exports = {
 
 		SessionModel
 		.forge({token: req.headers.token})
-		.fetch()
+		.fetch({withRelated: ['user.profile']})
 		.then(function(model) {
 			if(model) {
-				req.userId = model.get('userId');
+				model = model.toJSON();
+				delete model.user.password;
+				req.userData = model;
 				next();
 			} else {
 				res.sendStatus(403);

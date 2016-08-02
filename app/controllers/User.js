@@ -95,12 +95,20 @@ module.exports = {
 			page: page,
 			pageSize: pageSize,
 			columns: ['id', 'personId', 'profileId', 'available'],
-			withRelated: ['person', 'profile']
+			withRelated: ['person', 'profile', {'visitor': function(qb) {
+					qb.where({statusId: 3});
+				}}
+			]
 		})
 		.then(function(collection) {
 			var response = {};
 			response.pageCount = collection.pagination.pageCount;
 			response.users = collection.toJSON();
+
+			for(var i = 0; i < response.users.length; i++) {
+				response.users[i].assignments = response.users[i].visitor.length;
+			}
+
 			res.send(response);
 		})
 		.catch(function(err) {

@@ -14,7 +14,7 @@ module.exports = {
 			}
 		})
 		.fetchAll({
-			withRelated: ['status', 'budget.affiliated', 'request']
+			withRelated: ['status', 'beneficiary', 'budget.affiliated', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(collection) {
 			res.send(collection.toJSON());
@@ -40,7 +40,7 @@ module.exports = {
 		GuaranteeLetterModel
 		.forge({id: req.params.id})
 		.fetch({
-			withRelated: ['status', 'budget.affiliated', 'request']
+			withRelated: ['status', 'beneficiary', 'budget.affiliated', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(model) {
 			if(model)

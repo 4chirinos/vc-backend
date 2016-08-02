@@ -75,13 +75,13 @@ router.route('/guaranteeLetter/:id')
 
 router.route('/request')
 	.get(Request.getAll)
-	.post(Request.create);
+	.post(Session.validSession, Request.create);
 
 router.route('/request/me')
 	.get(Session.validSession, Request.getAllByMe);
 
 router.route('/request/:id')
-	.patch(Request.partialUpdate);
+	.patch(Session.validSession, Request.partialUpdate);
 
 
 /* ######################################################################################### */

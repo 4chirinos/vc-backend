@@ -3,6 +3,7 @@
 
 delete from "request";
 delete from "guaranteeLetter";
+delete from "policy";
 delete from "session";
 delete from "answer";
 delete from "question";
@@ -31,6 +32,7 @@ alter sequence "request_id_seq" restart with 100;
 alter sequence "session_id_seq" restart with 100;
 alter sequence "status_id_seq" restart with 100;
 alter sequence "user_id_seq" restart with 100;
+alter sequence "policy_id_seq" restart with 100;
 
 
 insert into "statusType" values (1, 'carta aval');
@@ -49,20 +51,29 @@ insert into "profileType" values (2, 'usuario');
 insert into "profile" values (1, 'analista', 1);
 insert into "profile" values (2, 'coordinador', 1);
 insert into "profile" values (3, 'visitador', 1);
+insert into "profile" values (4, 'cliente', 1);
 
 insert into "profile" values (6, 'administrador', 2);
 insert into "profile" values (7, 'analista', 2);
 insert into "profile" values (8, 'coordinador', 2);
 insert into "profile" values (9, 'visitador', 2);
 
-insert into "person" values (1, '1234670', 'Julia', 'Ramirez', 'j.ramirez@email.com', 1);
-insert into "person" values (2, '1234671', 'Carla', 'Pena', 'c.pena@email.com', 1);
-insert into "person" values (3, '1234672', 'Jose', 'Gonzalez', 'j.gonzales@email.com', 2);
-insert into "person" values (4, '1234673', 'Will', 'Turner', 'w.turner@email.com', 2);
-insert into "person" values (5, '1234674', 'Luis', 'Rico', 'l.rico@email.com', 3);
-insert into "person" values (6, '1234675', 'Maria', 'Nieves', 'm.nieves@email.com', 3);
-insert into "person" values (7, '1234676', 'Elvion', 'Aponte', 'e.aponte@email.com', 3);
-insert into "person" values (8, '1234677', 'Alex', 'Aguila', 'a.aguila@email.com', 3);
+insert into "person" values (1, '1234670', 'Julia', 'Ramirez', 'j.ramirez@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (2, '1234671', 'Carla', 'Pena', 'c.pena@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (3, '1234672', 'Jose', 'Gonzalez', 'j.gonzales@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (4, '1234673', 'Will', 'Turner', 'w.turner@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (5, '1234674', 'Luis', 'Rico', 'l.rico@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (6, '1234675', 'Maria', 'Nieves', 'm.nieves@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (7, '1234676', 'Elvion', 'Aponte', 'e.aponte@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (8, '1234677', 'Alex', 'Aguila', 'a.aguila@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048');
+
+insert into "person" values (9, '1234678', 'Jesus', 'Romero', 'j.romero@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (10, '1234679', 'Josue', 'Zambrano', 'j.zambrano@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (11, '1234680', 'Paola', 'Aguila', 'p.aguila@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (12, '1234681', 'Antonia', 'Lopez', 'a.lopez@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (13, '1234682', 'Victor', 'Vendetta', 'v.Vendetta@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (14, '1234683', 'Victoria', 'Sigil', 'v.sirgil@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
+insert into "person" values (15, '1234684', 'Antonieta', 'Bermudez', 'a.bermudez@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048');
 
 insert into "user" values (1, 1, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 7, true);
 insert into "user" values (2, 2, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 7, true);
@@ -95,11 +106,14 @@ insert into "item" values (11, 3, 'Analgesico', 'concepto general', 7, 40.99);
 insert into "item" values (12, 3, 'Dia de hospitalizacion', 'concepto general', 2, 900.99);
 insert into "item" values (13, 4, 'Dia de hospitalizacion', 'concepto general', 1, 900.99);
 
-insert into "guaranteeLetter" values (1, '0190', '001', '100001', 'Jose', 'Camacaro', '100002', 'Teresa', 'Bianco', 1, 1);
-insert into "guaranteeLetter" values (2, '0191', '002', '100004', 'Freddy', 'Garcia', '100005', 'Richard', 'Hidalgo', 2, 1);
-insert into "guaranteeLetter" values (3, '0192', '003', '100007', 'Jonny', 'Marin', '100008', 'Sofia', 'Vergara', 3, 1);
-insert into "guaranteeLetter" values (4, '0193', '003', '100007', 'Jay', 'Marin', '100008', 'Estrella', 'Lopez', 4, 1);
+insert into "policy" values (1, 9, 9, now(), '2017-01-03', 900.01);
+insert into "policy" values (2, 13, 13, now(), '2017-01-03', 900.01);
+insert into "policy" values (3, 12, 12, now(), '2017-01-03', 900.01);
 
-insert into "request" values (1, 1, 2, 3, 5, 1, null, now(), null);
-insert into "request" values (2, 2, 2, 4, 6, 2, null, now(), null);
-insert into "request" values (3, 3, 2, 4, 7, 2, null, now(), null);
+insert into "guaranteeLetter" values (1, 1, '0190', 10, 1, 1);
+insert into "guaranteeLetter" values (2, 1, '0191', 10, 2, 1);
+insert into "guaranteeLetter" values (3, 1, '0192', 10, 3, 1);
+
+/*insert into "request" values (1, 1, 2, null, null, null, null, now(), null);
+insert into "request" values (2, 2, 2, null, null, null, null, now(), null);
+insert into "request" values (3, 3, 2, null, null, null, null, now(), null);*/

@@ -7,6 +7,10 @@ exports.up = function(knex, Promise) {
   	t.string('lastName').notNullable();
   	t.string('email').unique().notNullable();
   	t.integer('profileId').references('id').inTable('profile').notNullable();
+  	t.date('birthDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.string('address').notNullable();
+  	t.string('gender').notNullable();
+  	t.string('phoneNumber').notNullable();
   });
 };
 

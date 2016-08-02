@@ -20,5 +20,18 @@ module.exports = bookshelf.model('Request', {
 	},
 	guaranteeLetter: function() {
 		return this.belongsTo('GuaranteeLetter', 'guaranteeLetterId');
+	},
+	count: function(fields, cb) {
+		bookshelf.knex.from('request')
+		.innerJoin('status', 'request.statusId', 'status.id')
+		.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
+		.where(fields)
+		.groupBy('status.id')
+		.then(function(count) {
+			cb(null, count);
+		})
+		.catch(function(err) {
+			cb(err);
+		});
 	}
 });
