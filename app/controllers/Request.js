@@ -6,6 +6,42 @@ var validator = require('./validators/Request'),
 
 module.exports = {
 
+	getById: function(req, res) {
+
+		var errors = req.check(validator.getById);
+
+		if(errors) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch({
+			withRelated: ['status', 
+				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
+				'analyst.person', 'coordinator.person', 
+				'visitor.person',
+				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+			]
+		})
+		.then(function(model) {
+			
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			res.send(model.toJSON());
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
 	getAll: function(req, res) {
 
 		var page = req.query.page || null,
@@ -47,15 +83,25 @@ module.exports = {
 
 			RequestModel
 			.query(function(qb) {
-				if(model.profile.profile == 'analista') {
-					qb.where({analystId: model.id});
-				} else if(model.profile.profile == 'coordinador') {
-					qb.where({coordinatorId: model.id}).orWhere({coordinatorId: null});
-				} else {
-					qb.where({visitorId: model.id});
-				}
 				if(req.query.statusId) {
-					qb.where({statusId: req.query.statusId});
+					if(model.profile.profile == 'analista') {
+						qb.where({analystId: model.id, statusId: req.query.statusId});
+					} else if(model.profile.profile == 'coordinador') {
+						if(req.query.statusId != 2)
+							qb.where({coordinatorId: model.id, statusId: req.query.statusId});
+						else
+							qb.where({statusId: req.query.statusId});
+					} else {
+						qb.where({visitorId: model.id, statusId: req.query.statusId});
+					}
+				} else {
+					if(model.profile.profile == 'analista') {
+						qb.where({analystId: model.id});
+					} else if(model.profile.profile == 'coordinador') {
+						qb.where({coordinatorId: model.id}).orWhere({coordinatorId: null});
+					} else {
+						qb.where({visitorId: model.id});
+					}
 				}
 			})
 			.fetchPage({
@@ -144,7 +190,27 @@ module.exports = {
 						]
 					})
 					.then(function(model) {
-						res.send(model.toJSON());
+						model = model.toJSON();
+
+						var fields = {};
+
+						if(req.userData.user.profile.profile == 'analista') {
+							fields.analystId = req.userData.userId;
+						} else if(req.userData.user.profile.profile == 'coordinador') {
+							fields.coordinatorId = req.userData.userId;
+						} else {
+							fields.visitorId = req.userData.userId;
+						}
+
+						RequestModel.count(fields, function(err, count) {
+							if(err) {
+								res.sendStatus(500);
+								return;
+							}
+							model.statusGroups = count;
+							res.send(model);
+						});
+
 					})
 					.catch(function(err) {
 						console.log(err);
@@ -211,6 +277,26 @@ module.exports = {
 					model = model.toJSON();
 					model.created = true;
 					res.send(model);
+					
+					/*model = model.toJSON();
+
+					if(req.userData.user.profile.profile == 'analista') {
+						fields.analystId = req.userData.userId;
+					} else if(req.userData.user.profile.profile == 'coordinador') {
+						fields.coordinatorId = req.userData.userId;
+					} else {
+						fields.visitorId = req.userData.userId;
+					}
+
+					RequestModel.count(fields, function(err, count) {
+						if(err) {
+							res.sendStatus(500);
+							return;
+						}
+						model.statusGroups = count;
+						res.send(model);
+					});*/
+
 				})
 				.catch(function(err) {
 					res.sendStatus(500);
@@ -229,7 +315,26 @@ module.exports = {
 					]
 					})
 					.then(function(model) {
-						res.send(model.toJSON());
+
+						model = model.toJSON();
+
+						if(req.userData.user.profile.profile == 'analista') {
+							fields.analystId = req.userData.userId;
+						} else if(req.userData.user.profile.profile == 'coordinador') {
+							fields.coordinatorId = req.userData.userId;
+						} else {
+							fields.visitorId = req.userData.userId;
+						}
+
+						RequestModel.count(fields, function(err, count) {
+							if(err) {
+								res.sendStatus(500);
+								return;
+							}
+							model.statusGroups = count;
+							res.send(model);
+						});
+
 					})
 					.catch(function(err) {
 						console.log(err);

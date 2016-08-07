@@ -1,4 +1,5 @@
 var BudgetModel = require('../models/Budget');
+var validator = require('./validators/Budget');
 
 var jsreport = require('jsreport');
 var ejs = require('ejs');
@@ -8,7 +9,36 @@ module.exports = {
 
 	getById: function(req, res) {
 
-		var errors = req.validationErrors();
+		var errors = req.check(validator.getById);
+
+		if(errors) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		BudgetModel
+		.forge({id: req.params.id})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
+		.then(function(model) {
+
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			res.send(model.toJSON());
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	getDocumentById: function(req, res) {
+
+		var errors = req.check(validator.getById);
 
 		if(errors) {
 			res.status(400).send(errors);
@@ -51,7 +81,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=out.pdf'
+		            'Content-Disposition': 'attachment; filename=presupuesto.' + data.code
 		        });
 
 				out.stream.pipe(res);

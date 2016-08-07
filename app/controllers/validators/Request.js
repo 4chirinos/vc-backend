@@ -17,6 +17,17 @@ exports.create = {
 	 }
 };
 
+exports.getById = {
+	'id': { //
+		in: 'params', 
+		notEmpty: true,
+		isInt: {
+			errorMessage: 'id inválido'
+		},
+	    errorMessage: 'Campo requerido'
+	 }
+};
+
 exports.partialUpdate = {
 	'id': { //
 		in: 'params', 

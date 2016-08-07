@@ -59,6 +59,8 @@ router.route('/session')
 router.route('/budget/:id')
 	.get(Budget.getById);
 
+router.route('/document/budget/:id')
+	.get(Budget.getDocumentById);
 
 router.route('/guaranteeLetter')
 	.get(GuaranteeLetter.getAll);
@@ -81,6 +83,7 @@ router.route('/request/me')
 	.get(Session.validSession, Request.getAllByMe);
 
 router.route('/request/:id')
+	.get(Session.validSession, Request.getById)
 	.patch(Session.validSession, Request.partialUpdate);
 
 

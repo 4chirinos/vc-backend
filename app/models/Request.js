@@ -25,7 +25,7 @@ module.exports = bookshelf.model('Request', {
 		bookshelf.knex.from('request')
 		.innerJoin('status', 'request.statusId', 'status.id')
 		.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
-		.where(fields)
+		.where(fields).orWhere({coordinatorId: null})
 		.groupBy('status.id')
 		.then(function(count) {
 			cb(null, count);
