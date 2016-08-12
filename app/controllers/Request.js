@@ -22,7 +22,7 @@ module.exports = {
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
 				'visitor.person',
-				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
 		.then(function(model) {
@@ -56,7 +56,7 @@ module.exports = {
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
 				'visitor.person',
-				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
 		.then(function(collection) {
@@ -110,7 +110,7 @@ module.exports = {
 				withRelated: ['status', 
 					{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
 					'analyst.person', 'coordinator.person', 'visitor.person',
-					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 			})
 			.then(function(collection) {

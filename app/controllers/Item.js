@@ -1,8 +1,23 @@
-var models = require('../models'),
+var ItemModel = require('../models/Item'),
 	_ = require('lodash'),
 	validator = require('./validators/Item');
 
 module.exports = {
+
+	getAll: function(req, res) {
+
+		ItemModel
+		.forge()
+		.fetchAll()
+		.then(function(collection) {
+			res.send(collection.toJSON());
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
 
 	partialUpdate: function(req, res) {
 
@@ -11,40 +26,34 @@ module.exports = {
 		var errors = req.validationErrors();
 
 		if(errors) {
-
 			res.status(400).send(errors);
-
-		} else {
-
-			var admittedFields = [
-				'description', 'quantity', 'cost'
-			];
-
-			var fields = _.pick(req.body, admittedFields);
-
-			fields = _.mapValues(fields, stringToLowerCase);
-
-			var whereFields = {
-				id: req.params.id
-			};
-
-			models.Item.update(whereFields, fields, function(err, items) {
-
-				if(err)
-					res.sendStatus(500);
-				else
-					res.send(items[0]);
-
-			});
-
+			return;
 		}
+
+		var fields = _.pick(req.body, ['description', 'concept', 'cost', 'quantity']);
+
+		ItemModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return
+			}
+			model.save(fields)
+			.then(function(model) {
+				res.send(model.toJSON());
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function() {
+			console.log(err);
+			res.sendStatus(500);
+		})
 
 	}
 
-};
-
-var stringToLowerCase = function(key) {
-	if(_.isString(key)) 
-		return key.toLowerCase();
-	return key;
 };

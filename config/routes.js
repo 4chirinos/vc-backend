@@ -5,6 +5,7 @@ var express = require('express'),
 	Request = require('../app/controllers/Request'),
 	GuaranteeLetter = require('../app/controllers/GuaranteeLetter'),
 	Budget = require('../app/controllers/Budget'),
+	Item = require('../app/controllers/Item'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
@@ -56,8 +57,17 @@ router.route('/session')
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
+router.route('/budget')
+	.get(Session.validSession, Budget.getAll);
+
 router.route('/budget/:id')
-	.get(Budget.getById);
+	.get(Session.validSession, Budget.getById);
+
+router.route('/item')
+	.get(Item.getAll);
+
+router.route('/item/:id')
+	.patch(Item.partialUpdate);
 
 router.route('/document/budget/:id')
 	.get(Budget.getDocumentById);
@@ -79,7 +89,7 @@ router.route('/request')
 	.get(Request.getAll)
 	.post(Session.validSession, Request.create);
 
-router.route('/request/me')
+router.route('/me/request')
 	.get(Session.validSession, Request.getAllByMe);
 
 router.route('/request/:id')

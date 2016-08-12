@@ -11,7 +11,7 @@ exports.partialUpdate = {
 		in: 'body', 
 		optional: true, 
 	    isLength: {
-	      options: [{ min: 15, max: undefined }],
+	      options: [{ min: 7, max: undefined }],
 	      errorMessage: 'Debe ser mayor a 15 carácteres'
 	    }
 	 },

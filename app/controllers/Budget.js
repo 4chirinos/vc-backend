@@ -1,4 +1,6 @@
 var BudgetModel = require('../models/Budget');
+var RequestModel = require('../models/Request');
+var GuaranteeLetterModel = require('../models/GuaranteeLetter');
 var validator = require('./validators/Budget');
 
 var jsreport = require('jsreport');
@@ -33,6 +35,41 @@ module.exports = {
 			console.log(err);
 			res.sendStatus(500);
 		});
+
+	},
+
+	getAll: function(req, res) {
+
+		if(req.query.requestId) {
+
+			RequestModel
+			.forge({id: req.query.requestId})
+			.fetch({withRelated: ['guaranteeLetter']})
+			.then(function(model) {
+				if(!model) {
+					res.sendStatus(404);
+					return;
+				}
+				model = model.toJSON();
+				BudgetModel
+				.forge({id: model.guaranteeLetter.budgetId})
+				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
+				.then(function(model) {
+					res.send(model.toJSON());
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
+		} else {
+			res.sendStatus(400);
+		}
 
 	},
 
