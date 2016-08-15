@@ -1,6 +1,7 @@
 var _ = require('lodash'),
 	UserModel = require('../models/User'),
 	validator = require('./validators/User'),
+	RequestModel = require('../models/Request'),
 	_ = require('lodash');
 
 module.exports = {
@@ -109,7 +110,25 @@ module.exports = {
 				response.users[i].assignments = response.users[i].visitor.length;
 			}
 
-			res.send(response);
+			var fields = {};
+
+			if(req.userData.user.profile.profile == 'analista') {
+				fields.analystId = req.userData.userId;
+			} else if(req.userData.user.profile.profile == 'coordinador') {
+				fields.coordinatorId = req.userData.userId;
+			} else {
+				fields.visitorId = req.userData.userId;
+			}
+
+			RequestModel.count(fields, function(err, count) {
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+				response.statusGroups = count;
+				res.send(response);
+			});
+
 		})
 		.catch(function(err) {
 			console.log(err);

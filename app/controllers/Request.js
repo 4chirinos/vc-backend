@@ -32,7 +32,26 @@ module.exports = {
 				return;
 			}
 
-			res.send(model.toJSON());
+			model = model.toJSON();
+
+			var fields = {};
+
+			if(req.userData.user.profile.profile == 'analista') {
+				fields.analystId = req.userData.userId;
+			} else if(req.userData.user.profile.profile == 'coordinador') {
+				fields.coordinatorId = req.userData.userId;
+			} else {
+				fields.visitorId = req.userData.userId;
+			}
+
+			RequestModel.count(fields, function(err, count) {
+				if(err) {
+					res.sendStatus(500);
+					return;
+				}
+				model.statusGroups = count;
+				res.send(model);
+			});
 
 		})
 		.catch(function(err) {
@@ -276,9 +295,6 @@ module.exports = {
 				.then(function(model) {
 					model = model.toJSON();
 					model.created = true;
-					res.send(model);
-					
-					/*model = model.toJSON();
 
 					if(req.userData.user.profile.profile == 'analista') {
 						fields.analystId = req.userData.userId;
@@ -295,7 +311,7 @@ module.exports = {
 						}
 						model.statusGroups = count;
 						res.send(model);
-					});*/
+					});
 
 				})
 				.catch(function(err) {

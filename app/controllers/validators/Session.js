@@ -2,7 +2,7 @@ exports.validUser = {
 	'identityCard': {
 		in: 'body',
 		notEmpty: true,
-		isNumeric: {
+		isAlphanumeric: {
 			errorMessage: 'Cédula inválida'
 		},
 		errorMessage: 'Campo requerido'
