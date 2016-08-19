@@ -7,8 +7,6 @@ var jsreport = require('jsreport');
 var ejs = require('ejs');
 var fs = require('fs');
 
-var path = '';
-
 var multer  = require('multer');
 
 var storage = multer.diskStorage({
@@ -17,37 +15,15 @@ var storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
   	var date = new Date();
-  	date = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+  	var name =  Date.now() + '_' + date.getFullYear() + '_' + file.originalname;
 
-  	var name = Date.now() + '_' + file.originalname;
+  	if(!req.paths) {
+  		req.paths = name + '$';
+  	} else {
+  		req.paths = req.paths + name + '$';
+  	}
 
-  	BudgetModel
-	.forge({id: req.params.id})
-	.fetch()
-	.then(function(model) {
-
-		console.log(model);
-
-		if(!model) {
-			res.sendStatus(404);
-			return;
-		}
-
-		model.save({paths: model.get('paths') + '$' + name})
-		.then(function(model) {
-			console.log(model.get('paths'));
-			cb(null, name);
-		})
-		.catch(function(err) {
-			console.log(err);
-			res.sendStatus(500);
-		});
-
-	})
-	.catch(function(err) {
-		console.log(err);
-		res.sendStatus(500);
-	});
+  	cb(null, name);
 
   }
 });
@@ -106,8 +82,6 @@ module.exports = {
 
 	deleteDocument: function(req, res, next) {
 
-		path = '';
-
 		req.check(validator.getById);
 
 		var errors = req.validationErrors();
@@ -122,7 +96,7 @@ module.exports = {
 		.fetch()
 		.then(function(model) {
 
-			console.log(model.get('paths'));
+			//console.log(model.get('paths'));
 
 			if(!model) {
 				res.sendStatus(404);
@@ -131,7 +105,7 @@ module.exports = {
 
 			model.save({paths: ''})
 			.then(function(model) {
-				console.log(model.get('paths'));
+				//console.log(model.get('paths'));
 				next();
 			})
 			.catch(function(err) {
@@ -157,6 +131,45 @@ module.exports = {
 		});
 
 		return upload.array('file');
+
+	},
+
+	getImageByName: function(req, res) {
+
+		if(fs.existsSync(__dirname + '/../../public/uploads/' + req.params.name)) {
+			res.sendFile(req.params.name, {root: __dirname + '/../../public/uploads'});
+		} else {
+			res.sendStatus(404);
+		}
+
+	},
+
+	returnImageLoaded: function(req, res) {
+
+		BudgetModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			model.save({paths: req.paths})
+			.then(function(model) {
+				res.send(model.toJSON());
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 
