@@ -29,96 +29,76 @@
         
         <h3><center><%= data.affiliated.name %></center></h3> <br>
         <%= data.affiliated.address %> <br>
-        CENTRAL TELEFONICA: <%= data.affiliated.phoneNumber %> <br>
-        RIF: <%= data.affiliated.rif %> <br>
+        Central telef&oacute;nica: <%= data.affiliated.phoneNumber %> <br>
+        Rif: <%= data.affiliated.rif %> <br>
 
         <% if(data.affiliated.portal) { %>
-          PORTAL: <%= data.affiliated.portal %> <br>
+          Portal web: <%= data.affiliated.portal %> <br>
         <% } %>
 
       </div>
 
       <div align="right">
         <%= data.location %>, <%= data.startDate %> <br>
-        PRESUPUESTO ESTIMADO NRO: <strong> <%= data.code %> </strong>
+        Presupuesto nro: <strong> <%= data.code %> </strong>
       </div>
 
       <br><br>
 
-      <div align="left" style="border: 1px solid black;">
+      <div align="left" style="border: 0px solid black;">
         
         <div style="display: inline-block; margin-right: 0px; width: 390px;">
-          <strong>PACIENTE: </strong><%= data.patientFirstName %> <%= data.patientLastName %>
+          <strong>Paciente: </strong><%= data.patientFirstName %> <%= data.patientLastName %>
         </div>
 
         <div style="display: inline-block; width: 258px;">
-          <strong>HISTORIA NRO: </strong><%= data.history %>
+          <strong>Historia nro: </strong><%= data.history %>
         </div>
 
         <div>
-          <strong>MEDICO: </strong><%= data.doctorFirstName %> <%= data.doctorLastName %>
+          <strong>M&eacute;dico: </strong><%= data.doctorFirstName %> <%= data.doctorLastName %>
         </div>
 
         <div>
-          <strong>DIAGNOSTICO: </strong><%= data.diagnosis %>
+          <strong>Diagn&oacute;stico: </strong><%= data.diagnosis %>
         </div>
 
         <div>
-          <strong>PLAN MEDICO: </strong><%= data.treatment %>
+          <strong>Procedimiento: </strong><%= data.treatment %>
         </div>
 
       </div>
 
       <br>
 
+      <table>
+        <tr>
+          <th><center>Concepto</center> </th>
+          <th><center>Descripci&oacute;n</center> </th>
+          <th><center>Cantidad</center> </th>
+          <th><center>Precio (Bs)</center> </th>
+        </tr>
+
+        <% var final_cost = 0; %>
+
       <% for(var i = 0; i < data.item.length; i++) { %>  
 
-            <% if(data.lastConcept != data.item[i].concept && data.lastConcept == '') { %>
+          <tr>
+            <td><%= data.item[i].concept %></td>
+            <td><%= data.item[i].description %></td>
+            <td><center><%= data.item[i].quantity %></center></td>
+            <td><center><%= data.item[i].cost %></center></td>
+          </tr>
 
-                <h4><%= data.item[i].concept %>:</h4>
-
-                  <table>
-                    <tr>
-                      <th><center>DESCRIPCION</center> </th>
-                      <th><center>CANTIDAD</center> </th>
-                      <th><center>PRECIO</center> </th>
-                    </tr>
-
-            <% } else if(data.lastConcept != data.item[i].concept && data.lastConcept != '') { %>
-
-                  <tr>
-                  <td><center>----</center></td>
-                  <td><center>----</center></td>
-                  <th><center>Total: BS 4.402.43</center></th>
-                </tr>
-
-                </table>
-
-                <h4><%= data.item[i].concept %>:</h4>
-
-                <table>
-                    <tr>
-                      <th><center>DESCRIPCION</center> </th>
-                      <th><center>CANTIDAD</center> </th>
-                      <th><center>PRECIO</center> </th>
-                    </tr>
-
-            <% } %>
-
-            <tr>
-              <td><center><%= data.item[i].description %></center></td>
-              <td><center><%= data.item[i].quantity %></center></td>
-              <td><center>BS <%= data.item[i].cost %></center></td>
-            </tr>
-
-            <% data.lastConcept = data.item[i].concept %>
+          <% final_cost = final_cost + data.item[i].quantity * data.item[i].cost %>
 
       <% } %>
 
         <tr>
-          <td><center>----</center></td>
-          <td><center>----</center></td>
-          <th><center>Total: BS 4.402.43</center></th>
+          <td><center>- - - - - - -</center></td>
+          <td><center>- - - - - - -</center></td>
+          <td><center>- - - - - - -</center></td>
+          <th><center>Total: Bs <%= final_cost %> </center></th>
         </tr>
 
       </table>

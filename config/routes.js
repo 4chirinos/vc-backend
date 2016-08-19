@@ -8,6 +8,27 @@ var express = require('express'),
 	Item = require('../app/controllers/Item'),
 	User = require('../app/controllers/User');
 
+var multer  = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads');
+  },
+  filename: function (req, file, cb) {
+  	var date = new Date();
+  	date = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+    cb(null, date + '_' + file.originalname);
+  }
+});
+
+
+var upload = multer({
+	storage: storage,
+	limits: {
+		fileSize: 2099734
+	} 
+});
+
 var jsreport = require('jsreport');
 var ejs = require('ejs');
 var fs = require('fs');
@@ -59,6 +80,11 @@ router.route('/session')
 
 router.route('/budget')
 	.get(Session.validSession, Budget.getAll); // tiene statusGroups
+
+router.route('/budget/:id/document')
+	.post(Budget.deleteDocument, Budget.loadImage(), function(req, res) {
+		res.send('ok');
+	});
 
 router.route('/budget/:id')
 	.get(Session.validSession, Budget.getById); // tiene statusGroups

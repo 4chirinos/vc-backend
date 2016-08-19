@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var compress = require('compression');
 var methodOverride = require('method-override');
 var expressValidator = require('express-validator');
-var cors = require('cors')
+var cors = require('cors');
 
 module.exports = function(app, config) {
   var env = process.env.NODE_ENV || 'development';

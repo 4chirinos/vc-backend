@@ -7,11 +7,58 @@ var jsreport = require('jsreport');
 var ejs = require('ejs');
 var fs = require('fs');
 
+var path = '';
+
+var multer  = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads');
+  },
+  filename: function (req, file, cb) {
+  	var date = new Date();
+  	date = date.getDate() + '-' + date.getMonth() + '-' + date.getFullYear();
+
+  	var name = Date.now() + '_' + file.originalname;
+
+  	BudgetModel
+	.forge({id: req.params.id})
+	.fetch()
+	.then(function(model) {
+
+		console.log(model);
+
+		if(!model) {
+			res.sendStatus(404);
+			return;
+		}
+
+		model.save({paths: model.get('paths') + '$' + name})
+		.then(function(model) {
+			console.log(model.get('paths'));
+			cb(null, name);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	})
+	.catch(function(err) {
+		console.log(err);
+		res.sendStatus(500);
+	});
+
+  }
+});
+
 module.exports = {
 
 	getById: function(req, res) {
 
-		var errors = req.check(validator.getById);
+		req.check(validator.getById);
+
+		var errors = req.validationErrors();
 
 		if(errors) {
 			res.status(400).send(errors);
@@ -54,6 +101,62 @@ module.exports = {
 			console.log(err);
 			res.sendStatus(500);
 		});
+
+	},
+
+	deleteDocument: function(req, res, next) {
+
+		path = '';
+
+		req.check(validator.getById);
+
+		var errors = req.validationErrors();
+
+		if(errors) {
+			res.status(400).send(errors);
+			return;
+		}
+
+		BudgetModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+
+			console.log(model.get('paths'));
+
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			model.save({paths: ''})
+			.then(function(model) {
+				console.log(model.get('paths'));
+				next();
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	loadImage: function(req, res) {
+
+		var upload = multer({
+			storage: storage,
+			limits: {
+				fileSize: 2099734
+			} 
+		});
+
+		return upload.array('file');
 
 	},
 
@@ -116,6 +219,8 @@ module.exports = {
 	getDocumentById: function(req, res) {
 
 		var errors = req.check(validator.getById);
+
+		var errors = req.validationErrors();
 
 		if(errors) {
 			res.status(400).send(errors);
