@@ -3,6 +3,7 @@ var bookshelf = require('../../config/db/builder-knex');
 require('./User');
 require('./Status');
 require('./GuaranteeLetter');
+require('./Form');
 
 module.exports = bookshelf.model('Request', {
 	tableName: 'request',
@@ -20,6 +21,9 @@ module.exports = bookshelf.model('Request', {
 	},
 	guaranteeLetter: function() {
 		return this.belongsTo('GuaranteeLetter', 'guaranteeLetterId');
+	},
+	form: function() {
+		return this.belongsTo('Form', 'formId');
 	},
 	count: function(fields, cb) {
 		bookshelf.knex.from('request')

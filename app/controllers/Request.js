@@ -1,6 +1,7 @@
 var validator = require('./validators/Request'),
 	RequestModel = require('../models/Request'),
 	UserModel = require('../models/User'),
+	FormModel = require('../models/Form'),
 	_ = require('lodash');
 
 
@@ -194,61 +195,72 @@ module.exports = {
 				model = model.toJSON();
 				model.created = true;
 				res.send(model);
-			} else {
+			} else { // begin else
 
-				RequestModel
-				.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2})
+				FormModel
+				.forge()
 				.save()
 				.then(function(model) {
+
+					console.log(model);
+
 					RequestModel
-					.forge({id: model.get('id')})
-					.fetch({withRelated: ['status', 
-							{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-							'analyst.person', 'coordinator.person', 'visitor.person',
-							'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
-						]
-					})
+					.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2, formId: model.get('id')})
+					.save()
 					.then(function(model) {
-						model = model.toJSON();
+						RequestModel
+						.forge({id: model.get('id')})
+						.fetch({withRelated: ['status', 
+								{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
+								'analyst.person', 'coordinator.person', 'visitor.person',
+								'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+							]
+						})
+						.then(function(model) {
+							model = model.toJSON();
 
-						var fields = {};
+							var fields = {};
 
-						if(req.userData.user.profile.profile == 'analista') {
-							fields.analystId = req.userData.userId;
-						} else if(req.userData.user.profile.profile == 'coordinador') {
-							fields.coordinatorId = req.userData.userId;
-						} else {
-							fields.visitorId = req.userData.userId;
-						}
-
-						RequestModel.count(fields, function(err, count) {
-							if(err) {
-								res.sendStatus(500);
-								return;
+							if(req.userData.user.profile.profile == 'analista') {
+								fields.analystId = req.userData.userId;
+							} else if(req.userData.user.profile.profile == 'coordinador') {
+								fields.coordinatorId = req.userData.userId;
+							} else {
+								fields.visitorId = req.userData.userId;
 							}
-							model.statusGroups = count;
-							res.send(model);
-						});
 
+							RequestModel.count(fields, function(err, count) {
+								if(err) {
+									res.sendStatus(500);
+									return;
+								}
+								model.statusGroups = count;
+								res.send(model);
+							});
+
+						})
+						.catch(function(err) {
+							console.log(err);
+							res.sendStatus(500);
+						})
 					})
 					.catch(function(err) {
 						console.log(err);
 						res.sendStatus(500);
-					})
+					});
 				})
 				.catch(function(err) {
-					console.log(err);
+					console.log(500);
 					res.sendStatus(500);
 				});
 
-			}
+			} // end else
 
 		})
 		.catch(function(err) {
 			console.log(err);
 			res.sendStatus(500);
 		});
-
 	},
 
 	partialUpdate: function(req, res) {

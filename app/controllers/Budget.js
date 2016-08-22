@@ -121,7 +121,7 @@ module.exports = {
 
 	},
 
-	loadImage: function(req, res) {
+	loadImage: function() {
 
 		var upload = multer({
 			storage: storage,

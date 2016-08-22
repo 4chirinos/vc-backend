@@ -6,6 +6,8 @@ var express = require('express'),
 	GuaranteeLetter = require('../app/controllers/GuaranteeLetter'),
 	Budget = require('../app/controllers/Budget'),
 	Item = require('../app/controllers/Item'),
+	Form = require('../app/controllers/Form'),
+	Image = require('../app/controllers/Image'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
@@ -53,6 +55,14 @@ router.route('/session')
 
 /* ########################################################################################### */
 
+router.route('/form')
+	.get(Session.validSession, Form.getAll);
+
+router.route('/form/:id/document')
+	.post(Session.validSession, Form.deleteDocument, Form.loadImage(), Form.returnImageLoaded);
+
+router.route('/form/:id')
+	.get(Session.validSession, Form.deleteDocument, Form.getById);
 
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
@@ -75,8 +85,8 @@ router.route('/item/:id')
 router.route('/document/budget/:id')
 	.get(Budget.getDocumentById);
 
-router.route('/image/budget/:name')
-	.get(Budget.getImageByName);
+router.route('/image/:name')
+	.get(Image.getImageByName);
 
 router.route('/guaranteeLetter')
 	.get(Session.validSession, GuaranteeLetter.getAll); // tiene statusGroups
