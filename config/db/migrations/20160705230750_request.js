@@ -2,7 +2,7 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('request', function(t) {
   	t.increments('id').primary();
-  	t.integer('guaranteeLetterId').references('id').inTable('guaranteeLetter').unique().notNullable();
+  	t.integer('guaranteeLetterId').references('id').inTable('guaranteeLetter').notNullable();
   	t.integer('statusId').references('id').inTable('status').notNullable();
   	t.integer('coordinatorId').references('id').inTable('user').nullable().defaultTo(null);
   	t.integer('visitorId').references('id').inTable('user').nullable().defaultTo(null);

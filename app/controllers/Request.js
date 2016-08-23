@@ -191,7 +191,7 @@ module.exports = {
 		})
 		.then(function(model) {
 
-			if(model) {
+			if(model && (model.get('statusId') == 2 || model.get('statusId') == 3 || model.get('statusId') == 4 || model.get('statusId') == 5)) {
 				model = model.toJSON();
 				model.created = true;
 				res.send(model);
@@ -201,8 +201,6 @@ module.exports = {
 				.forge()
 				.save()
 				.then(function(model) {
-
-					console.log(model);
 
 					RequestModel
 					.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2, formId: model.get('id')})
@@ -308,6 +306,8 @@ module.exports = {
 					model = model.toJSON();
 					model.created = true;
 
+					var fields = {};
+
 					if(req.userData.user.profile.profile == 'analista') {
 						fields.analystId = req.userData.userId;
 					} else if(req.userData.user.profile.profile == 'coordinador') {
@@ -345,6 +345,8 @@ module.exports = {
 					.then(function(model) {
 
 						model = model.toJSON();
+
+						var fields = {};
 
 						if(req.userData.user.profile.profile == 'analista') {
 							fields.analystId = req.userData.userId;

@@ -5,7 +5,7 @@ require('./Policy');
 module.exports = bookshelf.model('GuaranteeLetter', {
 	tableName: 'guaranteeLetter',
 	request: function() {
-		return this.hasOne('Request', 'guaranteeLetterId');
+		return this.hasMany('Request', 'guaranteeLetterId');
 	},
 	status: function() {
 		return this.belongsTo('Status', 'statusId');
