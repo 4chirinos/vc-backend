@@ -58,20 +58,14 @@ router.route('/session')
 router.route('/form')
 	.get(Session.validSession, Form.getAll);
 
-router.route('/form/:id/document')
-	.post(Session.validSession, Form.deleteDocument, Form.loadImage(), Form.returnImageLoaded);
-
 router.route('/form/:id')
-	.get(Session.validSession, Form.deleteDocument, Form.getById);
+	.get(Session.validSession, Form.getById);
 
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
 router.route('/budget')
 	.get(Session.validSession, Budget.getAll); // tiene statusGroups
-
-router.route('/budget/:id/document')
-	.post(Session.validSession, Budget.deleteDocument, Budget.loadImage(), Budget.returnImageLoaded);
 
 router.route('/budget/:id')
 	.get(Session.validSession, Budget.getById); // tiene statusGroups
@@ -112,6 +106,11 @@ router.route('/request/:id')
 	.get(Session.validSession, Request.getById) // tiene statusGroups
 	.patch(Session.validSession, Request.partialUpdate); // tiene statusGroups
 
+router.route('/request/:id/budget/image')
+	.post(Request.deleteBudget, Request.loadImage1(), Request.returnImageLoaded);
+
+router.route('/request/:id/form/image')
+	.post(Request.deleteForm, Request.loadImage2(), Request.returnImageLoaded);
 
 /* ######################################################################################### */
 

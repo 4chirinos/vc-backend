@@ -2,7 +2,73 @@ var validator = require('./validators/Request'),
 	RequestModel = require('../models/Request'),
 	UserModel = require('../models/User'),
 	FormModel = require('../models/Form'),
+	BudgetImageModel = require('../models/budgetImage'),
+	FormImageModel = require('../models/formImage'),
 	_ = require('lodash');
+
+var fs = require('fs');
+
+var multer  = require('multer');
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads');
+  },
+  filename: function (req, file, cb) {
+  	var date = new Date();
+  	var name =  Date.now() + '_' + date.getFullYear() + '_' + file.originalname;
+
+  	BudgetImageModel
+  	.forge({requestId: req.params.id, path: name})
+  	.save()
+  	.then(function(model) {
+  		
+  		if(!req.paths) {
+  			req.paths = [model.toJSON()];
+	  	} else {
+	  		req.paths.push(model.toJSON());
+	  	}
+
+	  	cb(null, name);
+
+  	})
+  	.catch(function(err) {
+  		console.log(err);
+  		res.sendStatus(500);
+  	});
+
+  }
+});
+
+var storage2 = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './public/uploads');
+  },
+  filename: function (req, file, cb) {
+  	var date = new Date();
+  	var name =  Date.now() + '_' + date.getFullYear() + '_' + file.originalname;
+
+  	FormImageModel
+  	.forge({requestId: req.params.id, path: name})
+  	.save()
+  	.then(function(model) {
+  		
+  		if(!req.paths) {
+  			req.paths = [model.toJSON()];
+	  	} else {
+	  		req.paths.push(model.toJSON());
+	  	}
+
+	  	cb(null, name);
+
+  	})
+  	.catch(function(err) {
+  		console.log(err);
+  		res.sendStatus(500);
+  	});
+
+  }
+});
 
 
 module.exports = {
@@ -22,7 +88,7 @@ module.exports = {
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
-				'visitor.person',
+				'visitor.person', 'budgetImage', 'formImage',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -75,7 +141,7 @@ module.exports = {
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
-				'visitor.person',
+				'visitor.person', 'formImage', 'budgetImage',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -129,7 +195,7 @@ module.exports = {
 				pageSize: pageSize,
 				withRelated: ['status', 
 					{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person',
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'formImage',
 					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 			})
@@ -185,7 +251,7 @@ module.exports = {
 		.forge({guaranteeLetterId: req.body.guaranteeLetterId})
 		.fetch({withRelated: ['status', 
 			{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-				'analyst.person', 'coordinator.person', 'visitor.person',
+				'analyst.person', 'coordinator.person', 'visitor.person', 'budgetImage', 'formImage',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -210,7 +276,7 @@ module.exports = {
 						.forge({id: model.get('id')})
 						.fetch({withRelated: ['status', 
 								{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-								'analyst.person', 'coordinator.person', 'visitor.person',
+								'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
 								'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 							]
 						})
@@ -298,7 +364,7 @@ module.exports = {
 				.forge({id: req.params.id})
 				.fetch({
 					withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person',
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
 					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 				})
@@ -338,7 +404,7 @@ module.exports = {
 					.forge({id: req.params.id})
 					.fetch({
 						withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-						'analyst.person', 'coordinator.person', 'visitor.person',
+						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
 						'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 					]
 					})
@@ -378,6 +444,72 @@ module.exports = {
 
 			}
 
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	returnImageLoaded: function(req, res) {
+
+		res.send({path: req.paths});
+
+	},
+
+	loadImage1: function() {
+
+		var upload = multer({
+			storage: storage,
+			limits: {
+				fileSize: 2099734
+			} 
+		});
+
+		return upload.array('file');
+
+	},
+
+	loadImage2: function() {
+
+		var upload = multer({
+			storage: storage2,
+			limits: {
+				fileSize: 2099734
+			} 
+		});
+
+		return upload.array('file');
+
+	},
+
+	deleteBudget: function(req, res, next) {
+
+		BudgetImageModel
+		.query(function(qb) {
+			qb.where('requestId', req.params.id).del();
+		})
+		.fetch()
+		.then(function(model) {
+			next();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	deleteForm: function(req, res, next) {
+
+		FormImageModel
+		.query(function(qb) {
+			qb.where('requestId', req.params.id).del();
+		})
+		.fetch()
+		.then(function(model) {
+			next();
 		})
 		.catch(function(err) {
 			console.log(err);

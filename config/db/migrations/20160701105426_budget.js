@@ -15,7 +15,6 @@ exports.up = function(knex, Promise) {
   	t.string('doctorFirstName').notNullable();
   	t.string('doctorLastName').notNullable();
     t.string('location').notNullable();
-    t.string('paths').notNullable().defaultTo('');
   });
 };
 
