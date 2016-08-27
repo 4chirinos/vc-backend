@@ -1,5 +1,6 @@
 var ItemModel = require('../models/Item'),
 	RequestModel = require('../models/Request'),
+	HistoricalItemModel = require('../models/historicalItem'),
 	_ = require('lodash'),
 	validator = require('./validators/Item');
 
@@ -41,30 +42,57 @@ module.exports = {
 				res.sendStatus(404);
 				return
 			}
-			model.save(fields)
-			.then(function(model) {
 
-				model = model.toJSON();
+			var aux = model.toJSON();
 
-				var fields = {};
+			HistoricalItemModel
+			.forge({
+				itemId: aux.id, description: aux.description,
+				concept: aux.concept, quantity: aux.quantity, cost: aux.cost
+			})
+			.save()
+			.then(function(model1) {
 
-				if(req.userData.user.profile.profile == 'analista') {
-					fields.analystId = req.userData.userId;
-				} else if(req.userData.user.profile.profile == 'coordinador') {
-					fields.coordinatorId = req.userData.userId;
-				} else {
-					fields.visitorId = req.userData.userId;
-				}
+				model.save(fields)
+				.then(function(model) {
 
-				RequestModel.count(fields, function(err, count) {
-					if(err) {
+					ItemModel
+					.forge({id: model.get('id')})
+					.fetch({withRelated: ['historical']})
+					.then(function(model) {
+
+						model = model.toJSON();
+
+						var fields = {};
+
+						if(req.userData.user.profile.profile == 'analista') {
+							fields.analystId = req.userData.userId;
+						} else if(req.userData.user.profile.profile == 'coordinador') {
+							fields.coordinatorId = req.userData.userId;
+						} else {
+							fields.visitorId = req.userData.userId;
+						}
+
+						RequestModel.count(fields, function(err, count) {
+							if(err) {
+								res.sendStatus(500);
+								return;
+							}
+							model.statusGroups = count;
+							res.send(model);
+						});
+
+					})
+					.catch(function(err) {
+						console.log(err);
 						res.sendStatus(500);
-						return;
-					}
-					model.statusGroups = count;
-					res.send(model);
-				});
+					});
 
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
 			})
 			.catch(function(err) {
 				console.log(err);
