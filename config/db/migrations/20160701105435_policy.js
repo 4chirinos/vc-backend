@@ -4,8 +4,8 @@ exports.up = function(knex, Promise) {
   	t.increments('id').primary();
     t.integer('holderId').references('id').inTable('person').notNullable();
   	t.integer('ownerId').references('id').inTable('person').notNullable();
-  	t.date('startDate').notNullable().defaultTo(knex.raw('now()'));
-  	t.date('endDate').nullable();
+  	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.dateTime('endDate').nullable();
     t.float('cost').notNullable();
   });
 };

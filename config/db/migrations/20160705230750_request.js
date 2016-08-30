@@ -8,8 +8,8 @@ exports.up = function(knex, Promise) {
   	t.integer('visitorId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('analystId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('formId').references('id').inTable('form').unique().notNullable();
-  	t.date('startDate').notNullable().defaultTo(knex.raw('now()'));
-  	t.date('endDate').nullable().defaultTo(null);
+  	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.dateTime('endDate').nullable().defaultTo(null);
   });
 };
 

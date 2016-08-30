@@ -6,6 +6,8 @@ var validator = require('./validators/Request'),
 	FormImageModel = require('../models/formImage'),
 	_ = require('lodash');
 
+var bookshelf = require('../../config/db/builder-knex');
+
 var fs = require('fs');
 
 var multer  = require('multer');
@@ -134,7 +136,15 @@ module.exports = {
 			pageSize = req.query.pageSize || null;
 
 		RequestModel
-		.forge()
+		.query(function(qb) {
+
+			var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: 'josue'});
+
+			var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+
+			qb.where('guaranteeLetterId', 'in', subquery1);
+
+		})
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,
@@ -189,6 +199,25 @@ module.exports = {
 						qb.where({visitorId: model.id});
 					}
 				}
+
+				if(req.query.requestId) {
+					qb.where({'id': req.query.requestId});
+				}
+
+				if(req.query.guaranteeLetterId) {
+					qb.where({'guaranteeLetterId': req.query.guaranteeLetterId});
+				}
+
+				if(req.query.sd1) {
+					qb.where('startDate', '>=', req.query.sd1.split('T')[0]);
+				}
+
+				if(req.query.sd2) {
+					qb.where('startDate', '<=', req.query.sd2.split('T')[0]);
+				}
+
+				qb.orderBy('startDate', 'DESC');
+
 			})
 			.fetchPage({
 				page: page,
@@ -397,7 +426,6 @@ module.exports = {
 				});
 
 			} else {
-
 				model.save(fields)
 				.then(function(model) {
 					RequestModel
@@ -409,7 +437,6 @@ module.exports = {
 					]
 					})
 					.then(function(model) {
-
 						model = model.toJSON();
 
 						var fields = {};
