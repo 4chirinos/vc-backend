@@ -39,6 +39,7 @@ insert into "statusType" values (1, 'carta aval');
 insert into "statusType" values (2, 'visita');
 
 insert into "status" values (1, 'activada', 1);
+insert into "status" values (7, 'utilizada', 1);
 insert into "status" values (2, 'por asignar', 2);
 insert into "status" values (3, 'asignada', 2);
 insert into "status" values (4, 'atendida', 2);
@@ -116,10 +117,10 @@ insert into "policy" values (1, 9, 9, now(), '2017-01-03', 900.01);
 insert into "policy" values (2, 13, 13, now(), '2017-01-03', 900.01);
 insert into "policy" values (3, 12, 12, now(), '2017-01-03', 900.01);
 
-insert into "guaranteeLetter" values (1, 1, '0190', 10, 1, 1);
-insert into "guaranteeLetter" values (2, 1, '0191', 10, 2, 1);
-insert into "guaranteeLetter" values (3, 1, '0192', 10, 3, 1);
-insert into "guaranteeLetter" values (4, 1, '0193', 10, 4, 1);
+insert into "guaranteeLetter" values (1, 1, '0190', 10, 1, 1, now(), '2016-09-30');
+insert into "guaranteeLetter" values (2, 2, '0191', 11, 2, 1, now(), '2016-09-29');
+insert into "guaranteeLetter" values (3, 3, '0192', 12, 3, 1, now(), '2016-09-28');
+insert into "guaranteeLetter" values (4, 1, '0193', 13, 4, 1, now(), '2016-09-27');
 
 /*insert into "request" values (1, 1, 2, null, null, null, null, now(), null);
 insert into "request" values (2, 2, 2, null, null, null, null, now(), null);

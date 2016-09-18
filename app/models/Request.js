@@ -31,6 +31,9 @@ module.exports = bookshelf.model('Request', {
 	formImage: function() {
 		return this.hasMany('formImage', 'requestId');
 	},
+	comments: function() {
+		return this.hasMany('Comment', 'requestId');
+	},
 	count: function(fields, cb) {
 		bookshelf.knex.from('request')
 		.innerJoin('status', 'request.statusId', 'status.id')

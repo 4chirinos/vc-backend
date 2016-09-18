@@ -3,24 +3,50 @@ var GuaranteeLetterModel = require('../models/GuaranteeLetter'),
 	RequestModel = require('../models/Request'),
 	validator = require('./validators/GuaranteeLetter');
 
+var bookshelf = require('../../config/db/builder-knex');
+
 module.exports = {
 
 	getAll: function(req, res) {
 
+		var page = req.query.page || null,
+			pageSize = req.query.pageSize || null;
+
 		GuaranteeLetterModel
-		.forge()
 		.query(function(qb) {
-			if(req.query.code) {
-				qb.where({code: req.query.code});
+
+			if(req.query.guaranteeId) {
+				qb.where({'id': req.query.guaranteeId});
+			}
+			if(req.query.policyId) {
+				qb.where({'policyId': req.query.policyId});
+			}
+			if(req.query.firstName) {
+				var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: req.query.firstName});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				qb.where('id', 'in', subquery1);
+			}
+			if(req.query.lastName) {
+				var subquery2 = bookshelf.knex.select('id').from('person').where({lastName: req.query.lastName});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				qb.where('id', 'in', subquery1);
+			}
+			if(req.query.BidentityCard) {
+				var subquery2 = bookshelf.knex.select('id').from('person').where({identityCard: req.query.BidentityCard});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				qb.where('id', 'in', subquery1);
 			}
 		})
-		.fetchAll({
+		.fetchPage({
+			page: page,
+			pageSize: pageSize,
 			withRelated: ['status', 'beneficiary', 'budget.affiliated', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(collection) {
 
 			var response = {};
 			response.guaranteeLetter = collection;
+			response.pageCount = collection.pagination.pageCount;
 
 			var fields = {};
 

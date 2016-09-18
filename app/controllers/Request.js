@@ -3,6 +3,7 @@ var validator = require('./validators/Request'),
 	UserModel = require('../models/User'),
 	FormModel = require('../models/Form'),
 	BudgetImageModel = require('../models/budgetImage'),
+	CommentModel = require('../models/Comment'),
 	FormImageModel = require('../models/formImage'),
 	_ = require('lodash');
 
@@ -138,11 +139,11 @@ module.exports = {
 		RequestModel
 		.query(function(qb) {
 
-			var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: 'josue'});
+			/*var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: 'josue'});
 
 			var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 
-			qb.where('guaranteeLetterId', 'in', subquery1);
+			qb.where('guaranteeLetterId', 'in', subquery1);*/
 
 		})
 		.fetchPage({
@@ -150,7 +151,15 @@ module.exports = {
 			pageSize: pageSize,
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
-				'analyst.person', 'coordinator.person', 
+				'analyst.person', 'coordinator.person',
+				{'comments': function(qb) {
+					console.log('nojoda');
+					qb.orderBy('idaaa', 'desc');
+				}},
+				{'comments.commenter': function(qb) {
+					qb.column('id', 'personId', 'profileId', 'available');
+				}},
+				'comments.commenter.profile', 'comments.commenter.person',
 				'visitor.person', 'formImage', 'budgetImage',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
@@ -330,6 +339,18 @@ module.exports = {
 								model.statusGroups = count;
 								res.send(model);
 							});
+
+							if(req.body.comment) {
+								CommentModel
+								.forge({requestId: model.id, commenterId: req.userData.userId, comment: req.body.comment})
+								.save()
+								.then(function(model) {
+									console.log(model.toJSON());
+								})
+								.catch(function(err) {
+									console.log(err);
+								});
+							}
 
 						})
 						.catch(function(err) {
@@ -537,6 +558,35 @@ module.exports = {
 		.fetch()
 		.then(function(model) {
 			next();
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	getComments: function(req, res) {
+
+		var page = req.query.page || null,
+			pageSize = req.query.pageSize || null;
+
+		CommentModel
+		.query(function(qb) {
+			qb.where({'requestId': req.params.id});
+			qb.orderBy('id', 'asc');
+		})
+		.fetchAll({
+			withRelated: [
+				{'commenter': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
+				'commenter.profile', 'commenter.person.profile'
+			]
+		})
+		.then(function(collection) {
+			var response = {};
+			//response.pageCount = collection.pagination.pageCount;
+			response.comment = collection.toJSON();
+			res.send(response);
 		})
 		.catch(function(err) {
 			console.log(err);

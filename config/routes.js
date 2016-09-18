@@ -8,6 +8,7 @@ var express = require('express'),
 	Item = require('../app/controllers/Item'),
 	Form = require('../app/controllers/Form'),
 	Image = require('../app/controllers/Image'),
+	Comment = require('../app/controllers/Comment'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
@@ -106,6 +107,9 @@ router.route('/request/:id')
 	.get(Session.validSession, Request.getById) // tiene statusGroups
 	.patch(Session.validSession, Request.partialUpdate); // tiene statusGroups
 
+router.route('/request/:id/comment')
+	.get(Session.validSession, Request.getComments); // falta sessionValid
+
 router.route('/request/:id/budget/image')
 	.post(Request.deleteBudget, Request.loadImage1(), Request.returnImageLoaded);
 
@@ -115,6 +119,8 @@ router.route('/request/:id/form/image')
 /* ######################################################################################### */
 
 
+router.route('/comment')
+	.post(Session.validSession, Comment.create); // falta sessionValid
 
 
 /* ################################### MANEJO DE PREGUNTAS ############################### */

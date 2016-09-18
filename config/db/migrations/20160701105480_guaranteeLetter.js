@@ -7,6 +7,8 @@ exports.up = function(knex, Promise) {
     t.integer('beneficiaryId').references('id').inTable('person').notNullable();
   	t.integer('budgetId').references('id').inTable('budget').unique().notNullable();
   	t.integer('statusId').references('id').inTable('status').notNullable();
+  	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.dateTime('endDate').nullable();
   });
 };
 
