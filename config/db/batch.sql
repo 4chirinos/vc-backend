@@ -122,6 +122,16 @@ insert into "guaranteeLetter" values (2, 2, '0191', 11, 2, 1, now(), '2016-09-29
 insert into "guaranteeLetter" values (3, 3, '0192', 12, 3, 1, now(), '2016-09-28');
 insert into "guaranteeLetter" values (4, 1, '0193', 13, 4, 1, now(), '2016-09-27');
 
+insert into "form" values (1);
+
+insert into "question" values (1, 1, '¿como evalua el trato medico?');
+insert into "question" values (2, 1, '¿recibe las medicaciones a tiempo?');
+insert into "question" values (3, 1, '¿recibe la alimentacion a tiempo?');
+
+/*insert into "answer" values (1, 1, 5);
+insert into "answer" values (2, 2, 4);
+insert into "answer" values (3, 3, 3);*/
+
 /*insert into "request" values (1, 1, 2, null, null, null, null, now(), null);
 insert into "request" values (2, 2, 2, null, null, null, null, now(), null);
 insert into "request" values (3, 3, 2, null, null, null, null, now(), null);*/

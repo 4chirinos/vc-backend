@@ -4,6 +4,7 @@ require('./User');
 require('./Status');
 require('./GuaranteeLetter');
 require('./Form');
+require('./Answer');
 
 module.exports = bookshelf.model('Request', {
 	tableName: 'request',
@@ -24,6 +25,9 @@ module.exports = bookshelf.model('Request', {
 	},
 	form: function() {
 		return this.belongsTo('Form', 'formId');
+	},
+	answer: function() {
+		return this.hasMany('Answer', 'requestId');
 	},
 	budgetImage: function() {
 		return this.hasMany('budgetImage', 'requestId');

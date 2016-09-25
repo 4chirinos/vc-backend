@@ -2,6 +2,7 @@ var validator = require('./validators/Request'),
 	RequestModel = require('../models/Request'),
 	UserModel = require('../models/User'),
 	FormModel = require('../models/Form'),
+	AnswerModel = require('../models/Answer'),
 	BudgetImageModel = require('../models/budgetImage'),
 	CommentModel = require('../models/Comment'),
 	FormImageModel = require('../models/formImage'),
@@ -91,7 +92,7 @@ module.exports = {
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
-				'visitor.person', 'budgetImage', 'formImage',
+				'visitor.person', 'budgetImage', 'formImage', 'form.question',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -149,18 +150,9 @@ module.exports = {
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,
-			withRelated: ['status', 
-				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
-				'analyst.person', 'coordinator.person',
-				{'comments': function(qb) {
-					console.log('nojoda');
-					qb.orderBy('idaaa', 'desc');
-				}},
-				{'comments.commenter': function(qb) {
-					qb.column('id', 'personId', 'profileId', 'available');
-				}},
+			withRelated: ['status',
 				'comments.commenter.profile', 'comments.commenter.person',
-				'visitor.person', 'formImage', 'budgetImage',
+				'visitor.person', 'formImage', 'budgetImage', 'form.question',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -217,12 +209,14 @@ module.exports = {
 					qb.where({'guaranteeLetterId': req.query.guaranteeLetterId});
 				}
 
+			
+
 				if(req.query.sd1) {
-					qb.where('startDate', '>=', req.query.sd1.split('T')[0]);
+					qb.where('startDate', '>', req.query.sd1.split('T')[0]).orWhere('startDate', '=', req.query.sd1.split('T')[0]);
 				}
 
 				if(req.query.sd2) {
-					qb.where('startDate', '<=', req.query.sd2.split('T')[0]);
+					qb.where('startDate', '<', req.query.sd2.split('T')[0]).orWhere('startDate', '=', req.query.sd2.split('T')[0]);
 				}
 
 				qb.orderBy('startDate', 'DESC');
@@ -233,7 +227,7 @@ module.exports = {
 				pageSize: pageSize,
 				withRelated: ['status', 
 					{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'formImage',
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'formImage', 'form.question',
 					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 			})
@@ -289,7 +283,7 @@ module.exports = {
 		.forge({guaranteeLetterId: req.body.guaranteeLetterId})
 		.fetch({withRelated: ['status', 
 			{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-				'analyst.person', 'coordinator.person', 'visitor.person', 'budgetImage', 'formImage',
+				'analyst.person', 'coordinator.person', 'visitor.person', 'budgetImage', 'formImage', 'form.question',
 				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -301,20 +295,20 @@ module.exports = {
 				res.send(model);
 			} else { // begin else
 
-				FormModel
+				/*FormModel
 				.forge()
 				.save()
-				.then(function(model) {
+				.then(function(model) {*/
 
 					RequestModel
-					.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2, formId: model.get('id')})
+					.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2, formId: 1})
 					.save()
 					.then(function(model) {
 						RequestModel
 						.forge({id: model.get('id')})
 						.fetch({withRelated: ['status', 
 								{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-								'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
+								'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
 								'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 							]
 						})
@@ -362,11 +356,11 @@ module.exports = {
 						console.log(err);
 						res.sendStatus(500);
 					});
-				})
+				/*})
 				.catch(function(err) {
 					console.log(500);
 					res.sendStatus(500);
-				});
+				});*/
 
 			} // end else
 
@@ -375,6 +369,43 @@ module.exports = {
 			console.log(err);
 			res.sendStatus(500);
 		});
+	},
+
+	getForm: function(req, res) {
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch({withRelated: [{'answer': function(qb) {
+			qb.orderBy('id');
+		}}, 'form.question']})
+		.then(function(model) {
+
+			if(!model) {
+				res.sendStatus(404);
+				return
+			}
+
+			model = model.toJSON();
+
+			var answer = model.answer;
+
+			delete model.answer;
+
+			for(var i = 0; i < answer.length; i++) {
+				model.form.question[i].answer = answer[i];
+			}
+
+			res.send(model);
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			if(err) {
+				res.sendStatus(500);
+				return;
+			}
+		});
+
 	},
 
 	partialUpdate: function(req, res) {
@@ -414,7 +445,7 @@ module.exports = {
 				.forge({id: req.params.id})
 				.fetch({
 					withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
 					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 				})
@@ -453,7 +484,7 @@ module.exports = {
 					.forge({id: req.params.id})
 					.fetch({
 						withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage',
+						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
 						'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 					]
 					})
@@ -587,6 +618,34 @@ module.exports = {
 			//response.pageCount = collection.pagination.pageCount;
 			response.comment = collection.toJSON();
 			res.send(response);
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	postAnswer: function(req, res) {
+
+		AnswerModel
+		.query(function(qb) {
+			qb.where({requestId: req.params.id}).del();
+		})
+		.fetchAll()
+		.then(function(result) {
+			
+			bookshelf.knex.batchInsert('answer', req.body.data)
+			.returning('*')
+			.then(function(fields) {
+				//console.log(fields);
+				res.send(fields);
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.send(err);
+			});
+
 		})
 		.catch(function(err) {
 			console.log(err);

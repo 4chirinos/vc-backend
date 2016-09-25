@@ -1,4 +1,4 @@
-var models = require('../models'),
+var AnswerModel = require('../models/Answer'),
 	_ = require('lodash'),
 	validator = require('./validators/Answer');
 
@@ -17,7 +17,7 @@ module.exports = {
 		} else {
 
 			var admittedFields = [
-				'formId', 'questionId', 'answer'
+				'requestId', 'questionId', 'answer'
 			];
 
 			var fields = _.pick(req.body, admittedFields);

@@ -108,7 +108,13 @@ router.route('/request/:id')
 	.patch(Session.validSession, Request.partialUpdate); // tiene statusGroups
 
 router.route('/request/:id/comment')
-	.get(Session.validSession, Request.getComments); // falta sessionValid
+	.get(Session.validSession, Request.getComments); // le falta status groups
+
+router.route('/request/:id/answer')
+	.post(Request.postAnswer); // le falta sessionValid y le falta status groups
+
+router.route('/request/:id/form')
+	.get(Request.getForm); // falta sessionValid y status groups
 
 router.route('/request/:id/budget/image')
 	.post(Request.deleteBudget, Request.loadImage1(), Request.returnImageLoaded);
