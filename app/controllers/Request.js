@@ -209,14 +209,12 @@ module.exports = {
 					qb.where({'guaranteeLetterId': req.query.guaranteeLetterId});
 				}
 
-			
-
 				if(req.query.sd1) {
-					qb.where('startDate', '>', req.query.sd1.split('T')[0]).orWhere('startDate', '=', req.query.sd1.split('T')[0]);
+					qb.whereRaw('??::date >= ?', ['startDate', req.query.sd1]);
 				}
 
 				if(req.query.sd2) {
-					qb.where('startDate', '<', req.query.sd2.split('T')[0]).orWhere('startDate', '=', req.query.sd2.split('T')[0]);
+					qb.whereRaw('??::date <= ?', ['startDate', req.query.sd2]);
 				}
 
 				qb.orderBy('startDate', 'DESC');
