@@ -36,6 +36,9 @@ module.exports = {
 				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
+			if(req.query.statusId) {
+				qb.where({'statusId': req.query.statusId});
+			}
 		})
 		.fetchPage({
 			page: page,

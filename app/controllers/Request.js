@@ -6,6 +6,7 @@ var validator = require('./validators/Request'),
 	BudgetImageModel = require('../models/budgetImage'),
 	CommentModel = require('../models/Comment'),
 	FormImageModel = require('../models/formImage'),
+	transporter = require('../../config/mailer/sender'),
 	_ = require('lodash');
 
 var bookshelf = require('../../config/db/builder-knex');
@@ -134,17 +135,36 @@ module.exports = {
 
 	getAll: function(req, res) {
 
-		var page = req.query.page || null,
+		// setup e-mail data with unicode symbols 
+		var mailOptions = {
+		    from: '"Fred Foo 👥" <foo@blurdybloop.com>', // sender address 
+		    to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		    subject: 'Hello ✔', // Subject line 
+		    text: 'Hello world 🐴', // plaintext body 
+		    html: '<b>Hello world 🐴</b>' // html body 
+		};
+
+		// send mail with defined transport object 
+		transporter.sendMail(mailOptions, function(error, info){
+		    if(error){
+		        return console.log(error);
+		    }
+		    console.log('Message sent: ' + info.response);
+		});
+
+		res.send('ok');
+
+		/*var page = req.query.page || null,
 			pageSize = req.query.pageSize || null;
 
 		RequestModel
 		.query(function(qb) {
 
-			/*var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: 'josue'});
+			var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: 'josue'});
 
 			var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 
-			qb.where('guaranteeLetterId', 'in', subquery1);*/
+			qb.where('guaranteeLetterId', 'in', subquery1);
 
 		})
 		.fetchPage({
@@ -162,7 +182,7 @@ module.exports = {
 		.catch(function(err) {
 			console.log(err);
 			res.sendStatus(500);
-		});
+		});*/
 
 	},
 
