@@ -75,6 +75,42 @@ var storage2 = multer.diskStorage({
   }
 });
 
+var notifyRequestCreated = function(model) {
+
+	//console.log(model);
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.analyst.person.firstName + ' ' + model.analyst.person.lastName + ',</h2>' +
+		'<h2>se ha solicitado una visita clínica en su nombre. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '</h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Ha generado una nueva solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
 
 module.exports = {
 
@@ -357,12 +393,14 @@ module.exports = {
 								.forge({requestId: model.id, commenterId: req.userData.userId, comment: req.body.comment})
 								.save()
 								.then(function(model) {
-									console.log(model.toJSON());
+									//console.log(model.toJSON());
 								})
 								.catch(function(err) {
 									console.log(err);
 								});
 							}
+
+							notifyRequestCreated(model);
 
 						})
 						.catch(function(err) {
@@ -515,8 +553,28 @@ module.exports = {
 							fields.analystId = req.userData.userId;
 						} else if(req.userData.user.profile.profile == 'coordinador') {
 							fields.coordinatorId = req.userData.userId;
+
+							if(model.statusId == '3') {
+								// correo al coordinador notificándole la asignación a tal persona
+							}
+
+							if(model.statusId == '5') {
+								// correo al coordinador notificándole el envío a revisión de la solicitud
+							}
+
+							if(model.statusId == '6') {
+								// correo al coordinador notificándole que hizo autorización de la solicitud
+							}
+
+							// depende del statusId, se manda un correo notificando la asignación
+							// el envío a revisión o la autorización
 						} else {
 							fields.visitorId = req.userData.userId;
+							
+							if(model.statusId == '4') {
+								// correo indicando que ya atendió la visita
+							}
+							
 						}
 
 						RequestModel.count(fields, function(err, count) {
