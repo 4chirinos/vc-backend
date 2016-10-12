@@ -90,7 +90,8 @@ var notifyRequestCreated = function(model) {
 		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
 		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
 		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
-		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '</h3>';
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
 
 
 	// setup e-mail data with unicode symbols 
@@ -98,6 +99,295 @@ var notifyRequestCreated = function(model) {
 		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
 		to: 'correouniversal2mil15@gmail.com', // list of receivers 
 		subject: 'Ha generado una nueva solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestCoordinated = function(model) {
+	//console.log(model);
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.coordinator.person.firstName + ' ' + model.coordinator.person.lastName + ',</h2>' +
+		'<h2>se ha asignado una visita clínica en su nombre. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Ha asignado una solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestAssigned = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.visitor.person.firstName + ' ' + model.visitor.person.lastName + ',</h2>' +
+		'<h2>se le ha asignado una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Se le ha asignado una solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestRejected = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.coordinator.person.firstName + ' ' + model.coordinator.person.lastName + ',</h2>' +
+		'<h2>ha solicitado la revisión de una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Ha solicitado la revisión de una visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestRejected2 = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.visitor.person.firstName + ' ' + model.visitor.person.lastName + ',</h2>' +
+		'<h2>se le ha solicitado la revisión de una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Se le ha solicitado la revisión de una visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestCompleted = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.visitor.person.firstName + ' ' + model.visitor.person.lastName + ',</h2>' +
+		'<h2>ha completado una solicitud de una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Ha completado una solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestCompleted2 = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.coordinator.person.firstName + ' ' + model.coordinator.person.lastName + ',</h2>' +
+		'<h2>se ha completado una solicitud de visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Se ha completado una solicitud de visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestAuthorized = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.coordinator.person.firstName + ' ' + model.coordinator.person.lastName + ',</h2>' +
+		'<h2>ha autorizado la completitud de una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Ha autorizado la completitud de una visita clínica', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		console.log('Message sent: ' + info.response);
+	});
+
+};
+
+var notifyRequestAuthorized2 = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.analyst.person.firstName + ' ' + model.analyst.person.lastName + ',</h2>' +
+		'<h2>se ha completado una visita clínica. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Código de solicitud: ' + model.id + '<br>' +
+		'Fecha de solicitud: ' + date + '<br>' +
+		'Código de carta aval asociado a la visita solicitada: ' + model.guaranteeLetter.id + '<br>' +
+		'Código de póliza asociado a la carta aval: ' + model.guaranteeLetter.policyId + '<br>' +
+		'Nombre del beneficiario: ' + model.guaranteeLetter.beneficiary.firstName + ' ' + model.guaranteeLetter.beneficiary.lastName + '<br>' +
+		'Cédula del beneficiario: ' + model.guaranteeLetter.beneficiary.identityCard + '<br><br><br>' +
+		'Para más información acceder al  <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Se ha completado una visita clínica', // Subject line 
 		text: 'Hello world 🐴', // plaintext body 
 		html: html // html body 
 	};
@@ -556,14 +846,20 @@ module.exports = {
 
 							if(model.statusId == '3') {
 								// correo al coordinador notificándole la asignación a tal persona
+								notifyRequestCoordinated(model);
+								notifyRequestAssigned(model);
 							}
 
 							if(model.statusId == '5') {
 								// correo al coordinador notificándole el envío a revisión de la solicitud
+								notifyRequestRejected(model);
+								notifyRequestRejected2(model);
 							}
 
 							if(model.statusId == '6') {
 								// correo al coordinador notificándole que hizo autorización de la solicitud
+								notifyRequestAuthorized(model);
+								notifyRequestAuthorized2(model);
 							}
 
 							// depende del statusId, se manda un correo notificando la asignación
@@ -573,6 +869,8 @@ module.exports = {
 							
 							if(model.statusId == '4') {
 								// correo indicando que ya atendió la visita
+								notifyRequestCompleted(model);
+								notifyRequestCompleted2(model);
 							}
 							
 						}
