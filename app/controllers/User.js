@@ -96,18 +96,26 @@ module.exports = {
 			page: page,
 			pageSize: pageSize,
 			columns: ['id', 'personId', 'profileId', 'available'],
-			withRelated: ['person', 'profile', {'visitor': function(qb) {
+			withRelated: ['person', 'profile', {'visitor': function(qb) { // esto es lo que me cuenta cuantas visitas asignadas tiene ese usuario (visitador)
 					qb.where({statusId: 3});
 				}}
 			]
 		})
 		.then(function(collection) {
+			//console.log(collection.toJSON());
 			var response = {};
 			response.pageCount = collection.pagination.pageCount;
-			response.users = collection.toJSON();
+			//response.users = collection.toJSON();
+			var aux = collection.toJSON();
+			response.users = [];
 
-			for(var i = 0; i < response.users.length; i++) {
-				response.users[i].assignments = response.users[i].visitor.length;
+			for(var i = 0; i < aux.length; i++) {
+				if(aux[i].person.stateId == req.userData.stateId) {
+					var user = aux[i];
+					user.assignments = user.visitor.length; // cantidad de visitas que tiene asignadas el usuario (visitador)
+					response.users.push(user);
+					//response.users[i].assignments = response.users[i].visitor.length;
+				}
 			}
 
 			var fields = {};

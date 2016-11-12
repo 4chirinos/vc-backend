@@ -15,6 +15,7 @@ exports.up = function(knex, Promise) {
   	t.string('doctorFirstName').notNullable();
   	t.string('doctorLastName').notNullable();
     t.string('location').notNullable();
+    t.integer('stateId').references('id').inTable('state').notNullable();
   });
 };
 

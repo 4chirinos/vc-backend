@@ -9,6 +9,7 @@ exports.up = function(knex, Promise) {
   	t.integer('statusId').references('id').inTable('status').notNullable();
   	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
   	t.dateTime('endDate').nullable();
+    t.integer('stateId').references('id').inTable('state').notNullable();
   });
 };
 

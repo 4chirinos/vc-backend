@@ -39,6 +39,8 @@ module.exports = {
 			if(req.query.statusId) {
 				qb.where({'statusId': req.query.statusId});
 			}
+			qb.where({'stateId': req.userData.stateId}); // esto es lo que me filtra las cartas avales según la localización geográfica
+						// del analista
 		})
 		.fetchPage({
 			page: page,

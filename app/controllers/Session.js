@@ -77,11 +77,14 @@ module.exports = {
 
 		SessionModel
 		.forge({token: req.headers.token})
-		.fetch({withRelated: ['user.profile']})
+		.fetch({withRelated: ['user.profile', 'user.person']})
 		.then(function(model) {
 			if(model) {
 				model = model.toJSON();
+				model.stateId = model.user.person.stateId;
 				delete model.user.password;
+				delete model.user.person;
+				//console.log(model);
 				req.userData = model;
 				next();
 			} else {

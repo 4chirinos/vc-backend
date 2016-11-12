@@ -11,6 +11,7 @@ exports.up = function(knex, Promise) {
   	t.string('address').notNullable();
   	t.string('gender').notNullable();
   	t.string('phoneNumber').notNullable();
+    t.integer('stateId').references('id').inTable('state').notNullable();
   });
 };
 
