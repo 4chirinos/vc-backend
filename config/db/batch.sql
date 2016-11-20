@@ -1,5 +1,6 @@
 /*psql -h localhost -d visitadorclinico_development -U postgres*/
 /*\i 'batch.sql'*/
+/*heroku run bash*/
 
 delete from "comment";
 delete from "budgetImage";
