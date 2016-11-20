@@ -89,20 +89,20 @@ insert into "state" values (22, 'Vargas');
 insert into "state" values (23, 'Yaracuy');
 insert into "state" values (24, 'Zulia');
 
-insert into "person" values (16, 'analista', 'analista', 'analista', 'analista@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
-insert into "person" values (17, 'coordinador', 'coordinador', 'coordinador', 'coordinador@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
-insert into "person" values (18, 'visitador', 'visitador', 'visitador', 'visitador@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
+insert into "person" values (16, 'analistaAmazonas', 'analistaAmazonas', 'analista', 'analista@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
+insert into "person" values (17, 'coordinadorAnzoategui', 'coordinadorAnzoategui', 'coordinador', 'coordinador@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
+insert into "person" values (18, 'visitadorAnzoategui', 'visitadorAnzoategui', 'visitador', 'visitador@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
 insert into "user" values (8, 16, '$2a$08$rCHFWUpjgqBGgOvFFaplkOJaFpulwl/Ez5IAzdTeoIkLAi4BDwIVm', 7, true);
 insert into "user" values (9, 17, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 8, true);
 insert into "user" values (10, 18, '$2a$08$lhIxARKkxZK5cXHtpVV/deucrRNQwDSbn8Sgow7YMDOtLyLIH5XDK', 9, true);
 
-insert into "person" values (1, '1234670', 'julia', 'ramirez', 'j.ramirez@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
-insert into "person" values (2, '1234671', 'carla', 'pena', 'c.pena@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
-insert into "person" values (3, '1234672', 'jose', 'gonzalez', 'j.gonzales@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 24);
-insert into "person" values (4, '1234673', 'will', 'turner', 'w.turner@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 17);
-insert into "person" values (5, '1234674', 'luis', 'rico', 'l.rico@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
-insert into "person" values (6, '1234675', 'maria', 'nieves', 'm.nieves@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 24);
-insert into "person" values (7, '1234676', 'elvion', 'aponte', 'e.aponte@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 17);
+insert into "person" values (1, 'analista2Amazonas', 'analista2Amazonas', 'ramirez', 'j.ramirez@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
+insert into "person" values (2, 'analista3Anzoategui', 'analista3Anzoategui', 'pena', 'c.pena@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
+insert into "person" values (3, 'coordinador2Zulia', 'coordinador2Zulia', 'gonzalez', 'j.gonzales@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 24);
+insert into "person" values (4, 'coordinador3Nvaesparta', 'coordinador3Nvaesparta', 'turner', 'w.turner@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 17);
+insert into "person" values (5, 'visitador2Anzoategui', 'visitador2Anzoategui', 'rico', 'l.rico@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
+insert into "person" values (6, 'visitador3Zulia', 'visitador3Zulia', 'nieves', 'm.nieves@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 24);
+insert into "person" values (7, 'visitador4Nvaesparta', 'visitador4Nvaesparta', 'aponte', 'e.aponte@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 17);
 
 insert into "person" values (9, '1234678', 'jesus', 'romero', 'j.romero@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
 insert into "person" values (10, '1234679', 'josue', 'zambrano', 'j.zambrano@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);

@@ -419,8 +419,8 @@ module.exports = {
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
 				'analyst.person', 'coordinator.person', 
-				'visitor.person', 'budgetImage', 'formImage', 'form.question',
-				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+				'visitor.person', 'budgetImage', 'formImage', 'form.question', 'guaranteeLetter.state',
+				'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
 		.then(function(model) {
@@ -584,8 +584,8 @@ module.exports = {
 				pageSize: pageSize,
 				withRelated: ['status', 
 					{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'formImage', 'form.question',
-					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'formImage', 'form.question', 'guaranteeLetter.state',
+					'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 			})
 			.then(function(collection) {
@@ -650,8 +650,8 @@ module.exports = {
 		.forge({guaranteeLetterId: req.body.guaranteeLetterId})
 		.fetch({withRelated: ['status', 
 			{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-				'analyst.person', 'coordinator.person', 'visitor.person', 'budgetImage', 'formImage', 'form.question',
-				'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+				'analyst.person', 'coordinator.person', 'visitor.person', 'budgetImage', 'formImage', 'form.question', 'guaranteeLetter.state',
+				'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
 		.then(function(model) {
@@ -675,8 +675,8 @@ module.exports = {
 						.forge({id: model.get('id')})
 						.fetch({withRelated: ['status', 
 								{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-								'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
-								'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+								'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
+								'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 							]
 						})
 						.then(function(model) {
@@ -827,8 +827,8 @@ module.exports = {
 				.forge({id: req.params.id})
 				.fetch({
 					withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
-					'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
+					'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 				]
 				})
 				.then(function(model) {
@@ -879,8 +879,8 @@ module.exports = {
 					.forge({id: req.params.id})
 					.fetch({
 						withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
-						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question',
-						'guaranteeLetter.budget.affiliated', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
+						'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 					]
 					})
 					.then(function(model) {

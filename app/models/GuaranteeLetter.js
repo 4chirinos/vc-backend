@@ -18,5 +18,8 @@ module.exports = bookshelf.model('GuaranteeLetter', {
 	},
 	beneficiary: function() {
 		return this.belongsTo('Person', 'beneficiaryId');
+	},
+	state: function() {
+		return this.belongsTo('State', 'stateId');
 	}
 });

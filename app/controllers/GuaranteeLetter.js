@@ -45,7 +45,7 @@ module.exports = {
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,
-			withRelated: ['status', 'beneficiary', 'budget.affiliated', 'request.status', 'policy.holder', 'policy.owner']
+			withRelated: ['status', 'state', 'beneficiary', 'budget.affiliated.state', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(collection) {
 
@@ -108,7 +108,7 @@ module.exports = {
 		GuaranteeLetterModel
 		.forge({id: req.params.id})
 		.fetch({
-			withRelated: ['status', 'beneficiary', 'budget.affiliated', 'request.status', 'policy.holder', 'policy.owner']
+			withRelated: ['status', 'state', 'beneficiary', 'budget.affiliated.state', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(model) {
 

@@ -188,6 +188,7 @@ module.exports = {
 					if(model) {
 						model.comparePassword(req.body.password, model)
 						.then(function(match) {
+							//console.log(match);
 							req.userId = model.get('id');
 							next();
 						})
