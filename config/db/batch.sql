@@ -1,6 +1,8 @@
 /*psql -h localhost -d visitadorclinico_development -U postgres*/
 /*\i 'batch.sql'*/
-/*heroku run bash*/
+/*heroku apps -> listar nombres de mis apps*/
+/*heroku run bash -> para correr las migraciones*/
+/*heroku pg:psql --a nombre_del_app  -> para correr el batch.sql*/
 
 delete from "comment";
 delete from "budgetImage";

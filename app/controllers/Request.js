@@ -108,7 +108,7 @@ var notifyRequestCreated = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -145,7 +145,7 @@ var notifyRequestCoordinated = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -181,7 +181,7 @@ var notifyRequestAssigned = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -217,7 +217,7 @@ var notifyRequestRejected = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -253,7 +253,7 @@ var notifyRequestRejected2 = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -289,7 +289,7 @@ var notifyRequestCompleted = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -325,7 +325,7 @@ var notifyRequestCompleted2 = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -361,7 +361,7 @@ var notifyRequestAuthorized = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -397,7 +397,7 @@ var notifyRequestAuthorized2 = function(model) {
 		if(error){
 		    console.log(error);
 		}
-		console.log('Message sent: ' + info.response);
+		//console.log('Message sent: ' + info.response);
 	});
 
 };
@@ -488,7 +488,7 @@ module.exports = {
 		    if(error){
 		        return console.log(error);
 		    }
-		    console.log('Message sent: ' + info.response);
+		    //console.log('Message sent: ' + info.response);
 		});
 
 		res.send('ok');
