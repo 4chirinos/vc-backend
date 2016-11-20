@@ -118,7 +118,7 @@ module.exports = {
 				}
 			}
 
-			var fields = {};
+			/*var fields = {};
 
 			if(req.userData.user.profile.profile == 'analista') {
 				fields.analystId = req.userData.userId;
@@ -126,6 +126,19 @@ module.exports = {
 				fields.coordinatorId = req.userData.userId;
 			} else {
 				fields.visitorId = req.userData.userId;
+			}*/
+
+			var fields = {};
+
+			fields.stateId = req.userData.stateId;
+			fields.id = req.userData.userId;
+
+			if(req.userData.user.profile.profile == 'analista') {
+				fields.role = 'analyst';
+			} else if(req.userData.user.profile.profile == 'coordinador') {
+				fields.role = 'coordinator';
+			} else {
+				fields.role = 'visitor';
 			}
 
 			RequestModel.count(fields, function(err, count) {

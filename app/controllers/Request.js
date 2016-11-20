@@ -432,7 +432,7 @@ module.exports = {
 
 			model = model.toJSON();
 
-			var fields = {};
+			/*var fields = {};
 
 			if(req.userData.user.profile.profile == 'analista') {
 				fields.analystId = req.userData.userId;
@@ -440,6 +440,19 @@ module.exports = {
 				fields.coordinatorId = req.userData.userId;
 			} else {
 				fields.visitorId = req.userData.userId;
+			}*/
+
+			var fields = {};
+
+			fields.stateId = req.userData.stateId;
+			fields.id = req.userData.userId;
+
+			if(req.userData.user.profile.profile == 'analista') {
+				fields.role = 'analyst';
+			} else if(req.userData.user.profile.profile == 'coordinador') {
+				fields.role = 'coordinator';
+			} else {
+				fields.role = 'visitor';
 			}
 
 			RequestModel.count(fields, function(err, count) {
@@ -576,18 +589,28 @@ module.exports = {
 				]
 			})
 			.then(function(collection) {
-				var response = {};
+				var response = {}, role = '', collection_aux = [];
 				response.pageCount = collection.pagination.pageCount;
-				response.requests = collection;
+				response.requests = collection.toJSON();
 
 				var fields = {};
 
+				fields.stateId = req.userData.stateId;
+				fields.id = req.userData.userId;
+
 				if(req.userData.user.profile.profile == 'analista') {
-					fields.analystId = req.userData.userId;
+					fields.role = 'analyst';
 				} else if(req.userData.user.profile.profile == 'coordinador') {
-					fields.coordinatorId = req.userData.userId;
+					fields.role = 'coordinator';
+					//console.log(req.userData.stateId);
+					for(var i = 0; i < response.requests.length; i++) {
+						if((response.requests[i].coordinatorId == req.userData.userId) || (response.requests[i].coordinatorId == null && response.requests[i].guaranteeLetter.budget.affiliated.stateId == req.userData.stateId)) {
+							collection_aux.push(response.requests[i]);
+						}
+					}
+					response.requests = collection_aux;
 				} else {
-					fields.visitorId = req.userData.userId;
+					fields.role = 'visitor';
 				}
 
 				RequestModel.count(fields, function(err, count) {
@@ -659,7 +682,7 @@ module.exports = {
 						.then(function(model) {
 							model = model.toJSON();
 
-							var fields = {};
+							/*var fields = {};
 
 							if(req.userData.user.profile.profile == 'analista') {
 								fields.analystId = req.userData.userId;
@@ -667,6 +690,19 @@ module.exports = {
 								fields.coordinatorId = req.userData.userId;
 							} else {
 								fields.visitorId = req.userData.userId;
+							}*/
+
+							var fields = {};
+
+							fields.stateId = req.userData.stateId;
+							fields.id = req.userData.userId;
+
+							if(req.userData.user.profile.profile == 'analista') {
+								fields.role = 'analyst';
+							} else if(req.userData.user.profile.profile == 'coordinador') {
+								fields.role = 'coordinator';
+							} else {
+								fields.role = 'visitor';
 							}
 
 							RequestModel.count(fields, function(err, count) {
@@ -799,7 +835,7 @@ module.exports = {
 					model = model.toJSON();
 					model.created = true;
 
-					var fields = {};
+					/*var fields = {};
 
 					if(req.userData.user.profile.profile == 'analista') {
 						fields.analystId = req.userData.userId;
@@ -807,6 +843,19 @@ module.exports = {
 						fields.coordinatorId = req.userData.userId;
 					} else {
 						fields.visitorId = req.userData.userId;
+					}*/
+
+					var fields = {};
+
+					fields.stateId = req.userData.stateId;
+					fields.id = req.userData.userId;
+
+					if(req.userData.user.profile.profile == 'analista') {
+						fields.role = 'analyst';
+					} else if(req.userData.user.profile.profile == 'coordinador') {
+						fields.role = 'coordinator';
+					} else {
+						fields.role = 'visitor';
 					}
 
 					RequestModel.count(fields, function(err, count) {
@@ -873,6 +922,21 @@ module.exports = {
 								notifyRequestCompleted2(model);
 							}
 							
+						}
+
+						fields = {};
+
+						//var fields = {};
+
+						fields.stateId = req.userData.stateId;
+						fields.id = req.userData.userId;
+
+						if(req.userData.user.profile.profile == 'analista') {
+							fields.role = 'analyst';
+						} else if(req.userData.user.profile.profile == 'coordinador') {
+							fields.role = 'coordinator';
+						} else {
+							fields.role = 'visitor';
 						}
 
 						RequestModel.count(fields, function(err, count) {

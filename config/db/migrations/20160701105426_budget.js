@@ -9,13 +9,13 @@ exports.up = function(knex, Promise) {
   	t.string('history').notNullable();
   	t.string('diagnosis').notNullable();
   	t.string('treatment').notNullable();
-  	t.string('patientFirstName').notNullable();
-  	t.string('patientLastName').notNullable();
-  	t.string('patientIdentityCard').notNullable();
+  	//t.string('patientFirstName').notNullable();
+  	//t.string('patientLastName').notNullable();
+  	//t.string('patientIdentityCard').notNullable();
   	t.string('doctorFirstName').notNullable();
   	t.string('doctorLastName').notNullable();
-    t.string('location').notNullable();
-    t.integer('stateId').references('id').inTable('state').notNullable();
+    //t.string('location').notNullable();
+    //t.integer('stateId').references('id').inTable('state').notNullable();
   });
 };
 

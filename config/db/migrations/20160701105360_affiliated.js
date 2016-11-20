@@ -7,6 +7,7 @@ exports.up = function(knex, Promise) {
   	t.string('phoneNumber').unique().notNullable();
   	t.string('rif').unique().notNullable();
   	t.string('portal').unique().nullable();
+  	t.integer('stateId').references('id').inTable('state').notNullable();
   });
 };
 

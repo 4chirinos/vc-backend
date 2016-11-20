@@ -120,14 +120,14 @@ insert into "user" values (5, 5, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQj
 insert into "user" values (6, 6, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
 insert into "user" values (7, 7, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
 
-insert into "affiliated" values (1, 'clinica caracas', 'av. libertador. centro de caracas', '0212-1032048', 'J-00168870-1', null);
-insert into "affiliated" values (2, 'clinica del interior', 'calle apure. esquina la plaza', '0212-1032041', 'J-00168870-4', null);
-insert into "affiliated" values (3, 'clinica parroquial', 'edificio central', '0295-0194599', 'J-00168870-6', null);
+insert into "affiliated" values (1, 'clinica caracas', 'av. libertador. centro de caracas', '0212-1032048', 'J-00168870-1', null, 2);
+insert into "affiliated" values (2, 'clinica del interior', 'calle apure. esquina la plaza', '0212-1032041', 'J-00168870-4', null, 1);
+insert into "affiliated" values (3, 'clinica parroquial', 'edificio central', '0295-0194599', 'J-00168870-6', null, 2);
 
-insert into "budget" values (1, 1, now(), 12, '0012', '1726', 'ulcera', 'extraccion de ulcera', 'jesus', 'romero', '451701', 'josefa', 'colorado', 'caracas', 17);
-insert into "budget" values (2, 2, now(), 12, '0013', '7152', 'apendiciti', 'extraccion de apendiciti', 'jose', 'vargas', '879172', 'luis', 'cobos', 'apure', 17);
-insert into "budget" values (3, 3, now(), 12, '0014', '9172', 'hernia lumbar', 'extraccion de hernia', 'wilber', 'soto', '71826', 'qioto', 'salsido', 'miranda', 2);
-insert into "budget" values (4, 3, now(), 12, '0015', '3018', 'hombro dislocado', 'encaje de hombro', 'alejandra', 'jaramillo', '61520', 'luz', 'fermin', 'la guaira', 24);
+insert into "budget" values (1, 1, now(), 12, '0012', '1726', 'ulcera', 'extraccion de ulcera', 'josefa', 'colorado');
+insert into "budget" values (2, 2, now(), 12, '0013', '7152', 'apendiciti', 'extraccion de apendiciti', 'luis', 'cobos');
+insert into "budget" values (3, 3, now(), 12, '0014', '9172', 'hernia lumbar', 'extraccion de hernia', 'qioto', 'salsido');
+insert into "budget" values (4, 3, now(), 12, '0015', '3018', 'hombro dislocado', 'encaje de hombro', 'luz', 'fermin');
 
 insert into "item" values (1, 1, 'quirofano (hora 1ra)', 'quirofano', 2, 300.09);
 insert into "item" values (2, 1, 'quirofano (hora adicional)', 'quirofano', 4, 700.00);
