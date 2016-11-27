@@ -708,7 +708,13 @@ module.exports = {
 				.then(function(model) {*/
 
 					RequestModel
-					.forge({guaranteeLetterId: req.body.guaranteeLetterId, analystId: req.userData.userId, statusId: 2, formId: 1})
+					.forge({
+						guaranteeLetterId: req.body.guaranteeLetterId,
+						analystId: req.userData.userId,
+						endDate: req.body.endDate,
+						statusId: 2,
+						formId: 1
+					})
 					.save()
 					.then(function(model) {
 						RequestModel

@@ -9,7 +9,7 @@ exports.up = function(knex, Promise) {
     t.integer('analystId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('formId').references('id').inTable('form').notNullable();
   	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
-  	t.dateTime('endDate').nullable().defaultTo(null);
+  	t.dateTime('endDate').notNullable();
   });
 };
 
