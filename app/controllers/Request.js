@@ -539,7 +539,8 @@ module.exports = {
 
 			RequestModel
 			.query(function(qb) {
-				if(req.query.statusId) {
+				
+				/*if(req.query.statusId) {
 					if(model.profile.profile == 'analista') {
 						qb.where({analystId: model.id, statusId: req.query.statusId});
 					} else if(model.profile.profile == 'coordinador') {
@@ -558,6 +559,45 @@ module.exports = {
 					} else {
 						qb.where({visitorId: model.id});
 					}
+				}*/
+
+				if(model.profile.profile == 'coordinador') {
+
+					if(req.query.statusId) {
+						if(req.query.statusId != '2') {
+							qb.where({coordinatorId: model.id, statusId: req.query.statusId});
+						} else { // es igual a 2
+							qb.innerJoin('status', 'request.statusId', 'status.id');
+							qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
+							qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
+							qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
+							qb.where('affiliated.stateId', req.userData.stateId);
+							qb.where('status.id', req.query.statusId);
+							qb.where('request.coordinatorId', null);
+						}
+					} else {
+						qb.innerJoin('status', 'request.statusId', 'status.id');
+						qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
+						qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
+						qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
+						qb.where('affiliated.stateId', req.userData.stateId);
+						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', req.userData.stateId);
+					}
+					
+				} else {
+
+					if(model.profile.profile == 'analista') {
+						qb.where({analystId: model.id});
+					}
+
+					if(model.profile.profile == 'visitador') {
+						qb.where({visitorId: model.id});
+					}
+
+					if(req.query.statusId) {
+						qb.where({statusId: req.query.statusId});
+					}
+
 				}
 
 				if(req.query.requestId) {
