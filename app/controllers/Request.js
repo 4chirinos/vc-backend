@@ -728,16 +728,6 @@ module.exports = {
 						.then(function(model) {
 							model = model.toJSON();
 
-							/*var fields = {};
-
-							if(req.userData.user.profile.profile == 'analista') {
-								fields.analystId = req.userData.userId;
-							} else if(req.userData.user.profile.profile == 'coordinador') {
-								fields.coordinatorId = req.userData.userId;
-							} else {
-								fields.visitorId = req.userData.userId;
-							}*/
-
 							var fields = {};
 
 							fields.stateId = req.userData.stateId;
