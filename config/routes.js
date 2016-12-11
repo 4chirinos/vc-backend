@@ -62,11 +62,15 @@ router.route('/form')
 router.route('/form/:id')
 	.get(Session.validSession, Form.getById);
 
+router.route('/document/form/request/:id')
+	.get(Form.getDocumentById);
+
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
 router.route('/budget')
-	.get(Session.validSession, Budget.getAll); // tiene statusGroups
+	.get(Session.validSession, Budget.getAll) // tiene statusGroups
+	.post(Budget.create);
 
 router.route('/budget/:id')
 	.get(Session.validSession, Budget.getById); // tiene statusGroups
@@ -88,6 +92,9 @@ router.route('/guaranteeLetter')
 
 router.route('/guaranteeLetter/:id')
 	.get(Session.validSession, GuaranteeLetter.getById); // tiene statusGroups
+
+router.route('/document/guaranteeLetter/request/:id')
+	.get(GuaranteeLetter.getDocumentById);
 
 
 /* ######################################################################################### */

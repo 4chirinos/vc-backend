@@ -5,6 +5,12 @@ var GuaranteeLetterModel = require('../models/GuaranteeLetter'),
 
 var bookshelf = require('../../config/db/builder-knex');
 
+var jsreport = require('jsreport');
+var ejs = require('ejs');
+
+var fs = require('fs');
+
+
 module.exports = {
 
 	getAll: function(req, res) {
@@ -149,6 +155,64 @@ module.exports = {
 				}
 				model.statusGroups = count;
 				res.send(model);
+			});
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	getDocumentById: function(req, res) {
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch({withRelated: [
+			'guaranteeLetter.state',
+			'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder',
+			'guaranteeLetter.policy.owner', 'guaranteeLetter.budget.affiliated.state'
+		]})
+		.then(function(model) {
+			
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			var data = model.toJSON();
+
+			//res.send(data); return;
+
+			var endDate = data.guaranteeLetter.policy.endDate
+
+			endDate = endDate.getDate() + "-" + endDate.getMonth() + 1 + "-" + endDate.getFullYear();
+
+            data.guaranteeLetter.policy.endDate = endDate;
+
+            endDate = data.guaranteeLetter.startDate;
+
+            endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
+
+            data.guaranteeLetter.startDate = endDate;
+
+			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/guaranteeLetter.ejs', 'utf8'));
+
+			var html = compiled({data: data});
+
+			jsreport.render(html).then(function(out) {
+
+				res.writeHead(200, {
+		            'Content-Type': 'application/pdf',
+		            'Access-Control-Allow-Origin': '*',
+		            'Content-Disposition': 'attachment; filename=cartaAval_' + data.guaranteeLetter.id
+		        });
+
+				out.stream.pipe(res);
+
+			}).catch(function(e) {    
+			    res.sendStatus(500);
 			});
 
 		})

@@ -1,4 +1,7 @@
 var BudgetModel = require('../models/Budget');
+var ItemModel = require('../models/Item');
+var currentBudgetModel = require('../models/currentBudget');
+var currentItemModel = require('../models/currentItem');
 var RequestModel = require('../models/Request');
 var GuaranteeLetterModel = require('../models/GuaranteeLetter');
 var validator = require('./validators/Budget');
@@ -8,7 +11,95 @@ var ejs = require('ejs');
 
 var fs = require('fs');
 
+var bookshelf = require('../../config/db/builder-knex');
+
 module.exports = {
+
+	create: function(req, res) {
+
+		var budget = req.body;
+
+		if(budget.id == -1) {
+			currentBudgetModel
+			.forge({budgetId: budget.parentBudgetId})
+			.save()
+			.then(function(model) {
+				model = model.toJSON();
+
+				for(var i = 0; i < budget.items.length; i++) {
+					budget.items[i].currentBudgetId = model.id;
+				}
+					
+				bookshelf.knex.batchInsert('currentItem', budget.items)
+				.returning('*')
+				.then(function(fields) {
+					//console.log(fields);
+
+					currentBudgetModel
+					.forge({id: model.id})
+					.fetch({withRelated: {'item': function(qb) {qb.orderBy('id')}}})
+					.then(function(model) {
+						model = model.toJSON();
+						res.send(model);
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(err);
+					});
+
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.send(err);
+				});
+
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		} else {
+			currentItemModel
+			.query(function(qb) {
+				qb.where({currentBudgetId: budget.id}).del();
+			})
+			.fetchAll()
+			.then(function(result) {
+
+				for(var i = 0; i < budget.items.length; i++) {
+					budget.items[i].currentBudgetId = budget.id;
+				}
+
+				bookshelf.knex.batchInsert('currentItem', budget.items)
+				.returning('*')
+				.then(function(fields) {
+					//console.log(fields);
+					currentBudgetModel
+					.forge({id: budget.id})
+					.fetch({withRelated: {'item': function(qb) {qb.orderBy('id')}}})
+					.then(function(model) {
+						model = model.toJSON();
+						res.send(model);
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(err);
+					});
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.send(err);
+				});
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		}
+		
+	},
 
 	getById: function(req, res) {
 
@@ -23,7 +114,7 @@ module.exports = {
 
 		BudgetModel
 		.forge({id: req.params.id})
-		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'guaranteeLetter.beneficiary']})
 		.then(function(model) {
 
 			if(!model) {
@@ -88,7 +179,7 @@ module.exports = {
 				model = model.toJSON();
 				BudgetModel
 				.forge({id: model.guaranteeLetter.budgetId})
-				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter', 'item.historical']})
+				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter', 'item.historical', 'currentBudget.item']})
 				.then(function(model) {
 
 					model = model.toJSON();
@@ -155,7 +246,7 @@ module.exports = {
 
 		BudgetModel
 		.forge({id: req.params.id})
-		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter']})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'guaranteeLetter.beneficiary']})
 		.then(function(model) {
 
 			if(!model) {
@@ -163,8 +254,21 @@ module.exports = {
 				return;
 			}
 
-			var data = model.toJSON();;
+			var data = model.toJSON();
 			data.lastConcept = '';
+
+			var today = new Date();
+
+			var birthDate = data.guaranteeLetter.beneficiary.birthDate;
+
+            var age = today.getFullYear() - birthDate.getFullYear();
+
+            var aux1 = today.getMonth() + 1 - birthDate.getMonth(),
+            	aux2 = today.getDay() - birthDate.getDay();
+
+            if(aux1 > 0 || (aux1 == 0 && aux2 >= 0)) age++;
+
+            data.guaranteeLetter.beneficiary.age = age;
 
 			var dd = data.startDate.getDate(),
 				mm = data.startDate.getMonth() + 1,
@@ -189,7 +293,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=presupuesto.' + data.code
+		            'Content-Disposition': 'attachment; filename=presupuesto_' + data.code
 		        });
 
 				out.stream.pipe(res);

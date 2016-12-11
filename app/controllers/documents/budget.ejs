@@ -2,6 +2,9 @@
   <html>
 
     <head>
+      
+      <meta charset="utf-8">
+
       <style>
 
         table {
@@ -28,27 +31,27 @@
       <div>
         
         <h3><center><%= data.affiliated.name %></center></h3> <br>
-        <%= data.affiliated.address %> <br>
-        Central telef&oacute;nica: <%= data.affiliated.phoneNumber %> <br>
-        Rif: <%= data.affiliated.rif %> <br>
+        Dirección: <%= data.affiliated.address %> <br>
+        Central Telefónica: <%= data.affiliated.phoneNumber %> <br>
+        RIF: <%= data.affiliated.rif %> <br>
 
         <% if(data.affiliated.portal) { %>
-          Portal web: <%= data.affiliated.portal %> <br>
+          Portal Web: <%= data.affiliated.portal %> <br>
         <% } %>
 
       </div>
 
       <div align="right">
-        <%= data.location %>, <%= data.startDate %> <br>
-        Presupuesto nro: <strong> <%= data.code %> </strong>
+        <%= data.affiliated.state.stateName %>, <%= data.startDate %> <br>
+        Presupuesto Nro: <strong> <%= data.code %> </strong>
       </div>
 
       <br><br>
 
-      <div align="left" style="border: 0px solid black;">
+      <div align="left" style="border: 1px solid black;">
         
         <div style="display: inline-block; margin-right: 0px; width: 390px;">
-          <strong>Paciente: </strong><%= data.patientFirstName %> <%= data.patientLastName %>
+          <strong>Paciente: </strong><%= data.guaranteeLetter.beneficiary.firstName %> <%= data.guaranteeLetter.beneficiary.lastName %> (<%= data.guaranteeLetter.beneficiary.age %>)
         </div>
 
         <div style="display: inline-block; width: 258px;">
@@ -56,15 +59,15 @@
         </div>
 
         <div>
-          <strong>M&eacute;dico: </strong><%= data.doctorFirstName %> <%= data.doctorLastName %>
+          <strong>Médico: </strong><%= data.doctorFirstName %> <%= data.doctorLastName %>
         </div>
 
         <div>
-          <strong>Diagn&oacute;stico: </strong><%= data.diagnosis %>
+          <strong>Diagnóstico: </strong><%= data.diagnosis %>
         </div>
 
         <div>
-          <strong>Procedimiento: </strong><%= data.treatment %>
+          <strong>Plan Médico: </strong><%= data.treatment %>
         </div>
 
       </div>
@@ -73,8 +76,9 @@
 
       <table>
         <tr>
+          <th><center><strong>No.</strong></center> </th>
           <th><center>Concepto</center> </th>
-          <th><center>Descripci&oacute;n</center> </th>
+          <th><center>Descripción</center> </th>
           <th><center>Cantidad</center> </th>
           <th><center>Precio (Bs)</center> </th>
         </tr>
@@ -84,6 +88,7 @@
       <% for(var i = 0; i < data.item.length; i++) { %>  
 
           <tr>
+            <td><strong><%= i + 1 %></strong></td>
             <td><%= data.item[i].concept %></td>
             <td><%= data.item[i].description %></td>
             <td><center><%= data.item[i].quantity %></center></td>
@@ -95,6 +100,7 @@
       <% } %>
 
         <tr>
+          <td><center>- - -</center></td>
           <td><center>- - - - - - -</center></td>
           <td><center>- - - - - - -</center></td>
           <td><center>- - - - - - -</center></td>

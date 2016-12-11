@@ -2,6 +2,7 @@ var bookshelf = require('../../config/db/builder-knex');
 
 require('./Item');
 require('./Affiliated');
+require('./currentBudget');
 
 module.exports = bookshelf.model('Budget', {
 	tableName: 'budget',
@@ -13,5 +14,8 @@ module.exports = bookshelf.model('Budget', {
 	},
 	guaranteeLetter: function() {
 		return this.hasOne('GuaranteeLetter', 'budgetId');
+	},
+	currentBudget: function() {
+		return this.hasOne('currentBudget', 'budgetId');
 	}
 });
