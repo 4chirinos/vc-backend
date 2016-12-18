@@ -107,7 +107,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=encuesta'
+		            'Content-Disposition': 'attachment; filename=Encuesta'
 		        });
 
 				out.stream.pipe(res);

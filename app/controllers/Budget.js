@@ -254,7 +254,25 @@ module.exports = {
 				return;
 			}
 
-			var data = model.toJSON();
+			var data = model.toJSON(), totalCost = 0;
+
+			//res.send(data); return;
+
+			for(var i = 0; i < data.item.length; i++) {
+				var aux = data.item[i].cost;
+				totalCost += aux;
+				aux = aux.toFixed(2);
+				aux = parseFloat(aux);
+				aux = aux.toLocaleString('de-DE');
+				data.item[i].cost = aux;
+			}
+
+			totalCost = totalCost.toFixed(2);
+			totalCost = parseFloat(totalCost);
+			totalCost = totalCost.toLocaleString('de-DE');
+
+			data.totalCost = totalCost;
+
 			data.lastConcept = '';
 
 			var today = new Date();
@@ -293,7 +311,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=presupuesto_' + data.code
+		            'Content-Disposition': 'attachment; filename=Presupuesto_' + data.code
 		        });
 
 				out.stream.pipe(res);

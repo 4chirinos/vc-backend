@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
   	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
   	t.dateTime('endDate').nullable();
     t.integer('stateId').references('id').inTable('state').notNullable();
+    t.float('coveredPercentage').notNullable();
   });
 };
 

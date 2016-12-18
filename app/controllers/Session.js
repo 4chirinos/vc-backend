@@ -163,7 +163,7 @@ module.exports = {
 
 	validUser: function(req, res, next) {
 
-		req.check(validator.validUser);
+		/*req.check(validator.validUser);
 
 		var errors = req.validationErrors();
 
@@ -174,9 +174,37 @@ module.exports = {
 
 		var bodyFields = [
 			'identityCard', 'password'
-		];
+		];*/
 
-		PersonModel
+		UserModel
+		.forge({userName: req.body.userName})
+		.fetch()
+		.then(function(model) {
+			if(model) {
+				model.comparePassword(req.body.password, model)
+				.then(function(match) {
+					if(match) {
+						//console.log(match);
+						req.userId = model.get('id');
+						next();
+					} else {
+						res.sendStatus(404);
+					}
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+			} else {
+				res.sendStatus(404);
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+		/*PersonModel
 		.forge({identityCard: req.body.identityCard})
 		.fetch({withRelated: ['user']})
 		.then(function(model) {
@@ -211,7 +239,7 @@ module.exports = {
 		.catch(function(err) {
 			console.log(err);
 			res.sendStatus(500);
-		});
+		});*/
 
 	}
 

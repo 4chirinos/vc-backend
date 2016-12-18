@@ -10,5 +10,8 @@ module.exports = bookshelf.model('Person', {
 	},
 	profile: function() {
 		return this.belongsTo('Profile', 'profileId');
+	},
+	state: function() {
+		return this.belongsTo('State', 'stateId');
 	}
 });

@@ -97,9 +97,13 @@ insert into "state" values (24, 'Zulia');
 insert into "person" values (16, 'analistaAmazonas', 'analistaAmazonas', 'analista', 'analista@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
 insert into "person" values (17, 'coordinadorAnzoategui', 'coordinadorAnzoategui', 'coordinador', 'coordinador@email.com', 2, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
 insert into "person" values (18, 'visitadorAnzoategui', 'visitadorAnzoategui', 'visitador', 'visitador@email.com', 3, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
-insert into "user" values (8, 16, '$2a$08$rCHFWUpjgqBGgOvFFaplkOJaFpulwl/Ez5IAzdTeoIkLAi4BDwIVm', 7, true);
-insert into "user" values (9, 17, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 8, true);
-insert into "user" values (10, 18, '$2a$08$lhIxARKkxZK5cXHtpVV/deucrRNQwDSbn8Sgow7YMDOtLyLIH5XDK', 9, true);
+insert into "user" values (8, 16, '$2a$08$rCHFWUpjgqBGgOvFFaplkOJaFpulwl/Ez5IAzdTeoIkLAi4BDwIVm', 'user1', 7, true);
+insert into "user" values (9, 17, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'user2', 8, true);
+insert into "user" values (10, 18, '$2a$08$lhIxARKkxZK5cXHtpVV/deucrRNQwDSbn8Sgow7YMDOtLyLIH5XDK', 'user3', 9, true);
+
+
+insert into "person" values (19, 'admin', 'NombreAdmin', 'ApellidoAdmin', 'a.admin@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 11);
+
 
 insert into "person" values (1, 'analista2Amazonas', 'analista2Amazonas', 'ramirez', 'j.ramirez@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
 insert into "person" values (2, 'analista3Anzoategui', 'analista3Anzoategui', 'pena', 'c.pena@email.com', 1, '2016-09-01', 'direccion', 'F', '0212-1032048', 2);
@@ -117,13 +121,17 @@ insert into "person" values (13, '1234682', 'Victor', 'Campos', 'v.vendetta@emai
 insert into "person" values (14, '1234683', 'Victoria', 'Rivas', 'v.sirgil@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
 insert into "person" values (15, '1234684', 'Antonieta', 'Bermudez', 'a.bermudez@email.com', 4, '2016-09-01', 'direccion', 'F', '0212-1032048', 1);
 
-insert into "user" values (1, 1, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 7, true);
-insert into "user" values (2, 2, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 7, true);
-insert into "user" values (3, 3, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 8, true);
-insert into "user" values (4, 4, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 8, true);
-insert into "user" values (5, 5, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
-insert into "user" values (6, 6, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
-insert into "user" values (7, 7, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 9, true);
+insert into "user" values (1, 1, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user4', 7, true);
+insert into "user" values (2, 2, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user5', 7, true);
+insert into "user" values (3, 3, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user6', 8, true);
+insert into "user" values (4, 4, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user7', 8, true);
+insert into "user" values (5, 5, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user8', 9, true);
+insert into "user" values (6, 6, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user9', 9, true);
+insert into "user" values (7, 7, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user10', 9, true);
+
+
+insert into "user" values (11, 19, '$2a$08$1grShjEbFIfEo8tijGboWuxvCTn4slhzDlkUgQjgk4jsm4dF8YCJK', 'user11', 6, true);
+
 
 insert into "affiliated" values (1, 'Clínica Caracas', 'Av. Libertador. Centro de Caracas', '0212-1032048', 'J-00168870-1', null, 2);
 insert into "affiliated" values (2, 'Clínica del Interior', 'Calle Apure. Esquina la Plaza', '0212-1032041', 'J-00168870-4', null, 1);
@@ -180,10 +188,10 @@ insert into "policy" values (1, 9, 9, now(), '2017-01-03', 900.01);
 insert into "policy" values (2, 13, 13, now(), '2017-01-03', 900.01);
 insert into "policy" values (3, 12, 12, now(), '2017-01-03', 900.01);
 
-insert into "guaranteeLetter" values (1, 1, '0190', 10, 1, 1, now(), '2016-12-30', 1);
-insert into "guaranteeLetter" values (2, 2, '0191', 11, 2, 1, now(), '2016-12-29', 2);
-insert into "guaranteeLetter" values (3, 3, '0192', 12, 3, 1, now(), '2016-12-28', 1);
-insert into "guaranteeLetter" values (4, 1, '0193', 13, 4, 1, now(), '2016-12-27', 2);
+insert into "guaranteeLetter" values (1, 1, '0190', 10, 1, 1, now(), '2016-12-30', 1, 90);
+insert into "guaranteeLetter" values (2, 2, '0191', 11, 2, 1, now(), '2016-12-29', 2, 88);
+insert into "guaranteeLetter" values (3, 3, '0192', 12, 3, 1, now(), '2016-12-28', 1, 86);
+insert into "guaranteeLetter" values (4, 1, '0193', 13, 4, 1, now(), '2016-12-27', 2, 84);
 
 insert into "form" values (1);
 

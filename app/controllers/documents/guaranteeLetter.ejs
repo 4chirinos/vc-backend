@@ -23,12 +23,26 @@
           background-color: #dddddd;
         }
 
+        #content {
+          position: relative;
+        }
+        #content img {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+        }
+
       </style>
     </head>
 
     <body>
 
       <div align="left" style="border: 0px solid black;">
+
+        <div id="content">
+          <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
+        </div>
+
         <div style="display: inline-block; margin-right: 0px; width: 390px;">
           Señores: <br>
           Presente.-
@@ -46,27 +60,27 @@
           <strong>Nro. Carta Aval: </strong><%= data.guaranteeLetter.id %> <br>
           <strong><%= data.guaranteeLetter.state.stateName %>, <%= data.guaranteeLetter.startDate %> </strong> <br>
         </div>
-      </div>
+      </div> 
 
       <br><br>
 
       <div>Estimado(s) Señor(es)</div>
 
       <p style="text-align: justify;">
-        Tenemos a bien de informarles con relación al asunto de la referencia que la Compañía Aseguradora dará cobertura a los gastos de los servicios médicos hospitalarios que recibirá el Asegurado arriba mencionado, según el presupuesto N° 123 de fecha, estimado por un monto total de Bs. 123,00 sujeto a las condiciones que más adelante se señalan: <br> <br>
+        Tenemos a bien de informarles con relación al asunto de la referencia que la Compañía Aseguradora dará cobertura hasta por la cantidad de <strong>Bs <%= data.coveredCost %></strong> a cuenta de los gastos por los servicios médicos hospitalarios que recibirá el Asegurado arriba mencionado, según el presupuesto <strong>N° <%= data.guaranteeLetter.budget.code %></strong> de fecha <strong><%= data.guaranteeLetter.budget.startDate %></strong>, estimado por un monto total de <strong>Bs <%= data.totalCost %></strong> sujeto a las condiciones que más adelante se señalan: <br> <br>
         
         1)El monto máximo de la cobertura indicado por la Compañía Aseguradora en este caso será determinado al momento de extenderse el Alta al Asegurado Afectado referido, previo chequeo de la factura dentro de la administración de la Clínica y esta Compañía Aseguradora, adjuntando los resultados de los exámenes practicados, desglose de medicinas y material médico quirúrgico utilizado, a los efectos de determinar con exactitud el monto que le amparará la póliza por el servicio brindado por esta institución. <br> <br>
 
         2) El Asegurado Afectado o el Titular autoriza a la Compañía Aseguradora para obtener de la Institución Prestadora de Servicio y/o Médico Tratante, cualquier información sobre los datos inherentes al servicio médico hospitalario recibido y/o tratamiento referido. <br> <br>
 
-        3) La presente Carta Aval se emite conforme al acuerdo previsto entre la Institución Prestadora de Servicio y la Compañía Aseguradora, la cual quedará sin efecto si dentro de los días continuos contados a partir de la fecha de emisión el Asegurado no la presenta a la Institución Prestadora de Servicio para la prestación de los servicios médicos hospitalarios en razón del tratamiento descrito en referencia y el aval de cobertura que motivan la emisión de la presente e igualmente cuando el lapso antes señalado no supere la fecha efecto y/o vigencia del recibo de la Póliza o Certificado, cuyo vencimiento es: <%= data.guaranteeLetter.policy.endDate %>. <br> <br>
+        3) La presente Carta Aval se emite conforme al acuerdo previsto entre la Institución Prestadora de Servicio y la Compañía Aseguradora, la cual quedará sin efecto si dentro de los días continuos contados a partir de la fecha de emisión el Asegurado no la presenta a la Institución Prestadora de Servicio para la prestación de los servicios médicos hospitalarios en razón del tratamiento descrito en referencia y el aval de cobertura que motivan la emisión de la presente e igualmente cuando el lapso antes señalado no supere la fecha efecto y/o vigencia del recibo de la Póliza o Certificado, cuyo vencimiento es: <strong><%= data.guaranteeLetter.policy.endDate %></strong>. <br> <br>
 
         4) En caso de verificarse la existencia de una causal de exclusión de cobertura o cualquier otra circunstancia eximente de responsabilidad por un procedimiento quirúrgico adicional que no esté autorizado por la Compañía Aseguradora, especialmente con fines estéticos, de conformidad con el condicionado de la Póliza en referencia o con la Ley de la materia, dicha cobertura quedará sin efecto y los gastos deben correr por cuenta del Asegurado, quedando la Compañía Aseguradora liberada de responsabilidad.
 
       </p>
 
       <div>
-        <strong>Gastos no Amparados: Bs. 123,00</strong>
+        <center><strong>Gastos no Amparados: Bs <%= data.uncoveredCost %></strong></center>
       </div>
 
       <div><center><h6>Esta Carta Aval es una copia fiel y exacta de su original al momento de ingreso a la Institución Prestadora de Servicio. La carta original será activada por la Institución Prestadora de Servicio a la que va dirigida.</h6></center></div>      

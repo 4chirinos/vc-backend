@@ -23,14 +23,27 @@
           background-color: #dddddd;
         }
 
+        #content {
+          position: relative;
+        }
+        #content img {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+        }
+
       </style>
     </head>
 
     <body>
 
-      <center><h3>Encuesta de satisfacción del Paciente</h3></center>
+      <div id="content">
+        <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
+      </div>
 
-      <br>
+      <center><h3>Encuesta de Satisfacción del Paciente</h3></center>
+
+      <br><br><br>
 
       <div align="left" style="border: 1px solid black;">
         

@@ -23,12 +23,25 @@
           background-color: #dddddd;
         }
 
+        #content {
+          position: relative;
+        }
+        #content img {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+        }
+
       </style>
     </head>
 
     <body>
 
       <div>
+
+        <div id="content">
+          <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
+        </div>
         
         <h3><center><%= data.affiliated.name %></center></h3> <br>
         Dirección: <%= data.affiliated.address %> <br>
@@ -83,7 +96,7 @@
           <th><center>Precio (Bs)</center> </th>
         </tr>
 
-        <% var final_cost = 0; %>
+        <!--<% var final_cost = 0; %>-->
 
       <% for(var i = 0; i < data.item.length; i++) { %>  
 
@@ -95,7 +108,7 @@
             <td><center><%= data.item[i].cost %></center></td>
           </tr>
 
-          <% final_cost = final_cost + data.item[i].quantity * data.item[i].cost %>
+          <!--<% final_cost = final_cost + data.item[i].quantity * data.item[i].cost %>-->
 
       <% } %>
 
@@ -104,7 +117,7 @@
           <td><center>- - - - - - -</center></td>
           <td><center>- - - - - - -</center></td>
           <td><center>- - - - - - -</center></td>
-          <th><center>Total: Bs <%= final_cost %> </center></th>
+          <th><center>Total: Bs <%= data.totalCost %> </center></th>
         </tr>
 
       </table>

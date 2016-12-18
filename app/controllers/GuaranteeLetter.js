@@ -6,6 +6,7 @@ var GuaranteeLetterModel = require('../models/GuaranteeLetter'),
 var bookshelf = require('../../config/db/builder-knex');
 
 var jsreport = require('jsreport');
+
 var ejs = require('ejs');
 
 var fs = require('fs');
@@ -172,7 +173,8 @@ module.exports = {
 		.fetch({withRelated: [
 			'guaranteeLetter.state',
 			'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder',
-			'guaranteeLetter.policy.owner', 'guaranteeLetter.budget.affiliated.state'
+			'guaranteeLetter.policy.owner', 'guaranteeLetter.budget.item',
+			'guaranteeLetter.budget.affiliated.state'
 		]})
 		.then(function(model) {
 			
@@ -185,9 +187,41 @@ module.exports = {
 
 			//res.send(data); return;
 
+			var totalCost = 0, uncoveredCost = 0, coveredCost = 0;
+
+			for(var i = 0; i < data.guaranteeLetter.budget.item.length; i++) {
+				totalCost += data.guaranteeLetter.budget.item[i].cost;
+			}
+
+			coveredCost = totalCost * data.guaranteeLetter.coveredPercentage / 100;
+
+			uncoveredCost = totalCost - coveredCost;
+
+			coveredCost = coveredCost.toFixed(2);
+
+			coveredCost = parseFloat(coveredCost);
+
+			coveredCost = coveredCost.toLocaleString('de-DE');
+
+			uncoveredCost = uncoveredCost.toFixed(2);
+
+			uncoveredCost = parseFloat(uncoveredCost);
+
+			uncoveredCost = uncoveredCost.toLocaleString('de-DE');
+
+			totalCost = totalCost.toFixed(2);
+
+			totalCost = parseFloat(totalCost);
+
+			totalCost = totalCost.toLocaleString('de-DE');
+
+			data.coveredCost = coveredCost;
+			data.uncoveredCost = uncoveredCost;
+			data.totalCost = totalCost;
+
 			var endDate = data.guaranteeLetter.policy.endDate
 
-			endDate = endDate.getDate() + "-" + endDate.getMonth() + 1 + "-" + endDate.getFullYear();
+			endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
 
             data.guaranteeLetter.policy.endDate = endDate;
 
@@ -196,6 +230,16 @@ module.exports = {
             endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
 
             data.guaranteeLetter.startDate = endDate;
+
+            endDate = data.guaranteeLetter.budget.startDate;
+
+            endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
+
+            data.guaranteeLetter.budget.startDate = endDate;
+
+            data.imageUrl = __dirname + '/../public';
+
+            console.log(data.imageUrl);
 
 			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/guaranteeLetter.ejs', 'utf8'));
 
@@ -206,7 +250,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=cartaAval_' + data.guaranteeLetter.id
+		            'Content-Disposition': 'attachment; filename=CartaAval_' + data.guaranteeLetter.id
 		        });
 
 				out.stream.pipe(res);

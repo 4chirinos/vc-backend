@@ -2,13 +2,49 @@ var _ = require('lodash'),
 	UserModel = require('../models/User'),
 	validator = require('./validators/User'),
 	RequestModel = require('../models/Request'),
+	PersonModel = require('../models/Person'),
+	transporter = require('../../config/mailer/sender'),
 	_ = require('lodash');
+
+var notifyAccountCreation = function(model) {
+
+	//console.log(model);
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.firstName + ' ' + model.lastName + ',</h2>' +
+		'<h2>se ha creado una cuenta para usted en el Sistema Gestor de Visitas Clínicas. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Nombre de Usuario: ' + model.user.userName + '<br>' +
+		'Contraseña: ' + model.user.password + '<br><br><br>' +
+		'Para acceder a la cuenta ingrese al <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Creación de cuenta en el Sistema Gestor de Visitas Clínicas', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		//console.log('Message sent: ' + info.response);
+	});
+
+};
 
 module.exports = {
 
 	create: function(req, res) {
 
-		req.check(validator.create);
+		/*req.check(validator.create);
 
 		var errors = req.validationErrors();
 
@@ -21,17 +57,65 @@ module.exports = {
 			'personId', 'password', 'profileId'
 		];
 
-		var fields = _.pick(req.body, bodyFields);
+		var fields = _.pick(req.body, bodyFields);*/
 
-		UserModel
-		.forge(fields)
-		.save()
+		PersonModel
+		.forge({id: req.body.id})
+		.fetch()
 		.then(function(model) {
-			if(model) {
-				res.send(model.toJSON());
-			} else {
+			
+			if(!model) {
 				res.sendStatus(404);
+				return;
 			}
+
+			var fields = {}, password, userName;
+
+			password = Math.random() + "";
+			password = password.replace(/\./, '');
+
+			userName = Math.random() + "";
+			userName = userName.replace(/\./, '');
+
+			fields.userName = userName;
+			fields.password = password;
+			fields.personId = req.body.id;
+			fields.profileId = req.body.profileId;
+
+			UserModel
+			.forge(fields)
+			.save()
+			.then(function(model) {
+				
+				PersonModel
+				.forge({id: req.body.id})
+				.fetch({withRelated: [
+				'profile', 'state',
+						{'user': function(qb) {
+					    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+					  		}
+					  	},
+					  	'user.profile'
+				  	]
+				})
+				.then(function(model) {
+					model = model.toJSON();
+					res.send(model);
+
+					model.user.password = password;
+					notifyAccountCreation(model);
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
 		})
 		.catch(function(err) {
 			console.log(err);

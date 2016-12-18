@@ -21,6 +21,9 @@ var fs = require('fs');
 router.route('/person')
 	.get(Person.getAll);
 
+router.route('/person/:id')
+	.get(Person.getById);
+
 
 /* ############################################################################################# */
 
