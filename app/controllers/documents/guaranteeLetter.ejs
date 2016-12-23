@@ -43,37 +43,37 @@
           <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
         </div>
 
-        <div style="display: inline-block; margin-right: 0px; width: 390px;">
+        <div>
           Señores: <br>
           Presente.-
           <div style="margin-left: 50px;">
             <strong>Referencia: </strong> Carta Aval <br>
-            <strong>Póliza: </strong> <%= data.guaranteeLetter.policyId %> <br>
-            <strong>Tomador: </strong> V-<%= data.guaranteeLetter.policy.holder.identityCard %> <br>
-            <strong>Asegurado Titular: </strong> V-<%= data.guaranteeLetter.policy.owner.identityCard %> <br>
-            <strong>Asegurado Afectado: </strong> V-<%= data.guaranteeLetter.beneficiary.identityCard %> <br>
-            <strong>Tratamiento: </strong> <%= data.guaranteeLetter.budget.treatment %> <br>
+            <strong>Póliza: </strong> <%= data.policyId %> <br>
+            <strong>Tomador: </strong> V-<%= data.policy.holder.identityCard %> <br>
+            <strong>Asegurado Titular: </strong> V-<%= data.policy.owner.identityCard %> <br>
+            <strong>Asegurado Afectado: </strong> V-<%= data.beneficiary.identityCard %> <br>
+            <strong>Tratamiento: </strong> <%= data.budget.treatment %> <br>
           </div>
         </div>
 
-        <div style="display: inline-block; width: 258px;">
-          <strong>Nro. Carta Aval: </strong><%= data.guaranteeLetter.id %> <br>
-          <strong><%= data.guaranteeLetter.state.stateName %>, <%= data.guaranteeLetter.startDate %> </strong> <br>
+        <div style="margin-left: 350px;">
+          <strong>Nro. Carta Aval: </strong><%= data.id %> <br>
+          <strong>Fecha Emisión: </strong><%= data.startDate %> <br>
         </div>
       </div> 
 
-      <br><br>
+      <br>
 
       <div>Estimado(s) Señor(es)</div>
 
       <p style="text-align: justify;">
-        Tenemos a bien de informarles con relación al asunto de la referencia que la Compañía Aseguradora dará cobertura hasta por la cantidad de <strong>Bs <%= data.coveredCost %></strong> a cuenta de los gastos por los servicios médicos hospitalarios que recibirá el Asegurado arriba mencionado, según el presupuesto <strong>N° <%= data.guaranteeLetter.budget.code %></strong> de fecha <strong><%= data.guaranteeLetter.budget.startDate %></strong>, estimado por un monto total de <strong>Bs <%= data.totalCost %></strong> sujeto a las condiciones que más adelante se señalan: <br> <br>
+        Tenemos a bien de informarles con relación al asunto de la referencia que la Compañía Aseguradora dará cobertura hasta por la cantidad de <strong>Bs <%= data.coveredCost %></strong> a cuenta de los gastos por los servicios médicos hospitalarios que recibirá el Asegurado arriba mencionado, según el presupuesto <strong>N° <%= data.budget.code %></strong> de fecha <strong><%= data.budget.startDate %></strong>, estimado por un monto total de <strong>Bs <%= data.totalCost %></strong> sujeto a las condiciones que más adelante se señalan: <br> <br>
         
         1)El monto máximo de la cobertura indicado por la Compañía Aseguradora en este caso será determinado al momento de extenderse el Alta al Asegurado Afectado referido, previo chequeo de la factura dentro de la administración de la Clínica y esta Compañía Aseguradora, adjuntando los resultados de los exámenes practicados, desglose de medicinas y material médico quirúrgico utilizado, a los efectos de determinar con exactitud el monto que le amparará la póliza por el servicio brindado por esta institución. <br> <br>
 
         2) El Asegurado Afectado o el Titular autoriza a la Compañía Aseguradora para obtener de la Institución Prestadora de Servicio y/o Médico Tratante, cualquier información sobre los datos inherentes al servicio médico hospitalario recibido y/o tratamiento referido. <br> <br>
 
-        3) La presente Carta Aval se emite conforme al acuerdo previsto entre la Institución Prestadora de Servicio y la Compañía Aseguradora, la cual quedará sin efecto si dentro de los días continuos contados a partir de la fecha de emisión el Asegurado no la presenta a la Institución Prestadora de Servicio para la prestación de los servicios médicos hospitalarios en razón del tratamiento descrito en referencia y el aval de cobertura que motivan la emisión de la presente e igualmente cuando el lapso antes señalado no supere la fecha efecto y/o vigencia del recibo de la Póliza o Certificado, cuyo vencimiento es: <strong><%= data.guaranteeLetter.policy.endDate %></strong>. <br> <br>
+        3) La presente Carta Aval se emite conforme al acuerdo previsto entre la Institución Prestadora de Servicio y la Compañía Aseguradora, la cual quedará sin efecto si dentro de los días continuos contados a partir de la fecha de emisión el Asegurado no la presenta a la Institución Prestadora de Servicio para la prestación de los servicios médicos hospitalarios en razón del tratamiento descrito en referencia y el aval de cobertura que motivan la emisión de la presente e igualmente cuando el lapso antes señalado no supere la fecha efecto y/o vigencia del recibo de la Póliza o Certificado, cuyo vencimiento es: <strong><%= data.policy.endDate %></strong>. <br> <br>
 
         4) En caso de verificarse la existencia de una causal de exclusión de cobertura o cualquier otra circunstancia eximente de responsabilidad por un procedimiento quirúrgico adicional que no esté autorizado por la Compañía Aseguradora, especialmente con fines estéticos, de conformidad con el condicionado de la Póliza en referencia o con la Ley de la materia, dicha cobertura quedará sin efecto y los gastos deben correr por cuenta del Asegurado, quedando la Compañía Aseguradora liberada de responsabilidad.
 

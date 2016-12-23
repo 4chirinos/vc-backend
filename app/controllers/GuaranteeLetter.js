@@ -29,12 +29,12 @@ module.exports = {
 				qb.where({'policyId': req.query.policyId});
 			}
 			if(req.query.firstName) {
-				var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: req.query.firstName});
+				var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: req.query.firstName.toUpperCase()});
 				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
 			if(req.query.lastName) {
-				var subquery2 = bookshelf.knex.select('id').from('person').where({lastName: req.query.lastName});
+				var subquery2 = bookshelf.knex.select('id').from('person').where({lastName: req.query.lastName.toUpperCase()});
 				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
@@ -168,13 +168,13 @@ module.exports = {
 
 	getDocumentById: function(req, res) {
 
-		RequestModel
+		GuaranteeLetterModel
 		.forge({id: req.params.id})
 		.fetch({withRelated: [
-			'guaranteeLetter.state',
-			'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder',
-			'guaranteeLetter.policy.owner', 'guaranteeLetter.budget.item',
-			'guaranteeLetter.budget.affiliated.state'
+			'state',
+			'beneficiary', 'policy.holder',
+			'policy.owner', 'budget.item',
+			'budget.affiliated.state'
 		]})
 		.then(function(model) {
 			
@@ -189,11 +189,11 @@ module.exports = {
 
 			var totalCost = 0, uncoveredCost = 0, coveredCost = 0;
 
-			for(var i = 0; i < data.guaranteeLetter.budget.item.length; i++) {
-				totalCost += data.guaranteeLetter.budget.item[i].cost;
+			for(var i = 0; i < data.budget.item.length; i++) {
+				totalCost += data.budget.item[i].cost;
 			}
 
-			coveredCost = totalCost * data.guaranteeLetter.coveredPercentage / 100;
+			coveredCost = totalCost * data.coveredPercentage / 100;
 
 			uncoveredCost = totalCost - coveredCost;
 
@@ -219,27 +219,27 @@ module.exports = {
 			data.uncoveredCost = uncoveredCost;
 			data.totalCost = totalCost;
 
-			var endDate = data.guaranteeLetter.policy.endDate
+			var endDate = data.policy.endDate
 
 			endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
 
-            data.guaranteeLetter.policy.endDate = endDate;
+            data.policy.endDate = endDate;
 
-            endDate = data.guaranteeLetter.startDate;
-
-            endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
-
-            data.guaranteeLetter.startDate = endDate;
-
-            endDate = data.guaranteeLetter.budget.startDate;
+            endDate = data.startDate;
 
             endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
 
-            data.guaranteeLetter.budget.startDate = endDate;
+            data.startDate = endDate;
+
+            endDate = data.budget.startDate;
+
+            endDate = endDate.getDate() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getFullYear();
+
+            data.budget.startDate = endDate;
 
             data.imageUrl = __dirname + '/../public';
 
-            console.log(data.imageUrl);
+            //console.log(data.imageUrl);
 
 			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/guaranteeLetter.ejs', 'utf8'));
 
@@ -250,7 +250,7 @@ module.exports = {
 				res.writeHead(200, {
 		            'Content-Type': 'application/pdf',
 		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=CartaAval_' + data.guaranteeLetter.id
+		            'Content-Disposition': 'attachment; filename=CartaAval_' + data.id
 		        });
 
 				out.stream.pipe(res);

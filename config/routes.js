@@ -96,7 +96,7 @@ router.route('/guaranteeLetter')
 router.route('/guaranteeLetter/:id')
 	.get(Session.validSession, GuaranteeLetter.getById); // tiene statusGroups
 
-router.route('/document/guaranteeLetter/request/:id')
+router.route('/document/guaranteeLetter/:id')
 	.get(GuaranteeLetter.getDocumentById);
 
 

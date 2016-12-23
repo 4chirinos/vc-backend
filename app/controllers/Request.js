@@ -15,13 +15,27 @@ var fs = require('fs');
 
 var multer  = require('multer');
 
+var getExtension = function(filename) {
+	var a = filename.split(".");
+	if(a.length === 1 || (a[0] === "" && a.length === 2) ) {
+	    return "";
+	}
+	return a.pop();  
+};
+
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './public/uploads');
   },
   filename: function (req, file, cb) {
   	var date = new Date();
-  	var name =  Date.now() + '_' + date.getFullYear() + '_' + file.originalname;
+
+  	var hora = date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds();
+  	var fecha = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+
+  	req.budget_index++;
+  	var name =  'Fecha ' + fecha + '_Hora ' + hora + '_Presupuesto ' + req.budget_index;
+  	name += '.' + getExtension(file.originalname);
 
   	BudgetImageModel
   	.forge({requestId: req.params.id, path: name})
@@ -51,7 +65,13 @@ var storage2 = multer.diskStorage({
   },
   filename: function (req, file, cb) {
   	var date = new Date();
-  	var name =  Date.now() + '_' + date.getFullYear() + '_' + file.originalname;
+
+  	var hora = date.getHours() + '-' + date.getMinutes() + '-' + date.getSeconds();
+  	var fecha = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
+
+  	req.form_index++;
+  	var name =  'Fecha ' + fecha + '_Hora ' + hora + '_Presupuesto ' + req.form_index;
+  	name += '.' + getExtension(file.originalname);
 
   	FormImageModel
   	.forge({requestId: req.params.id, path: name})
@@ -1019,6 +1039,7 @@ module.exports = {
 		})
 		.fetch()
 		.then(function(model) {
+			req.budget_index = 0;
 			next();
 		})
 		.catch(function(err) {
@@ -1036,6 +1057,7 @@ module.exports = {
 		})
 		.fetch()
 		.then(function(model) {
+			req.form_index = 0;
 			next();
 		})
 		.catch(function(err) {

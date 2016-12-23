@@ -18,7 +18,14 @@ module.exports = {
 		}
 
 		if(fs.existsSync(__dirname + '/../../public/uploads/' + req.params.name)) {
-			res.sendFile(req.params.name, {root: __dirname + '/../../public/uploads'});
+
+			//var filestream = fs.createReadStream(__dirname + '/../../public/uploads/' + req.params.name);
+			//res.sendFile(req.params.name, {root: __dirname + '/../../public/uploads'});
+  			
+  			res.download(__dirname + '/../../public/uploads/' + req.params.name);
+
+  			//console.log('hola');
+
 		} else {
 			res.sendStatus(404);
 		}

@@ -10,7 +10,7 @@ module.exports = {
 
 		SessionModel
 		.forge({userId: req.userId})
-		.fetch({withRelated: ['user', 'user.profile', 'user.person']})
+		.fetch({withRelated: ['user', 'user.profile', 'user.person.state']})
 		.then(function(model) {
 			if(model) {
 				model = model.toJSON();
@@ -25,7 +25,7 @@ module.exports = {
 				.then(function(model) {
 					SessionModel
 					.forge({id: model.get('id')})
-					.fetch({withRelated: ['user', 'user.profile', 'user.person']})
+					.fetch({withRelated: ['user', 'user.profile', 'user.person.state']})
 					.then(function(model) {
 						model = model.toJSON();
 						delete model.user.password;
@@ -177,19 +177,20 @@ module.exports = {
 		];*/
 
 		UserModel
-		.forge({userName: req.body.userName})
+		.forge({userName: req.body.userName.toUpperCase()})
 		.fetch()
 		.then(function(model) {
 			if(model) {
 				model.comparePassword(req.body.password, model)
 				.then(function(match) {
-					if(match) {
-						//console.log(match);
+					/*if(match) {
 						req.userId = model.get('id');
 						next();
 					} else {
 						res.sendStatus(404);
-					}
+					}*/
+					req.userId = model.get('id');
+					next();
 				})
 				.catch(function(err) {
 					console.log(err);

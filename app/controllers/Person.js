@@ -21,6 +21,8 @@ module.exports = {
 			}
 			if(req.query.profileId) {
 				qb.where({'profileId': req.query.profileId});
+			} else {
+				qb.where('profileId', 'in', [1, 2, 3]);
 			}
 			if(req.query.stateId) {
 				qb.where({'stateId': req.query.stateId});

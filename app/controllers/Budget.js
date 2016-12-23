@@ -179,7 +179,11 @@ module.exports = {
 				model = model.toJSON();
 				BudgetModel
 				.forge({id: model.guaranteeLetter.budgetId})
-				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated', 'guaranteeLetter', 'item.historical', 'currentBudget.item']})
+				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}, 'affiliated', 'guaranteeLetter', 'item.historical',
+					{'currentBudget.item': function(qb) {
+						qb.orderBy('concept', 'ASC');
+					}}	
+				]})
 				.then(function(model) {
 
 					model = model.toJSON();

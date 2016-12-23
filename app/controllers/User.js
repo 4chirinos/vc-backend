@@ -60,7 +60,7 @@ module.exports = {
 		var fields = _.pick(req.body, bodyFields);*/
 
 		PersonModel
-		.forge({id: req.body.id})
+		.forge({id: req.body.personId})
 		.fetch()
 		.then(function(model) {
 			
@@ -79,7 +79,7 @@ module.exports = {
 
 			fields.userName = userName;
 			fields.password = password;
-			fields.personId = req.body.id;
+			fields.personId = req.body.personId;
 			fields.profileId = req.body.profileId;
 
 			UserModel
@@ -88,7 +88,7 @@ module.exports = {
 			.then(function(model) {
 				
 				PersonModel
-				.forge({id: req.body.id})
+				.forge({id: req.body.personId})
 				.fetch({withRelated: [
 				'profile', 'state',
 						{'user': function(qb) {
@@ -285,17 +285,17 @@ module.exports = {
 
 	partialUpdate: function(req, res) {
 
-		req.check(validator.partialUpdate);
+		/*req.check(validator.partialUpdate);
 
 		var errors = req.validationErrors();
 
 		if(errors) {
 			res.status(400).send(errors);
 			return;
-		}
+		}*/
 
 		var bodyFields = [
-			'password', 'available', 'profileId'
+			'password', 'available', 'profileId', 'userName'
 		];
 
 		var fields = _.pick(req.body, bodyFields);
@@ -310,7 +310,25 @@ module.exports = {
 			}
 			model.save(fields)
 			.then(function(model) {
-				res.send(model.toJSON());
+				model = model.toJSON();
+				PersonModel
+				.forge({id: model.personId})
+				.fetch({withRelated: [
+						'profile', 'state',
+						{'user': function(qb) {
+					    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+					  		}
+					  	},
+					  	'user.profile'
+				  	]
+				})
+				.then(function(model) {
+					res.send(model.toJSON());
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
 			})
 			.catch(function(err) {
 				console.log(err);

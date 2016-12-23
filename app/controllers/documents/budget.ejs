@@ -42,11 +42,13 @@
         <div id="content">
           <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
         </div>
+
+        <br>
         
         <h3><center><%= data.affiliated.name %></center></h3> <br>
         Dirección: <%= data.affiliated.address %> <br>
-        Central Telefónica: <%= data.affiliated.phoneNumber %> <br>
         RIF: <%= data.affiliated.rif %> <br>
+        Central Telefónica: <%= data.affiliated.phoneNumber %> <br>
 
         <% if(data.affiliated.portal) { %>
           Portal Web: <%= data.affiliated.portal %> <br>
@@ -55,7 +57,7 @@
       </div>
 
       <div align="right">
-        <%= data.affiliated.state.stateName %>, <%= data.startDate %> <br>
+        Fecha Emisión: <%= data.startDate %> <br>
         Presupuesto Nro: <strong> <%= data.code %> </strong>
       </div>
 
@@ -68,7 +70,7 @@
         </div>
 
         <div style="display: inline-block; width: 258px;">
-          <strong>Historia nro: </strong><%= data.history %>
+          <strong>Historia Nro: </strong><%= data.history %>
         </div>
 
         <div>
