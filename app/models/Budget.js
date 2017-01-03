@@ -5,7 +5,7 @@ require('./Affiliated');
 require('./currentBudget');
 
 module.exports = bookshelf.model('Budget', {
-	tableName: 'budget',
+	tableName: 'my_budget',
 	item: function() {
 		return this.hasMany('Item', 'budgetId');
 	},

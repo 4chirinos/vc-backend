@@ -1,0 +1,40 @@
+core del negocio:
+   - affialiated (lista)
+   - budget (lista)
+   - item (lista)
+   - guaranteeLetter
+   - person (lista) // quitarle la referencia a la tabla 'profile'
+   - policy (lista)
+   - state (lista)
+   
+   VISTAS:
+      - profileView ('person' tiene relacion con esta vista)
+      
+Definición de vista con db_link: SELECT t1.id,
+    t1.name,
+    t1.address,
+    t1."phoneNumber",
+    t1.rif,
+    t1.portal,
+    t1."stateId"
+   FROM dblink('dbname=prueba'::text, 'select * from "affiliated"'::text) t1(id integer, name text, address text, "phoneNumber" text, rif text, portal text, "stateId" integer);
+   
+
+BD app:
+   - answer
+   - question
+   - form
+   - budgetImage (no requiere)
+   - comment
+   - currentBudget
+   - currentItem
+   - formImage (no requiere)
+   - historicalItem (no requiere)
+   - request
+   - status (lista)
+   - statusType (lista)
+   - user (lista)
+   - session (no requiere)
+   
+   - profile (lista)
+   - profileType (lista)

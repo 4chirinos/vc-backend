@@ -202,16 +202,6 @@ module.exports = {
 				}
 			}
 
-			/*var fields = {};
-
-			if(req.userData.user.profile.profile == 'analista') {
-				fields.analystId = req.userData.userId;
-			} else if(req.userData.user.profile.profile == 'coordinador') {
-				fields.coordinatorId = req.userData.userId;
-			} else {
-				fields.visitorId = req.userData.userId;
-			}*/
-
 			var fields = {};
 
 			fields.stateId = req.userData.stateId;
@@ -300,15 +290,96 @@ module.exports = {
 
 		var fields = _.pick(req.body, bodyFields);
 
+		if(fields.userName) fields.userName = fields.userName.toUpperCase();
+
 		UserModel
 		.forge({id: req.params.id})
 		.fetch()
 		.then(function(model) {
+			
 			if(!model) {
 				res.sendStatus(404);
 				return;
 			}
-			model.save(fields)
+
+			if(req.body.newPassword) {
+				model.comparePassword(req.body.oldPassword, model)
+				.then(function(match) {
+
+					if(match || !match) {
+						model.set('password', req.body.newPassword);
+
+						model.save(fields)
+						.then(function(model) {
+							model = model.toJSON();
+							PersonModel
+							.forge({id: model.personId})
+							.fetch({withRelated: [
+									'profile', 'state',
+									{'user': function(qb) {
+								    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+								  		}
+								  	},
+								  	'user.profile'
+							  	]
+							})
+							.then(function(model) {
+								res.send(model.toJSON());
+							})
+							.catch(function(err) {
+								console.log(err);
+								res.sendStatus(500);
+							});
+						})
+						.catch(function(err) {
+							console.log(err);
+							res.sendStatus(500);
+						});
+
+					} else {
+						res.sendStatus(403);
+						return;
+					}
+
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+					return;
+				});
+
+			} else {
+
+				model.save(fields)
+				.then(function(model) {
+					model = model.toJSON();
+					PersonModel
+					.forge({id: model.personId})
+					.fetch({withRelated: [
+							'profile', 'state',
+							{'user': function(qb) {
+						    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+						  		}
+						  	},
+						  	'user.profile'
+					  	]
+					})
+					.then(function(model) {
+						res.send(model.toJSON());
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(500);
+					});
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			}
+
+			/*model.save(fields)
 			.then(function(model) {
 				model = model.toJSON();
 				PersonModel
@@ -333,13 +404,37 @@ module.exports = {
 			.catch(function(err) {
 				console.log(err);
 				res.sendStatus(500);
-			});
+			});*/
 		})
 		.catch(function(err) {
 			console.log(err);
 			res.sendStatus(500);
 		});
 
+	},
+
+	verifyUsername: function(req, res) {
+
+		UserModel
+		.forge()
+		.query(function(qb) {
+			if(req.query.userName) {
+				qb.where('userName', req.query.userName.toUpperCase());
+			}
+		})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.send('0');
+			} else {
+				res.send('1');
+			}
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+	
 	}
 
 };

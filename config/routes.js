@@ -45,6 +45,9 @@ router.route('/user/:id')
 	.patch(User.partialUpdate);
 	//.delete ¿deshabilitar usuario?
 
+router.route('/verification/user/username')
+	.get(User.verifyUsername);
+
 /* ############################################################################################## */
 
 

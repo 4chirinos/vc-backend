@@ -34,7 +34,7 @@ var storage = multer.diskStorage({
   	var fecha = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
 
   	req.budget_index++;
-  	var name =  'Fecha ' + fecha + '_Hora ' + hora + '_Presupuesto ' + req.budget_index;
+  	var name =  'Fecha ' + fecha + /*'_Hora ' + hora +*/ '_Presupuesto ' + req.budget_index;
   	name += '.' + getExtension(file.originalname);
 
   	BudgetImageModel
@@ -70,7 +70,7 @@ var storage2 = multer.diskStorage({
   	var fecha = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
 
   	req.form_index++;
-  	var name =  'Fecha ' + fecha + '_Hora ' + hora + '_Presupuesto ' + req.form_index;
+  	var name =  'Fecha ' + fecha + /*'_Hora ' + hora +*/ '_Encuesta ' + req.form_index;
   	name += '.' + getExtension(file.originalname);
 
   	FormImageModel
@@ -533,27 +533,6 @@ module.exports = {
 
 			RequestModel
 			.query(function(qb) {
-				
-				/*if(req.query.statusId) {
-					if(model.profile.profile == 'analista') {
-						qb.where({analystId: model.id, statusId: req.query.statusId});
-					} else if(model.profile.profile == 'coordinador') {
-						if(req.query.statusId != 2)
-							qb.where({coordinatorId: model.id, statusId: req.query.statusId});
-						else
-							qb.where({statusId: req.query.statusId});
-					} else {
-						qb.where({visitorId: model.id, statusId: req.query.statusId});
-					}
-				} else {
-					if(model.profile.profile == 'analista') {
-						qb.where({analystId: model.id});
-					} else if(model.profile.profile == 'coordinador') {
-						qb.where({coordinatorId: model.id}).orWhere({coordinatorId: null});
-					} else {
-						qb.where({visitorId: model.id});
-					}
-				}*/
 
 				if(model.profile.profile == 'coordinador') {
 
@@ -562,20 +541,20 @@ module.exports = {
 							qb.where({coordinatorId: model.id, statusId: req.query.statusId});
 						} else { // es igual a 2
 							qb.innerJoin('status', 'request.statusId', 'status.id');
-							qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
-							qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
-							qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
-							qb.where('affiliated.stateId', req.userData.stateId);
+							qb.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId');
+							qb.innerJoin('my_budget', 'my_budget.id', 'my_guaranteeLetter.budgetId');
+							qb.innerJoin('my_affiliated', 'my_affiliated.id', 'my_budget.affiliatedId');
+							qb.where('my_affiliated.stateId', req.userData.stateId);
 							qb.where('status.id', req.query.statusId);
 							qb.where('request.coordinatorId', null);
 						}
 					} else {
 						qb.innerJoin('status', 'request.statusId', 'status.id');
-						qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
-						qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
-						qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
-						qb.where('affiliated.stateId', req.userData.stateId);
-						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', req.userData.stateId);
+						qb.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId');
+						qb.innerJoin('my_budget', 'my_budget.id', 'my_guaranteeLetter.budgetId');
+						qb.innerJoin('my_affiliated', 'my_affiliated.id', 'my_budget.affiliatedId');
+						qb.where('my_affiliated.stateId', req.userData.stateId);
+						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('my_affiliated.stateId', req.userData.stateId);
 					}
 					
 				} else {
@@ -595,22 +574,22 @@ module.exports = {
 				}
 
 				if(req.query.requestId) {
-					qb.where({'id': req.query.requestId});
+					qb.where({'request.id': req.query.requestId});
 				}
 
 				if(req.query.guaranteeLetterId) {
-					qb.where({'guaranteeLetterId': req.query.guaranteeLetterId});
+					qb.where({'request.guaranteeLetterId': req.query.guaranteeLetterId});
 				}
 
 				if(req.query.sd1) {
-					qb.whereRaw('??::date >= ?', ['startDate', req.query.sd1]);
+					qb.whereRaw('??::date >= ?', ['request.startDate', req.query.sd1]);
 				}
 
 				if(req.query.sd2) {
-					qb.whereRaw('??::date <= ?', ['startDate', req.query.sd2]);
+					qb.whereRaw('??::date <= ?', ['request.startDate', req.query.sd2]);
 				}
 
-				qb.orderBy('startDate', 'DESC');
+				qb.orderBy('request.startDate', 'DESC');
 
 			})
 			.fetchPage({
@@ -649,6 +628,7 @@ module.exports = {
 
 				RequestModel.count(fields, function(err, count) {
 					if(err) {
+						console.log(err);
 						res.sendStatus(500);
 						return;
 					}
