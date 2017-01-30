@@ -81,6 +81,10 @@ router.route('/budget')
 router.route('/budget/:id')
 	.get(Session.validSession, Budget.getById); // tiene statusGroups
 
+router.route('/budget/:requestId/currentBudget')
+	.get(Budget.getCurrentBudget) // tiene statusGroups
+	.post(Budget.create);
+
 router.route('/item')
 	.get(Item.getAll); // no necesita statusGroups porque no la utilizo en el app
 

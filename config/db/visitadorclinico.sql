@@ -118,6 +118,8 @@ ALTER SEQUENCE "user_id_seq" RESTART WITH 100;
 
 
 DELETE FROM "request";
+DELETE FROM "currentItem";
+DELETE FROM "currentBudget";
 DELETE FROM "session";
 DELETE FROM "user";
 DELETE FROM "status";
@@ -160,6 +162,7 @@ INSERT INTO "profile" VALUES (9, 'visitador', 2);
 
 INSERT INTO "user" VALUES (1, 1, '$2a$08$rCHFWUpjgqBGgOvFFaplkOJaFpulwl/Ez5IAzdTeoIkLAi4BDwIVm', 'MLOPEZ', 7, true);
 INSERT INTO "user" VALUES (2, 2, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'ACONTRERAS', 8, true);
+INSERT INTO "user" VALUES (4, 6, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'JRIVAS', 9, true);
 
 INSERT INTO "user" VALUES (3, 9, '$2a$08$rCHFWUpjgqBGgOvFFaplkOJaFpulwl/Ez5IAzdTeoIkLAi4BDwIVm', 'LJARAMILLO', 6, true);
 

@@ -16,6 +16,6 @@ module.exports = bookshelf.model('Budget', {
 		return this.hasOne('GuaranteeLetter', 'budgetId');
 	},
 	currentBudget: function() {
-		return this.hasOne('currentBudget', 'budgetId');
+		return this.hasMany('currentBudget', 'budgetId');
 	}
 });

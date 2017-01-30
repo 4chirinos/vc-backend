@@ -19,7 +19,9 @@ module.exports = {
 
 		var budget = req.body;
 
-		if(budget.id == -1) {
+		//console.log(budget);
+
+		//if(budget.id == -1) {
 			currentBudgetModel
 			.forge({budgetId: budget.parentBudgetId})
 			.save()
@@ -37,7 +39,7 @@ module.exports = {
 
 					currentBudgetModel
 					.forge({id: model.id})
-					.fetch({withRelated: {'item': function(qb) {qb.orderBy('id')}}})
+					.fetch({withRelated: {'item': function(qb) {qb.orderBy('concept', 'ASC')}}})
 					.then(function(model) {
 						model = model.toJSON();
 						res.send(model);
@@ -59,7 +61,7 @@ module.exports = {
 				console.log(err);
 				res.sendStatus(500);
 			});
-		} else {
+		/*} else {
 			currentItemModel
 			.query(function(qb) {
 				qb.where({currentBudgetId: budget.id}).del();
@@ -97,7 +99,7 @@ module.exports = {
 				console.log(err);
 				res.sendStatus(500);
 			});
-		}
+		}*/
 		
 	},
 
@@ -166,6 +168,8 @@ module.exports = {
 
 	getAll: function(req, res) {
 
+		console.log(req.query.requestId);
+
 		if(req.query.requestId) {
 
 			RequestModel
@@ -179,10 +183,10 @@ module.exports = {
 				model = model.toJSON();
 				BudgetModel
 				.forge({id: model.guaranteeLetter.budgetId})
-				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}, 'affiliated', 'guaranteeLetter', 'item.historical',
+				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}, 'affiliated', 'guaranteeLetter'/*,
 					{'currentBudget.item': function(qb) {
 						qb.orderBy('concept', 'ASC');
-					}}	
+					}}*/	
 				]})
 				.then(function(model) {
 
@@ -218,6 +222,7 @@ module.exports = {
 						}
 						model.statusGroups = count;
 						res.send(model);
+
 					});
 
 				})
@@ -234,6 +239,94 @@ module.exports = {
 		} else {
 			res.sendStatus(400);
 		}
+
+	},
+
+	getCurrentBudget: function(req, res) {
+
+		var page = req.query.page || 1,
+			pageSize = 1;
+
+
+		RequestModel
+		.forge({id: req.params.requestId})
+		.fetch({withRelated: ['guaranteeLetter']})
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+			
+			model = model.toJSON();
+			
+			if(req.query.lastPage) {
+
+				currentBudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
+
+				console.log(count[0].count);
+
+				if(err) {
+					console.log(err);
+					res.sendStatus(500);
+					return;
+				}
+
+				if(count[0].count == 0) {
+					res.send([]);
+					return;
+				}
+
+				currentBudgetModel
+				.fetchPage({
+					page: count[0].count,
+					pageSize: pageSize,
+					withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}]
+				})
+				.then(function(collection) {
+
+					var response = {};
+
+					response.budgets = collection.toJSON();
+					response.pageCount = collection.pagination.pageCount;
+
+					res.send(response);
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			});
+
+			} else {
+
+				currentBudgetModel
+				.fetchPage({
+					page: page,
+					pageSize: pageSize,
+					withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}]
+				})
+				.then(function(collection) {
+
+					var response = {};
+
+					response.budgets = collection.toJSON();
+					response.pageCount = collection.pagination.pageCount;
+
+					res.send(response);
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			}
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 
