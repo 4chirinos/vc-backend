@@ -9,6 +9,7 @@ var express = require('express'),
 	Form = require('../app/controllers/Form'),
 	Image = require('../app/controllers/Image'),
 	Comment = require('../app/controllers/Comment'),
+	Answer = require('../app/controllers/Answer'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
@@ -28,7 +29,8 @@ router.route('/person/:id')
 /* ############################################################################################# */
 
 
-
+router.route('/answer/request/:id')
+	.get(Answer.getCurrentAnswers); // falta sessionValid
 
 
 

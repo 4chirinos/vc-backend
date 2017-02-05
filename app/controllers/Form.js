@@ -122,41 +122,5 @@ module.exports = {
 			res.sendStatus(500);
 		});
 
-		/*FormModel
-		.forge({id: req.params.id})
-		.fetch({withRelated: ['question']})
-		.then(function(model) {
-
-			if(!model) {
-				res.sendStatus(404);
-				return;
-			}
-
-			var data = model.toJSON();
-
-			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/survey.ejs', 'utf8'));
-
-			var html = compiled({data: data});
-
-			jsreport.render(html).then(function(out) {
-
-				res.writeHead(200, {
-		            'Content-Type': 'application/pdf',
-		            'Access-Control-Allow-Origin': '*',
-		            'Content-Disposition': 'attachment; filename=encuesta'
-		        });
-
-				out.stream.pipe(res);
-
-			}).catch(function(e) {    
-			    res.sendStatus(500);
-			});
-
-		})
-		.catch(function(err) {
-			console.log(err);
-			res.sendStatus(500);
-		});*/
-
 	}
 };

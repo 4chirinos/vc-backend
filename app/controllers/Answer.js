@@ -4,6 +4,23 @@ var AnswerModel = require('../models/Answer'),
 
 module.exports = {
 
+	getCurrentAnswers: function(req, res) {
+
+		var answerModel = new AnswerModel();
+
+		if(req.query.lastPage) {
+
+			answerModel.countAnswers(100, function(err, count) {
+				console.log(count);
+				res.send(count + '');
+			});
+
+		} else {
+
+		}
+
+	},
+
 	create: function(req, res) {
 
 		req.check(validator.create);

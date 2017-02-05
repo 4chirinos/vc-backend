@@ -263,8 +263,6 @@ module.exports = {
 
 				currentBudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
 
-				console.log(count[0].count);
-
 				if(err) {
 					console.log(err);
 					res.sendStatus(500);
