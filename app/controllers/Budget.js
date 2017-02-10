@@ -168,7 +168,7 @@ module.exports = {
 
 	getAll: function(req, res) {
 
-		console.log(req.query.requestId);
+		//console.log(req.query.requestId);
 
 		if(req.query.requestId) {
 
@@ -270,7 +270,7 @@ module.exports = {
 				}
 
 				if(count[0].count == 0) {
-					res.send([]);
+					res.send('nada');
 					return;
 				}
 

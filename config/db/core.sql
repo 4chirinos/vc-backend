@@ -1,4 +1,4 @@
-/*psql -h localhost -d visitadorclinico_development -U postgres*/
+/*psql -h localhost -d core_development -U postgres*/
 /*\i 'batch.sql'*/
 /*heroku apps -> listar nombres de mis apps*/
 /*heroku run bash -> para correr las migraciones*/
