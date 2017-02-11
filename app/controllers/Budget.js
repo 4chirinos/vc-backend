@@ -275,6 +275,9 @@ module.exports = {
 				}
 
 				currentBudgetModel
+				.query(function(qb) {
+					qb.where('budgetId', model.guaranteeLetter.budgetId);
+				})
 				.fetchPage({
 					page: count[0].count,
 					pageSize: pageSize,
@@ -299,6 +302,9 @@ module.exports = {
 			} else {
 
 				currentBudgetModel
+				.query(function(qb) {
+					qb.where('budgetId', model.guaranteeLetter.budgetId);
+				})
 				.fetchPage({
 					page: page,
 					pageSize: pageSize,
