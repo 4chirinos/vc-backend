@@ -542,20 +542,20 @@ module.exports = {
 							qb.where({coordinatorId: model.id, statusId: req.query.statusId});
 						} else { // es igual a 2
 							qb.innerJoin('status', 'request.statusId', 'status.id');
-							qb.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId');
-							qb.innerJoin('my_budget', 'my_budget.id', 'my_guaranteeLetter.budgetId');
-							qb.innerJoin('my_affiliated', 'my_affiliated.id', 'my_budget.affiliatedId');
-							qb.where('my_affiliated.stateId', req.userData.stateId);
+							qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
+							qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
+							qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
+							qb.where('affiliated.stateId', req.userData.stateId);
 							qb.where('status.id', req.query.statusId);
 							qb.where('request.coordinatorId', null);
 						}
 					} else {
 						qb.innerJoin('status', 'request.statusId', 'status.id');
-						qb.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId');
-						qb.innerJoin('my_budget', 'my_budget.id', 'my_guaranteeLetter.budgetId');
-						qb.innerJoin('my_affiliated', 'my_affiliated.id', 'my_budget.affiliatedId');
-						qb.where('my_affiliated.stateId', req.userData.stateId);
-						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('my_affiliated.stateId', req.userData.stateId);
+						qb.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId');
+						qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
+						qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
+						qb.where('affiliated.stateId', req.userData.stateId);
+						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', req.userData.stateId);
 					}
 					
 				} else {
@@ -779,23 +779,76 @@ module.exports = {
 					return;
 				}
 
-				RequestFormModel
-				.query(function(qb) {
-					qb.where('requestId', req.params.id);
-				})
-				.fetchPage({
-					page: count[0].count,
-					pageSize: pageSize
-				})
-				.then(function(collection) {
+				if(count[0].count > 0) {
+					RequestFormModel
+					.query(function(qb) {
+						qb.where('requestId', req.params.id);
+					})
+					.fetchPage({
+						page: count[0].count,
+						pageSize: pageSize
+					})
+					.then(function(collection) {
 
-					var aux = collection.toJSON();
+						var aux = collection.toJSON();
+
+						RequestModel
+						.forge({id: req.params.id})
+						.fetch({withRelated: [{'answer': function(qb) {
+							qb.orderBy('id');
+							qb.where('requestFormId', aux[0].id);
+						}}, 'form.question']})
+						.then(function(model) {
+
+							if(!model) {
+								res.sendStatus(404);
+								return
+							}
+
+							model = model.toJSON();
+
+							var answer = model.answer;
+
+							delete model.answer;
+
+							for(var i = 0; i < answer.length; i++) {
+								model.form.question[i].answer = answer[i];
+							}
+
+							var response = {};
+
+							response.information = model;
+							response.pageCount = collection.pagination.pageCount;
+							response.submitDate = aux[0].date;
+
+							res.send(response);
+
+						})
+						.catch(function(err) {
+							console.log(err);
+							if(err) {
+								res.sendStatus(500);
+								return;
+							}
+						});
+
+						/*var response = {};
+
+						response.requestForm = collection.toJSON();
+						response.pageCount = collection.pagination.pageCount;
+
+						res.send(response);*/
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(500);
+					});
+				} else {
 
 					RequestModel
 					.forge({id: req.params.id})
 					.fetch({withRelated: [{'answer': function(qb) {
 						qb.orderBy('id');
-						qb.where('requestFormId', aux[0].id);
 					}}, 'form.question']})
 					.then(function(model) {
 
@@ -817,8 +870,8 @@ module.exports = {
 						var response = {};
 
 						response.information = model;
-						response.pageCount = collection.pagination.pageCount;
-						response.submitDate = aux[0].date;
+						response.pageCount = 1;
+						//response.submitDate = aux[0].date;
 
 						res.send(response);
 
@@ -831,17 +884,7 @@ module.exports = {
 						}
 					});
 
-					/*var response = {};
-
-					response.requestForm = collection.toJSON();
-					response.pageCount = collection.pagination.pageCount;
-
-					res.send(response);*/
-				})
-				.catch(function(err) {
-					console.log(err);
-					res.sendStatus(500);
-				});
+				}
 
 			});
 		} else {

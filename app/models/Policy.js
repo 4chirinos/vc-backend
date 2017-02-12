@@ -1,7 +1,7 @@
 var bookshelf = require('../../config/db/builder-knex');
 
 module.exports = bookshelf.model('Policy', {
-	tableName: 'my_policy',
+	tableName: 'policy',
 	holder: function() {
 		return this.belongsTo('Person', 'holderId');
 	},

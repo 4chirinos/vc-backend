@@ -3,7 +3,7 @@ var bookshelf = require('../../config/db/builder-knex');
 require('./Policy');
 
 module.exports = bookshelf.model('GuaranteeLetter', {
-	tableName: 'my_guaranteeLetter',
+	tableName: 'guaranteeLetter',
 	request: function() {
 		return this.hasMany('Request', 'guaranteeLetterId');
 	},

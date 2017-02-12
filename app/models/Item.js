@@ -3,7 +3,7 @@ var bookshelf = require('../../config/db/builder-knex');
 require('./Budget');
 
 module.exports = bookshelf.model('Item', {
-	tableName: 'my_item',
+	tableName: 'item',
 	budget: function() {
 		return this.belongsTo('Budget', 'budgetId');
 	},

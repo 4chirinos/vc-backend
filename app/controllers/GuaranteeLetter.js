@@ -29,18 +29,18 @@ module.exports = {
 				qb.where({'policyId': req.query.policyId});
 			}
 			if(req.query.firstName) {
-				var subquery2 = bookshelf.knex.select('id').from('my_person').where({firstName: req.query.firstName.toUpperCase()});
-				var subquery1 = bookshelf.knex.select('id').from('my_guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				var subquery2 = bookshelf.knex.select('id').from('person').where({firstName: req.query.firstName.toUpperCase()});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
 			if(req.query.lastName) {
-				var subquery2 = bookshelf.knex.select('id').from('my_person').where({lastName: req.query.lastName.toUpperCase()});
-				var subquery1 = bookshelf.knex.select('id').from('my_guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				var subquery2 = bookshelf.knex.select('id').from('person').where({lastName: req.query.lastName.toUpperCase()});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
 			if(req.query.BidentityCard) {
-				var subquery2 = bookshelf.knex.select('id').from('my_person').where({identityCard: req.query.BidentityCard});
-				var subquery1 = bookshelf.knex.select('id').from('my_guaranteeLetter').where('beneficiaryId', 'in', subquery2);
+				var subquery2 = bookshelf.knex.select('id').from('person').where({identityCard: req.query.BidentityCard});
+				var subquery1 = bookshelf.knex.select('id').from('guaranteeLetter').where('beneficiaryId', 'in', subquery2);
 				qb.where('id', 'in', subquery1);
 			}
 			if(req.query.statusId) {

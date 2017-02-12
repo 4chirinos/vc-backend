@@ -4,7 +4,7 @@ require('./User');
 require('./Profile');
 
 module.exports = bookshelf.model('Person', {
-	tableName: 'my_person',
+	tableName: 'person',
 	user: function() {
 		return this.hasOne('User', 'personId');
 	},

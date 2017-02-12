@@ -288,7 +288,7 @@ module.exports = {
 					var response = {};
 
 					response.budgets = collection.toJSON();
-					response.pageCount = collection.pagination.pageCount;
+					response.pageCount = collection.pagination.pageCount + 1;
 
 					res.send(response);
 				})
@@ -315,7 +315,7 @@ module.exports = {
 					var response = {};
 
 					response.budgets = collection.toJSON();
-					response.pageCount = collection.pagination.pageCount;
+					response.pageCount = collection.pagination.pageCount + 1;
 
 					res.send(response);
 				})

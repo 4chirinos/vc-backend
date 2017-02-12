@@ -1,12 +1,12 @@
 
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('formImage', function(t) {
+  return knex.schema.createTable('requestForm', function(t) {
   	 t.increments('id').primary();
   	 t.integer('requestId').references('id').inTable('request').notNullable().onDelete('cascade');
-    t.string('path').notNullable();
+    t.dateTime('date').notNullable().defaultTo(knex.raw('now()'));
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('formImage');
+  return knex.schema.dropTable('request_form');
 };

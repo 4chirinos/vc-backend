@@ -4,7 +4,6 @@ exports.up = function(knex, Promise) {
   	t.increments('id').primary();
   	t.integer('requestId').references('id').inTable('request').notNullable().onDelete('cascade');
   	t.integer('questionId').references('id').inTable('question').notNullable().onDelete('cascade');
-  	t.integer('requestFormId').references('id').inTable('requestForm').notNullable();
   	t.enu('answer', ['1', '2', '3', '4', '5']).nullable();
   });
 };

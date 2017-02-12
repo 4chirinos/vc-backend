@@ -43,7 +43,7 @@ module.exports = bookshelf.model('Request', {
 		if(fields.role == 'analyst') {
 			bookshelf.knex.from('request')
 			.innerJoin('status', 'request.statusId', 'status.id')
-			.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId')
+			.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId')
 			.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
 			.where({analystId: fields.id})//.orWhere({coordinatorId: null, analystId: fields.id, stateId: fields.stateId})
 			.groupBy('status.id')
@@ -56,11 +56,11 @@ module.exports = bookshelf.model('Request', {
 		} else if(fields.role == 'coordinator') {
 			bookshelf.knex.from('request')
 			.innerJoin('status', 'request.statusId', 'status.id')
-			.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId')
-			.innerJoin('my_budget', 'my_budget.id', 'my_guaranteeLetter.budgetId')
-			.innerJoin('my_affiliated', 'my_affiliated.id', 'my_budget.affiliatedId')
+			.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId')
+			.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId')
+			.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId')
 			.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
-			.where('request.coordinatorId', fields.id).orWhere('request.coordinatorId', null).andWhere('my_affiliated.stateId', fields.stateId)
+			.where('request.coordinatorId', fields.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', fields.stateId)
 			//.where({coordinatorId: fields.id}).orWhere({coordinatorId: null, stateId: fields.stateId})
 			.groupBy('status.id')
 			.then(function(count) {
@@ -72,7 +72,7 @@ module.exports = bookshelf.model('Request', {
 		} else {
 			bookshelf.knex.from('request')
 			.innerJoin('status', 'request.statusId', 'status.id')
-			.innerJoin('my_guaranteeLetter', 'my_guaranteeLetter.id', 'request.guaranteeLetterId')
+			.innerJoin('guaranteeLetter', 'guaranteeLetter.id', 'request.guaranteeLetterId')
 			.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
 			.where({visitorId: fields.id})
 			.groupBy('status.id')
