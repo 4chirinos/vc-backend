@@ -10,11 +10,16 @@ var express = require('express'),
 	Image = require('../app/controllers/Image'),
 	Comment = require('../app/controllers/Comment'),
 	Answer = require('../app/controllers/Answer'),
+	Load = require('../app/controllers/Load'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
 var ejs = require('ejs');
 var fs = require('fs');
+
+router.route('/load')
+	.post(/*Load.loadImage1(),*/ Load.loadFile);
+	//.post(Request.deleteBudget, Request.loadImage1(), Request.returnImageLoaded);
 
 
 /* ############################################ PERSONAS ####################################### */
