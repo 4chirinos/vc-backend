@@ -9,12 +9,12 @@ exports.up = function(knex, Promise) {
 
 
     t.integer('statusId').references('id').inTable('status').notNullable();
-  	 t.integer('coordinatorId').references('id').inTable('user').nullable().defaultTo(null);
-  	 t.integer('visitorId').references('id').inTable('user').nullable().defaultTo(null);
+  	t.integer('coordinatorId').references('id').inTable('user').nullable().defaultTo(null);
+  	t.integer('visitorId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('analystId').references('id').inTable('user').nullable().defaultTo(null);
     t.integer('formId').references('id').inTable('form').notNullable();
-  	 t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
-  	 t.dateTime('endDate').notNullable();
+  	t.dateTime('startDate').notNullable().defaultTo(knex.raw('now()'));
+  	t.dateTime('endDate').notNullable();
   });
 };
 

@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
     //t.integer('itemId').notNullable(); // referencia a la bd core
   	
 
-   t.string('description').notNullable();
+    t.string('description').notNullable();
   	t.string('concept').notNullable();
   	t.integer('quantity').notNullable();
   	t.float('cost').notNullable();

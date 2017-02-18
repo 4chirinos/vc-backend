@@ -1,21 +1,61 @@
 var _ = require('lodash'),
 	fs = require('fs'),
 	multer  = require('multer'),
-	XLSX = require('xlsx');
+	XLSX = require('xlsx'),
+	pg = require('pg');
 
 
 module.exports = {
 
 	loadFile: function(req, res) {
 
-		fs.readFile(__dirname + '/../../public/uploads/personas.txt', function(err, f){
-		    var array = f.toString().split('\n');
-		    console.log(array);
+		var client = new pg.Client({
+			user: 'postgres', //env var: PGUSER
+			database: 'visitadorclinico_development', //env var: PGDATABASE
+			password: 'postgres', //env var: PGPASSWORD
+			host: 'localhost', // Server hosting the postgres database
+			port: 5432, //env var: PGPORT
+			max: 1, // max number of clients in the pool
+			idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 		});
 
-		res.send('ok');
+		client.connect(function (err) {
+			
+			if (err) throw err;
 
-		/*if(fs.existsSync(__dirname + '/../../public/uploads/' + req.file.filename)) {
+			var tableId = req.params.table, table;
+
+			if(tableId == 2) table = 'person';
+			else if(tableId == 3) table = 'guaranteeLetter';
+			else if(tableId == 4) table = 'budget';
+
+			var path = __dirname + '/../../public/uploads/' + req.file.filename;
+
+			client.query('COPY \"' + table + '\" FROM \'' + path + '\' (DELIMITER(\'|\'));', function(err, result) {
+				if(err) {
+					console.log(err);
+					res.sendStatus(500);
+					return;
+				}
+				res.send('ok');
+			});
+		  	
+		});
+
+	},
+
+	loadImage1: function() {
+		var upload = multer({
+			dest: './public/uploads'
+		});
+		return upload.single('file');
+	}
+
+};
+
+
+
+/*if(fs.existsSync(__dirname + '/../../public/uploads/' + req.file.filename)) {
 
 			var workbook = XLSX.readFile(__dirname + '/../../public/uploads/' + req.file.filename);
 
@@ -44,14 +84,3 @@ module.exports = {
 		} else {
 			res.sendStatus(404);
 		}*/
-
-	},
-
-	loadImage1: function() {
-		var upload = multer({
-			dest: './public/uploads'
-		});
-		return upload.single('file');
-	}
-
-};

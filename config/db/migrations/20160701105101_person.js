@@ -8,15 +8,15 @@ exports.up = function(knex, Promise) {
   	t.string('email').unique().notNullable();
   	
     
-   t.integer('profileId').references('id').inTable('profile').notNullable();
+    t.integer('profileId').references('id').inTable('profile').notNullable();
   	//t.integer('profileId').notNullable(); // referencia a la bd visitadorclinico
 
 
-   t.dateTime('birthDate').notNullable().defaultTo(knex.raw('now()'));
+    t.dateTime('birthDate').notNullable().defaultTo(knex.raw('now()'));
   	t.string('address').notNullable();
   	t.string('gender').notNullable();
   	t.string('phoneNumber').notNullable();
-   t.integer('stateId').references('id').inTable('state').notNullable();
+    t.integer('stateId').references('id').inTable('state').notNullable();
    
   });
 };

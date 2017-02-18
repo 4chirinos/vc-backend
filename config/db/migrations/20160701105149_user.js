@@ -8,7 +8,7 @@ exports.up = function(knex, Promise) {
   	//t.integer('personId').unique().notNullable(); // referencia a la bd core
 
 
-   t.string('password').notNullable();
+    t.string('password').notNullable();
   	t.string('userName').unique().notNullable();
   	t.integer('profileId').references('id').inTable('profile').notNullable();
   	

@@ -1,10 +1,13 @@
-/*psql -h localhost -d core_development -U postgres*/
+/*psql -h localhost -d visitadorclinico_development -U postgres*/
 /*\i 'batch.sql'*/
 /*heroku apps -> listar nombres de mis apps*/
 /*heroku run bash -> para correr las migraciones*/
 /*heroku pg:psql --app nombre_del_app  -> para correr el batch.sql*/
 
+/* \copy person FROM 'personas.txt' (DELIMITER('|')); */
 
+
+DELETE FROM "answer";
 DELETE FROM "requestForm";
 DELETE FROM "comment";
 DELETE FROM "request";
@@ -23,7 +26,6 @@ DELETE FROM "status";
 DELETE FROM "statusType";
 DELETE FROM "profile";
 DELETE FROM "profileType";
-DELETE FROM "answer";
 DELETE FROM "question";
 DELETE FROM "form";
 DELETE FROM "state";

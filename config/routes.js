@@ -17,8 +17,8 @@ var jsreport = require('jsreport');
 var ejs = require('ejs');
 var fs = require('fs');
 
-router.route('/load')
-	.post(/*Load.loadImage1(),*/ Load.loadFile);
+router.route('/load/:table')
+	.post(Load.loadImage1(), Load.loadFile);
 	//.post(Request.deleteBudget, Request.loadImage1(), Request.returnImageLoaded);
 
 
