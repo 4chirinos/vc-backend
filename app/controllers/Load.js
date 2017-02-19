@@ -2,22 +2,29 @@ var _ = require('lodash'),
 	fs = require('fs'),
 	multer  = require('multer'),
 	XLSX = require('xlsx'),
-	pg = require('pg');
+	pg = require('pg'),
+	env = process.env.NODE_ENV || 'development';
 
 
 module.exports = {
 
 	loadFile: function(req, res) {
 
-		var client = new pg.Client({
-			user: 'postgres', //env var: PGUSER
-			database: 'visitadorclinico_development', //env var: PGDATABASE
-			password: 'postgres', //env var: PGPASSWORD
-			host: 'localhost', // Server hosting the postgres database
-			port: 5432, //env var: PGPORT
-			max: 1, // max number of clients in the pool
-			idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
-		});
+		var client;
+
+		if(env == 'development') {
+			client = new pg.Client({
+				user: 'postgres', //env var: PGUSER
+				database: 'visitadorclinico_development', //env var: PGDATABASE
+				password: 'postgres', //env var: PGPASSWORD
+				host: 'localhost', // Server hosting the postgres database
+				port: 5432, //env var: PGPORT
+				max: 1, // max number of clients in the pool
+				idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
+			});
+		} else {
+			client = new(process.env.DATABASE_URL);
+		}
 
 		client.connect(function (err) {
 			
