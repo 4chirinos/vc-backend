@@ -26,7 +26,7 @@ module.exports = {
 			});
 		} else {
 			console.log('hola');
-			client = new(process.env.DATABASE_URL);
+			client = new pg.Client(process.env.DATABASE_URL);
 		}
 
 		client.connect(function (err) {
