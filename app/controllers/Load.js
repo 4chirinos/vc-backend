@@ -12,6 +12,8 @@ module.exports = {
 
 		var client;
 
+		console.log(process.env.DATABASE_URL);
+
 		if(env == 'development') {
 			client = new pg.Client({
 				user: 'postgres', //env var: PGUSER
