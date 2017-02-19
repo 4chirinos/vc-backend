@@ -6,6 +6,8 @@
 
 /* \copy person FROM 'personas.txt' (DELIMITER('|')); */
 
+/* \copy "item" TO 'TXTs/items.txt' DELIMITER '|'; */
+
 
 DELETE FROM "answer";
 DELETE FROM "requestForm";

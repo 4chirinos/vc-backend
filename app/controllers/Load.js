@@ -28,6 +28,9 @@ module.exports = {
 			if(tableId == 2) table = 'person';
 			else if(tableId == 3) table = 'guaranteeLetter';
 			else if(tableId == 4) table = 'budget';
+			else if(tableId == 5) table = 'item';
+			else if(tableId == 6) table = 'policy';
+			else if(tableId == 7) table = 'affiliated';
 
 			var path = __dirname + '/../../public/uploads/' + req.file.filename;
 
