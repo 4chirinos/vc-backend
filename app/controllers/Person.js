@@ -1,5 +1,7 @@
-var PersonModel = require('../models/Person');
+var PersonModel = require('../models/Person'),
+	PersonPhoneModel = require('../models/personPhoneNumber');
 
+var bookshelf = require('../../config/db/builder-knex');
 
 module.exports = {
 
@@ -53,7 +55,7 @@ module.exports = {
 		PersonModel
 		.forge({id: req.params.id})
 		.fetch({withRelated: [
-				'profile', 'state',
+				'profile', 'state', 'phones',
 				{'user': function(qb) {
 			    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
 			  		}
@@ -77,6 +79,95 @@ module.exports = {
 			console.log(err);
 			res.sendStatus(500);
 		});
+	},
+
+	partialUpdate: function(req, res) {
+
+		PersonModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			var fields = {
+				id: req.body.id,
+				identityCard: req.body.identityCard,
+				firstName: req.body.firstName,
+				lastName: req.body.lastName,
+				email: req.body.email,
+				birthDate: req.body.birthDate,
+				address: req.body.address,
+				gender: req.body.gender,
+				stateId: req.body.stateId
+			};
+
+			model.save(fields)
+			.then(function(model) {
+
+				PersonPhoneModel
+				.query(function(qb) {
+					qb.where('personId', req.params.id).del();
+				})
+				.fetch()
+				.then(function(model) {
+
+					var newPhones = [], aux = req.body.newPhones.split("/"), r = [];
+
+					for(var i = 0; i < aux.length; i++) {
+						r.push({
+							personId: req.body.id,
+							phoneNumber: aux[i].trim()
+						});
+					}
+
+					bookshelf.knex.batchInsert('personPhoneNumber', r)
+					.returning('*')
+					.then(function(fields) {
+						
+						PersonModel
+						.forge({id: req.params.id})
+						.fetch({withRelated: [
+								'profile', 'state', 'phones',
+								{'user': function(qb) {
+							    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+							  		}
+							  	},
+							  	'user.profile'
+						  	]
+						})
+						.then(function(model) {
+							model = model.toJSON();
+							res.send(model);
+						})
+						.catch(function(err) {
+							console.log(err);
+							res.sendStatus(500);
+						});
+
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(500);
+					});
+
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
+		});
+
 	}
 
 };

@@ -11,6 +11,7 @@ var express = require('express'),
 	Comment = require('../app/controllers/Comment'),
 	Answer = require('../app/controllers/Answer'),
 	Load = require('../app/controllers/Load'),
+	Affiliated = require('../app/controllers/Affiliated'),
 	User = require('../app/controllers/User');
 
 var jsreport = require('jsreport');
@@ -24,11 +25,20 @@ router.route('/load/:table')
 
 /* ############################################ PERSONAS ####################################### */
 
+router.route('/affiliated')
+	.get(Affiliated.getAll);
+
+router.route('/affiliated/:id')
+	.get(Affiliated.getById)
+	.patch(Affiliated.partialUpdate);
+
+
 router.route('/person')
 	.get(Person.getAll);
 
 router.route('/person/:id')
-	.get(Person.getById);
+	.get(Person.getById)
+	.patch(Person.partialUpdate);
 
 
 /* ############################################################################################# */

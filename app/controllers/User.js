@@ -90,7 +90,7 @@ module.exports = {
 				PersonModel
 				.forge({id: req.body.personId})
 				.fetch({withRelated: [
-				'profile', 'state',
+				'profile', 'state', 'phones',
 						{'user': function(qb) {
 					    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
 					  		}
@@ -137,7 +137,7 @@ module.exports = {
 
 		UserModel
 		.forge({id: req.params.id})
-		.fetch({withRelated: ['person']})
+		.fetch({withRelated: ['person.phones']})
 		.then(function(model) {
 			if(model) {
 				res.send(model.toJSON());
@@ -180,7 +180,7 @@ module.exports = {
 			page: page,
 			pageSize: pageSize,
 			columns: ['id', 'personId', 'profileId', 'available'],
-			withRelated: ['person', 'profile', {'visitor': function(qb) { // esto es lo que me cuenta cuantas visitas asignadas tiene ese usuario (visitador)
+			withRelated: ['person.phones', 'profile', {'visitor': function(qb) { // esto es lo que me cuenta cuantas visitas asignadas tiene ese usuario (visitador)
 					qb.where({statusId: 3});
 				}}
 			]
@@ -315,7 +315,7 @@ module.exports = {
 							PersonModel
 							.forge({id: model.personId})
 							.fetch({withRelated: [
-									'profile', 'state',
+									'profile', 'state', 'phones',
 									{'user': function(qb) {
 								    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
 								  		}
@@ -356,7 +356,7 @@ module.exports = {
 					PersonModel
 					.forge({id: model.personId})
 					.fetch({withRelated: [
-							'profile', 'state',
+							'profile', 'state', 'phones',
 							{'user': function(qb) {
 						    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
 						  		}

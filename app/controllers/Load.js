@@ -12,8 +12,6 @@ module.exports = {
 
 		var client;
 
-		console.log(process.env.DATABASE_URL);
-
 		if(env == 'development') {
 			client = new pg.Client({
 				user: 'postgres', //env var: PGUSER
@@ -25,7 +23,6 @@ module.exports = {
 				idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed
 			});
 		} else {
-			console.log('hola');
 			client = new pg.Client(process.env.DATABASE_URL);
 		}
 

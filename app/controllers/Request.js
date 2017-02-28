@@ -439,9 +439,9 @@ module.exports = {
 		.fetch({
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
-				'analyst.person', 'coordinator.person', 
+				'analyst.person', 'coordinator.person', 'guaranteeLetter.budget.affiliated.phones',
 				'visitor.person', 'budgetImage', 'formImage', 'form.question', 'guaranteeLetter.state',
-				'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+				'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary.phones', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
 		.then(function(model) {
