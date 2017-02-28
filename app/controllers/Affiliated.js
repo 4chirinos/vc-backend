@@ -8,10 +8,23 @@ module.exports = {
 
 	getAll: function(req, res) {
 
+		console.log(req.query);
+
 		var page = req.query.page || null,
 			pageSize = req.query.pageSize || null;
 
 		AffiliatedModel
+		.query(function(qb) {
+			if(req.query.name) {
+				qb.where({'name': req.query.name});
+			}
+			if(req.query.stateId) {
+				qb.where({'stateId': req.query.stateId});
+			}
+			if(req.query.rif) {
+				qb.where({'rif': req.query.rif});
+			}
+		})
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,

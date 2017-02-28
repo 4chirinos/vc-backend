@@ -15,6 +15,36 @@ var bookshelf = require('../../config/db/builder-knex');
 
 module.exports = {
 
+	getAll2: function(req, res) {
+
+		var page = req.query.page || null,
+			pageSize = req.query.pageSize || null;
+
+		BudgetModel
+		.query(function(qb) {
+
+		})
+		.fetchPage({
+			page: page,
+			pageSize: pageSize,
+			withRelated: ['affiliated.state', 'guaranteeLetter.beneficiary']
+		})
+		.then(function(collection) {
+
+			var response = {};
+			response.budgets = collection;
+			response.pageCount = collection.pagination.pageCount;
+
+			res.send(response);
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
 	create: function(req, res) {
 
 		var budget = req.body;
@@ -116,7 +146,7 @@ module.exports = {
 
 		BudgetModel
 		.forge({id: req.params.id})
-		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'guaranteeLetter.beneficiary']})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'affiliated.phones', 'guaranteeLetter.beneficiary.state', 'guaranteeLetter.beneficiary.phones']})
 		.then(function(model) {
 
 			if(!model) {
@@ -125,16 +155,6 @@ module.exports = {
 			}
 
 			model = model.toJSON();
-
-			/*var fields = {};
-
-			if(req.userData.user.profile.profile == 'analista') {
-				fields.analystId = req.userData.userId;
-			} else if(req.userData.user.profile.profile == 'coordinador') {
-				fields.coordinatorId = req.userData.userId;
-			} else {
-				fields.visitorId = req.userData.userId;
-			}*/
 
 			var fields = {};
 

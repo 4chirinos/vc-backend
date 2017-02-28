@@ -91,6 +91,9 @@ router.route('/document/form/request/:id')
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
+router.route('/budget2')
+	.get(Budget.getAll2);
+
 router.route('/budget')
 	.get(Session.validSession, Budget.getAll) // tiene statusGroups
 	.post(Budget.create);
