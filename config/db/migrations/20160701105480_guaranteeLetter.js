@@ -5,7 +5,10 @@ exports.up = function(knex, Promise) {
     t.integer('policyId').references('id').inTable('policy').notNullable();
   	t.string('code').unique().notNullable(); // creo que ya no estoy utilizando este code. Lo tome como igual al ID
     t.integer('beneficiaryId').references('id').inTable('person').notNullable();
-  	t.integer('budgetId').references('id').inTable('budget').unique().notNullable();
+  	//t.integer('budgetId').references('id').inTable('budget').unique().notNullable();
+    t.integer('budgetId').notNullable();
+    t.integer('version').notNullable();
+
   	
     t.integer('statusId').references('id').inTable('status').notNullable();
   	//t.integer('statusId').notNullable();
@@ -14,6 +17,8 @@ exports.up = function(knex, Promise) {
   	t.dateTime('endDate').nullable();
     t.integer('stateId').references('id').inTable('state').notNullable();
     t.float('coveredPercentage').notNullable();
+
+    t.foreign(['budgetId', 'version']).references(['id', 'version']).inTable('budget');
   });
 };
 

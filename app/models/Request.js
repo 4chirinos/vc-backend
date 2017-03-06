@@ -60,7 +60,8 @@ module.exports = bookshelf.model('Request', {
 			.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId')
 			.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId')
 			.select(bookshelf.knex.raw('status.status, count(request.*) as cantidad'))
-			.where('request.coordinatorId', fields.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', fields.stateId)
+			//.where('request.coordinatorId', fields.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', fields.stateId)
+			.whereRaw('budget."endVersion" IS NULL AND (request."coordinatorId" = ' + fields.id + ' OR request."coordinatorId" IS NULL) AND "affiliated"."stateId" = ' + fields.stateId)
 			//.where({coordinatorId: fields.id}).orWhere({coordinatorId: null, stateId: fields.stateId})
 			.groupBy('status.id')
 			.then(function(count) {

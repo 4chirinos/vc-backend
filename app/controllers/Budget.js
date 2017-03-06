@@ -47,89 +47,98 @@ module.exports = {
 
 	create: function(req, res) {
 
-		var budget = req.body;
+		BudgetModel
+		.forge({
+			id: req.body.items[0].budgetId,
+			version: req.body.items[0].version - 1
+		})
+		.fetch()
+		.then(function(model) {
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+			model = model.toJSON();
+			var aux = model;
+			model.endVersion = new Date();
 
-		//console.log(budget);
+			new BudgetModel().where({
+				id: req.body.items[0].budgetId,
+				version: req.body.items[0].version - 1
+			})
+			.save(model, {method: 'update'})
+			.then(function(model) {
 
-		//if(budget.id == -1) {
-			currentBudgetModel
-			.forge({budgetId: budget.parentBudgetId})
-			.save()
+				aux.version++;
+				delete aux.endVersion;
+				aux.startVersion = new Date();
+
+				bookshelf.knex.from('budget')
+				.returning('*')
+				.insert(aux)
+				.then(function(model) {
+
+					bookshelf.knex.batchInsert('item', req.body.items)
+					.returning('*')
+					.then(function(fields) {
+						//console.log(fields);
+
+						BudgetModel
+						.forge({id: model.id})
+						.fetch({withRelated: {'item': function(qb) {qb.orderBy('concept', 'ASC')}}})
+						.then(function(model) {
+							model = model.toJSON();
+							res.send(model);
+						})
+						.catch(function(err) {
+							console.log(err);
+							res.sendStatus(err);
+						});
+
+					}).catch(function(err) {
+						console.log(err);
+						res.send(err);
+					});
+
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+
+		/*bookshelf.knex.batchInsert('item', budget.items)
+		.returning('*')
+		.then(function(fields) {
+			//console.log(fields);
+
+			BudgetModel
+			.forge({id: model.id})
+			.fetch({withRelated: {'item': function(qb) {qb.orderBy('concept', 'ASC')}}})
 			.then(function(model) {
 				model = model.toJSON();
-
-				for(var i = 0; i < budget.items.length; i++) {
-					budget.items[i].currentBudgetId = model.id;
-				}
-					
-				bookshelf.knex.batchInsert('currentItem', budget.items)
-				.returning('*')
-				.then(function(fields) {
-					//console.log(fields);
-
-					currentBudgetModel
-					.forge({id: model.id})
-					.fetch({withRelated: {'item': function(qb) {qb.orderBy('concept', 'ASC')}}})
-					.then(function(model) {
-						model = model.toJSON();
-						res.send(model);
-					})
-					.catch(function(err) {
-						console.log(err);
-						res.sendStatus(err);
-					});
-
-				})
-				.catch(function(err) {
-					console.log(err);
-					res.send(err);
-				});
-
-
+				res.send(model);
 			})
 			.catch(function(err) {
 				console.log(err);
-				res.sendStatus(500);
+				res.sendStatus(err);
 			});
-		/*} else {
-			currentItemModel
-			.query(function(qb) {
-				qb.where({currentBudgetId: budget.id}).del();
-			})
-			.fetchAll()
-			.then(function(result) {
 
-				for(var i = 0; i < budget.items.length; i++) {
-					budget.items[i].currentBudgetId = budget.id;
-				}
-
-				bookshelf.knex.batchInsert('currentItem', budget.items)
-				.returning('*')
-				.then(function(fields) {
-					//console.log(fields);
-					currentBudgetModel
-					.forge({id: budget.id})
-					.fetch({withRelated: {'item': function(qb) {qb.orderBy('id')}}})
-					.then(function(model) {
-						model = model.toJSON();
-						res.send(model);
-					})
-					.catch(function(err) {
-						console.log(err);
-						res.sendStatus(err);
-					});
-				})
-				.catch(function(err) {
-					console.log(err);
-					res.send(err);
-				});
-
-			})
-			.catch(function(err) {
-				console.log(err);
-				res.sendStatus(500);
-			});
-		}*/
+		}).catch(function(err) {
+			console.log(err);
+			res.send(err);
+		});*/
 		
 	},
 
@@ -202,7 +211,7 @@ module.exports = {
 				}
 				model = model.toJSON();
 				BudgetModel
-				.forge({id: model.guaranteeLetter.budgetId})
+				.forge({id: model.guaranteeLetter.budgetId, version: 1})
 				.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}, 'affiliated', 'guaranteeLetter'/*,
 					{'currentBudget.item': function(qb) {
 						qb.orderBy('concept', 'ASC');
@@ -267,7 +276,6 @@ module.exports = {
 		var page = req.query.page || 1,
 			pageSize = 1;
 
-
 		RequestModel
 		.forge({id: req.params.requestId})
 		.fetch({withRelated: ['guaranteeLetter']})
@@ -278,10 +286,8 @@ module.exports = {
 			}
 			
 			model = model.toJSON();
-			
-			if(req.query.lastPage) {
 
-				currentBudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
+			BudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
 
 				if(err) {
 					console.log(err);
@@ -289,26 +295,29 @@ module.exports = {
 					return;
 				}
 
-				if(count[0].count == 0) {
-					res.send('nada');
-					return;
+				if(req.query.lastPage) {
+					page = count[0].count
 				}
 
-				currentBudgetModel
+				BudgetModel
 				.query(function(qb) {
-					qb.where('budgetId', model.guaranteeLetter.budgetId);
+					qb.where('id', model.guaranteeLetter.budgetId);
+					//qb.where('version', page);
 				})
 				.fetchPage({
-					page: count[0].count,
+					page: page,
 					pageSize: pageSize,
-					withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}]
+					withRelated: [{'item': function(qb) {
+						qb.where('version', page);
+						qb.orderBy('concept', 'ASC')
+					}}]
 				})
 				.then(function(collection) {
 
 					var response = {};
 
 					response.budgets = collection.toJSON();
-					response.pageCount = collection.pagination.pageCount + 1;
+					response.pageCount = parseInt(count[0].count);
 
 					res.send(response);
 				})
@@ -319,16 +328,62 @@ module.exports = {
 
 			});
 
+			/*if(req.query.lastPage) {
+
+				BudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
+
+					if(err) {
+						console.log(err);
+						res.sendStatus(500);
+						return;
+					}
+
+					BudgetModel
+					.query(function(qb) {
+						qb.where('id', model.guaranteeLetter.budgetId);
+						//qb.where('version', count[0].count);
+					})
+					.fetchPage({
+						page: count[0].count,
+						pageSize: 1,
+						withRelated: [{'item': function(qb) {
+							qb.where('version', count[0].count);
+							qb.orderBy('concept', 'ASC')
+						}}]
+					})
+					.then(function(collection) {
+
+						var response = {};
+
+						response.budgets = collection.toJSON();
+						response.pageCount = collection.pagination.pageCount + 1;
+
+						res.send(response);
+					})
+					.catch(function(err) {
+						console.log(err);
+						res.sendStatus(500);
+					});
+
+				});
+
 			} else {
 
-				currentBudgetModel
+				console.log('epa: ' + model.guaranteeLetter.budgetId);
+				console.log(req.query.page);
+
+				BudgetModel
 				.query(function(qb) {
-					qb.where('budgetId', model.guaranteeLetter.budgetId);
+					qb.where('affiliatedId', model.guaranteeLetter.budgetId);
+					//qb.where('version', page);
 				})
 				.fetchPage({
 					page: page,
 					pageSize: pageSize,
-					withRelated: [{'item': function(qb) {qb.orderBy('concept', 'ASC')}}]
+					withRelated: [{'item': function(qb) {
+						qb.where('version', page);
+						qb.orderBy('concept', 'ASC')
+					}}]
 				})
 				.then(function(collection) {
 
@@ -337,6 +392,8 @@ module.exports = {
 					response.budgets = collection.toJSON();
 					response.pageCount = collection.pagination.pageCount + 1;
 
+					console.log('paginas: ' + collection.pagination.pageCount);
+
 					res.send(response);
 				})
 				.catch(function(err) {
@@ -344,8 +401,8 @@ module.exports = {
 					res.sendStatus(500);
 				});
 
-			}
-
+			}*/
+		
 		})
 		.catch(function(err) {
 			console.log(err);

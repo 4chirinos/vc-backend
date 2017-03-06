@@ -7,7 +7,7 @@ require('./currentBudget');
 module.exports = bookshelf.model('Budget', {
 	tableName: 'budget',
 	item: function() {
-		return this.hasMany('Item', 'budgetId');
+		return this.hasMany('Item', 'budgetId', 'version');
 	},
 	affiliated: function() {
 		return this.belongsTo('Affiliated', 'affiliatedId');
@@ -17,5 +17,18 @@ module.exports = bookshelf.model('Budget', {
 	},
 	currentBudget: function() {
 		return this.hasMany('currentBudget', 'budgetId');
+	},
+	count: function(id, cb) {
+
+		bookshelf.knex.from('budget')
+		.count('id')
+		.where({id: id})
+		.then(function(count) {
+			cb(null, count);
+		})
+		.catch(function(err) {
+			cb(err);
+		}); 
+		
 	}
 });

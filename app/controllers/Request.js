@@ -548,6 +548,7 @@ module.exports = {
 							qb.where('affiliated.stateId', req.userData.stateId);
 							qb.where('status.id', req.query.statusId);
 							qb.where('request.coordinatorId', null);
+							qb.whereRaw('budget."endVersion" IS NULL')
 						}
 					} else {
 						qb.innerJoin('status', 'request.statusId', 'status.id');
@@ -555,7 +556,8 @@ module.exports = {
 						qb.innerJoin('budget', 'budget.id', 'guaranteeLetter.budgetId');
 						qb.innerJoin('affiliated', 'affiliated.id', 'budget.affiliatedId');
 						qb.where('affiliated.stateId', req.userData.stateId);
-						qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null).andWhere('affiliated.stateId', req.userData.stateId);
+						qb.whereRaw('budget."endVersion" IS NULL AND (request."coordinatorId" = ' + model.id + ' OR request."coordinatorId" IS NULL)');
+						//qb.where('request.coordinatorId', model.id).orWhere('request.coordinatorId', null);//.andWhere('affiliated.stateId', req.userData.stateId);
 					}
 					
 				} else {
@@ -607,6 +609,8 @@ module.exports = {
 				response.pageCount = collection.pagination.pageCount;
 				response.requests = collection.toJSON();
 
+				//console.log(response.requests[0].guaranteeLetter.budget);
+
 				var fields = {};
 
 				fields.stateId = req.userData.stateId;
@@ -633,6 +637,7 @@ module.exports = {
 						res.sendStatus(500);
 						return;
 					}
+					console.log(count);
 					response.statusGroups = count;
 					res.send(response);
 				});
