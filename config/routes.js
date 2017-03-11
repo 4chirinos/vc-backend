@@ -98,6 +98,9 @@ router.route('/budget')
 	.get(Session.validSession, Budget.getAll) // tiene statusGroups
 	.post(Budget.create);
 
+router.route('/update/budget')
+	.post(Budget.updateBudget);
+
 router.route('/budget/:id')
 	.get(Session.validSession, Budget.getById); // tiene statusGroups
 

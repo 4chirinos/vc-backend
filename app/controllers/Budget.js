@@ -5,6 +5,7 @@ var currentItemModel = require('../models/currentItem');
 var RequestModel = require('../models/Request');
 var GuaranteeLetterModel = require('../models/GuaranteeLetter');
 var validator = require('./validators/Budget');
+var async = require("async");
 
 var jsreport = require('jsreport');
 var ejs = require('ejs');
@@ -22,7 +23,7 @@ module.exports = {
 
 		BudgetModel
 		.query(function(qb) {
-
+			qb.where({'endVersion': null});
 		})
 		.fetchPage({
 			page: page,
@@ -32,7 +33,7 @@ module.exports = {
 		.then(function(collection) {
 
 			var response = {};
-			response.budgets = collection;
+			response.budgets = collection.toJSON();
 			response.pageCount = collection.pagination.pageCount;
 
 			res.send(response);
@@ -78,14 +79,18 @@ module.exports = {
 				.insert(aux)
 				.then(function(model) {
 
+					model = model[0];
+
 					bookshelf.knex.batchInsert('item', req.body.items)
 					.returning('*')
 					.then(function(fields) {
-						//console.log(fields);
 
 						BudgetModel
-						.forge({id: model.id})
-						.fetch({withRelated: {'item': function(qb) {qb.orderBy('concept', 'ASC')}}})
+						.forge({id: model.id, version: aux.version})
+						.fetch({withRelated: {'item': function(qb) {
+							qb.where({'version': model.version});
+							qb.orderBy('concept', 'ASC')}}
+						})
 						.then(function(model) {
 							model = model.toJSON();
 							res.send(model);
@@ -154,8 +159,8 @@ module.exports = {
 		}
 
 		BudgetModel
-		.forge({id: req.params.id})
-		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'affiliated.phones', 'guaranteeLetter.beneficiary.state', 'guaranteeLetter.beneficiary.phones']})
+		.forge({id: req.params.id, version: 1})
+		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept'); qb.where({version: 1});}}, 'affiliated.state', 'affiliated.phones', 'guaranteeLetter.beneficiary.state', 'guaranteeLetter.beneficiary.phones']})
 		.then(function(model) {
 
 			if(!model) {
@@ -408,6 +413,59 @@ module.exports = {
 			console.log(err);
 			res.sendStatus(500);
 		});
+
+	},
+
+	updateBudget: function(req, res) {
+
+		var items = req.body.items;
+
+		async.forEach(items, function(item, callback) {
+
+			ItemModel
+			.forge({id: item.id})
+			.fetch()
+			.then(function(model) {
+				if(!model) {
+					res.sendStatus(404);
+					return;
+				}
+				model.save(item)
+				.then(function(model) {
+					callback();
+				})
+				.catch(function(err) {
+					callback(err);
+				});
+			})
+			.catch(function(err) {
+				callback(err);
+			});
+
+	    }, function(err) {
+
+	        if (err) {
+	        	console.log(err);
+	        	res.sendStatus(500);
+	        	return;
+	        }
+
+	        BudgetModel
+			.forge({id: items[0].budgetId, version: 1})
+			.fetch({withRelated: {'item': function(qb) {
+				qb.where({'version': 1});
+				qb.orderBy('concept', 'ASC')}}
+			})
+			.then(function(model) {
+				model = model.toJSON();
+				res.send(model);
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(err);
+			});
+	      
+	    });
 
 	},
 
