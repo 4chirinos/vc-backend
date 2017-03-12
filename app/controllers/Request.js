@@ -1020,7 +1020,7 @@ module.exports = {
 				return;
 			}
 
-			if(req.userData.user.profile.profile == 'coordinador' && model.get('statusId') == 3 && fields.statusId && fields.statusId == 3) {
+			if(model.get('coordinatorId') != req.userData.userId && req.userData.user.profile.profile == 'coordinador' && model.get('statusId') == 3 && fields.statusId && fields.statusId == 3) {
 						
 				RequestModel
 				.forge({id: req.params.id})
@@ -1072,8 +1072,9 @@ module.exports = {
 				});
 
 			} else {
-				model.save(fields)
-				.then(function(model) {
+
+				if(model.get('coordinatorId') == req.userData.userId && req.userData.user.profile.profile == 'coordinador' && model.get('statusId') != 3 && fields.statusId == 3) {
+
 					RequestModel
 					.forge({id: req.params.id})
 					.fetch({
@@ -1084,48 +1085,9 @@ module.exports = {
 					})
 					.then(function(model) {
 						model = model.toJSON();
+						model.atendida = true;
 
 						var fields = {};
-
-						if(req.userData.user.profile.profile == 'analista') {
-							fields.analystId = req.userData.userId;
-						} else if(req.userData.user.profile.profile == 'coordinador') {
-							fields.coordinatorId = req.userData.userId;
-
-							if(model.statusId == '3') {
-								// correo al coordinador notificándole la asignación a tal persona
-								notifyRequestCoordinated(model);
-								notifyRequestAssigned(model);
-							}
-
-							if(model.statusId == '5') {
-								// correo al coordinador notificándole el envío a revisión de la solicitud
-								notifyRequestRejected(model);
-								notifyRequestRejected2(model);
-							}
-
-							if(model.statusId == '6') {
-								// correo al coordinador notificándole que hizo autorización de la solicitud
-								notifyRequestAuthorized(model);
-								notifyRequestAuthorized2(model);
-							}
-
-							// depende del statusId, se manda un correo notificando la asignación
-							// el envío a revisión o la autorización
-						} else {
-							fields.visitorId = req.userData.userId;
-							
-							if(model.statusId == '4') {
-								// correo indicando que ya atendió la visita
-								notifyRequestCompleted(model);
-								notifyRequestCompleted2(model);
-							}
-							
-						}
-
-						fields = {};
-
-						//var fields = {};
 
 						fields.stateId = req.userData.stateId;
 						fields.id = req.userData.userId;
@@ -1149,14 +1111,97 @@ module.exports = {
 
 					})
 					.catch(function(err) {
+						res.sendStatus(500);
+					});
+
+				} else {
+
+					model.save(fields)
+					.then(function(model) {
+						RequestModel
+						.forge({id: req.params.id})
+						.fetch({
+							withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
+							'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
+							'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+						]
+						})
+						.then(function(model) {
+							model = model.toJSON();
+
+							var fields = {};
+
+							if(req.userData.user.profile.profile == 'analista') {
+								fields.analystId = req.userData.userId;
+							} else if(req.userData.user.profile.profile == 'coordinador') {
+								fields.coordinatorId = req.userData.userId;
+
+								if(model.statusId == '3') {
+									// correo al coordinador notificándole la asignación a tal persona
+									notifyRequestCoordinated(model);
+									notifyRequestAssigned(model);
+								}
+
+								if(model.statusId == '5') {
+									// correo al coordinador notificándole el envío a revisión de la solicitud
+									notifyRequestRejected(model);
+									notifyRequestRejected2(model);
+								}
+
+								if(model.statusId == '6') {
+									// correo al coordinador notificándole que hizo autorización de la solicitud
+									notifyRequestAuthorized(model);
+									notifyRequestAuthorized2(model);
+								}
+
+								// depende del statusId, se manda un correo notificando la asignación
+								// el envío a revisión o la autorización
+							} else {
+								fields.visitorId = req.userData.userId;
+								
+								if(model.statusId == '4') {
+									// correo indicando que ya atendió la visita
+									notifyRequestCompleted(model);
+									notifyRequestCompleted2(model);
+								}
+								
+							}
+
+							fields = {};
+
+							//var fields = {};
+
+							fields.stateId = req.userData.stateId;
+							fields.id = req.userData.userId;
+
+							if(req.userData.user.profile.profile == 'analista') {
+								fields.role = 'analyst';
+							} else if(req.userData.user.profile.profile == 'coordinador') {
+								fields.role = 'coordinator';
+							} else {
+								fields.role = 'visitor';
+							}
+
+							RequestModel.count(fields, function(err, count) {
+								if(err) {
+									res.sendStatus(500);
+									return;
+								}
+								model.statusGroups = count;
+								res.send(model);
+							});
+
+						})
+						.catch(function(err) {
+							console.log(err);
+							res.sendStatus(500);
+						})
+					})
+					.catch(function(err) {
 						console.log(err);
 						res.sendStatus(500);
-					})
-				})
-				.catch(function(err) {
-					console.log(err);
-					res.sendStatus(500);
-				});
+					});
+				}
 
 			}
 
@@ -1197,6 +1242,24 @@ module.exports = {
 		});
 
 		return upload.array('file');
+
+	},
+
+	deleteRequest: function(req, res) {
+
+		RequestModel
+		.query(function(qb) {
+			qb.where('id', req.params.id).del();
+		})
+		.fetch()
+		.then(function(model) {
+			req.budget_index = 0;
+			res.send("ok");
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
 
 	},
 

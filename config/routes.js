@@ -145,6 +145,7 @@ router.route('/me/request')
 
 router.route('/request/:id')
 	.get(Session.validSession, Request.getById) // tiene statusGroups
+	.delete(Request.deleteRequest)
 	.patch(Session.validSession, Request.partialUpdate); // tiene statusGroups
 
 router.route('/request/:id/comment')
