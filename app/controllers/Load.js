@@ -3,12 +3,98 @@ var _ = require('lodash'),
 	multer  = require('multer'),
 	XLSX = require('xlsx'),
 	pg = require('pg'),
+	async = require("async"),
+	PersonModel = require('../models/Person'),
+	PersonPhoneModel = require('../models/personPhoneNumber'),
+	bookshelf = require('../../config/db/builder-knex'),
 	env = process.env.NODE_ENV || 'development';
 
 
 module.exports = {
 
 	loadFile: function(req, res) {
+
+		/*var path = __dirname + '/../../public/uploads/' + req.file.filename;
+
+		fs.readFile(path, function(err, data) {
+		    
+		    if(err) throw err;
+
+		    var items = data.toString().split("\n");
+
+		    items.length--;
+
+			async.forEach(items, function(item, callback) {
+
+				item = item.split("|");
+
+				var fields = {
+					id: item[0],
+					identityCard: item[1],
+					firstName: item[2],
+					lastName: item[3],
+					//email: item[4],
+					profileId: item[4],
+					birthDate: item[5],
+					address: item[6],
+					gender: item[7],
+					//phoneNumber: item[9],
+					stateId: item[8]
+				};
+
+				PersonModel
+				.forge(fields)
+				.save()
+				.then(function(model) {
+					model = model.toJSON();
+
+					var phones = item[9].split("/");
+
+					var batchs = [];
+
+					for(var i = 0; i < phones.length; i++) {
+						batchs.push({
+							personId: model.id,
+							phoneNumber: phones[i]
+						});
+					}
+
+					async.forEach(batchs, function(batch, callback1) {
+
+						PersonPhoneModel
+						.forge(batch)
+						.save()
+						.then(function(model) {
+							callback1(null);
+						})
+						.catch(function(err) {
+							console.log(err);
+							callback1(err);
+						});
+
+					}, function(err) {
+						callback(err);
+					});
+
+				})
+				.catch(function(err) {
+					console.log(err);
+					callback(err);
+				});
+
+		    }, function(err) {
+
+		        if (err) {
+		        	console.log(err);
+		        	res.sendStatus(500);
+		        	return;
+		        }
+
+		        res.send('ok');
+
+		    });
+		});*/
+
 
 		var client;
 
@@ -38,6 +124,10 @@ module.exports = {
 			else if(tableId == 5) table = 'item';
 			else if(tableId == 6) table = 'policy';
 			else if(tableId == 7) table = 'affiliated';
+			else if(tableId == 8) table = 'personPhoneNumber';
+			else if(tableId == 9) table = 'personEmail';
+			else if(tableId == 10) table = 'affiliatedPhoneNumber';
+			else if(tableId == 11) table = 'affiliatedEmail';
 
 			var path = __dirname + '/../../public/uploads/' + req.file.filename;
 

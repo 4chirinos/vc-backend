@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
   	t.string('identityCard').unique().notNullable();
   	t.string('firstName').notNullable();
   	t.string('lastName').notNullable();
-  	t.string('email').unique().notNullable();
+  	//t.string('email').unique().notNullable();
   	
     
     t.integer('profileId').references('id').inTable('profile').notNullable();
@@ -15,7 +15,7 @@ exports.up = function(knex, Promise) {
     t.dateTime('birthDate').notNullable().defaultTo(knex.raw('now()'));
   	t.string('address').notNullable();
   	t.string('gender').notNullable();
-  	t.string('phoneNumber').notNullable();
+  	//t.string('phoneNumber').notNullable();
     t.integer('stateId').references('id').inTable('state').notNullable();
    
   });

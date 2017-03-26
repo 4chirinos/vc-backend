@@ -55,7 +55,7 @@ module.exports = {
 		PersonModel
 		.forge({id: req.params.id})
 		.fetch({withRelated: [
-				'profile', 'state', 'phones',
+				'profile', 'state', 'phones', 'emails',
 				{'user': function(qb) {
 			    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
 			  		}

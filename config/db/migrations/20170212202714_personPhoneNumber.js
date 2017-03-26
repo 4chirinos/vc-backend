@@ -4,6 +4,7 @@ exports.up = function(knex, Promise) {
   	t.increments('id').primary();
     t.integer('personId').references('id').inTable('person').notNullable();
     t.string('phoneNumber').notNullable();
+    t.unique(['personId', 'phoneNumber']);
   });
 };
 
