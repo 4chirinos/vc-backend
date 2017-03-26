@@ -10,11 +10,12 @@ module.exports = {
 
 		SessionModel
 		.forge({userId: req.userId})
-		.fetch({withRelated: ['user', 'user.profile', 'user.person.state']})
+		.fetch({withRelated: ['user', 'user.profile', 'user.person.state', 'user.person.emails']})
 		.then(function(model) {
 			if(model) {
 				model = model.toJSON();
 				delete model.user.password;
+				//console.log(model);
 				res.send(model);
 			} else {
 				SessionModel
@@ -25,10 +26,11 @@ module.exports = {
 				.then(function(model) {
 					SessionModel
 					.forge({id: model.get('id')})
-					.fetch({withRelated: ['user', 'user.profile', 'user.person.state']})
+					.fetch({withRelated: ['user', 'user.profile', 'user.person.state', 'user.person.emails']})
 					.then(function(model) {
 						model = model.toJSON();
 						delete model.user.password;
+						//console.log(model);
 						res.send(model);
 					})
 					.catch(function(err) {

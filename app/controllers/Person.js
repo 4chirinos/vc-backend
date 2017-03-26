@@ -1,4 +1,5 @@
 var PersonModel = require('../models/Person'),
+	PersonEmailModel = require('../models/personEmail'),
 	PersonPhoneModel = require('../models/personPhoneNumber');
 
 var bookshelf = require('../../config/db/builder-knex');
@@ -96,11 +97,11 @@ module.exports = {
 			var fields = {
 				id: req.body.id,
 				identityCard: req.body.identityCard,
-				firstName: req.body.firstName,
-				lastName: req.body.lastName,
-				email: req.body.email,
+				firstName: req.body.firstName.toUpperCase(),
+				lastName: req.body.lastName.toUpperCase(),
+				//email: req.body.email,
 				birthDate: req.body.birthDate,
-				address: req.body.address,
+				address: req.body.address.toUpperCase(),
 				gender: req.body.gender,
 				stateId: req.body.stateId
 			};
@@ -115,43 +116,69 @@ module.exports = {
 				.fetch()
 				.then(function(model) {
 
-					var newPhones = [], aux = req.body.newPhones.split("/"), r = [];
+					PersonEmailModel
+					.query(function(qb) {
+						qb.where('personId', req.params.id).del();
+					})
+					.fetch()
+					.then(function(model) {
 
-					for(var i = 0; i < aux.length; i++) {
-						r.push({
-							personId: req.body.id,
-							phoneNumber: aux[i].trim()
-						});
-					}
+						var e = req.body.email.split("/"), r2 = [], aux = req.body.newPhones.split("/"), r = [];
 
-					bookshelf.knex.batchInsert('personPhoneNumber', r)
-					.returning('*')
-					.then(function(fields) {
-						
-						PersonModel
-						.forge({id: req.params.id})
-						.fetch({withRelated: [
-								'profile', 'state', 'phones',
-								{'user': function(qb) {
-							    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
-							  		}
-							  	},
-							  	'user.profile'
-						  	]
-						})
-						.then(function(model) {
-							model = model.toJSON();
-							res.send(model);
+						for(var i = 0; i < e.length; i++) {
+							r2.push({
+								personId: req.body.id,
+								email: e[i].trim().toUpperCase()
+							});
+						}
+
+						bookshelf.knex.batchInsert('personEmail', r2)
+						.returning('*')
+						.then(function(fields) {
+							
+							for(var i = 0; i < aux.length; i++) {
+								r.push({
+									personId: req.body.id,
+									phoneNumber: aux[i].trim().toUpperCase()
+								});
+							}
+
+							bookshelf.knex.batchInsert('personPhoneNumber', r)
+							.returning('*')
+							.then(function(fields) {
+								
+								PersonModel
+								.forge({id: req.params.id})
+								.fetch({withRelated: [
+										'profile', 'state', 'phones', 'emails',
+										{'user': function(qb) {
+									    		qb.column('id', 'personId', 'profileId', 'available', 'userName');
+									  		}
+									  	},
+									  	'user.profile'
+								  	]
+								})
+								.then(function(model) {
+									model = model.toJSON();
+									res.send(model);
+								})
+								.catch(function(err) {
+									console.log(err);
+									res.sendStatus(500);
+								});
+
+							})
+							.catch(function(err) {
+								console.log(err);
+								res.sendStatus(500);
+							});
+
 						})
 						.catch(function(err) {
 							console.log(err);
 							res.sendStatus(500);
 						});
 
-					})
-					.catch(function(err) {
-						console.log(err);
-						res.sendStatus(500);
 					});
 
 				})

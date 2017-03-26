@@ -1,0 +1,84 @@
+ROLES DE PERSONAS:
+   - analista -> 1
+   - coordinador -> 2
+   - visitador -> 3
+   - cliente -> 4
+   
+ROLES DE USUARIOS:
+   - administrador -> 6
+   - analista -> 7
+   - coordinador -> 8
+   - visitador -> 9
+   
+   
+ADMINISTRADOR:
+   - Nombre: CAROLINA
+   - Apellido: RAMIREZ
+   - Usuario: CRAMIREZ
+
+
+Caracas:
+   Analistas:
+      Personas:
+         - INSERT INTO "person" VALUES (1, '10503817', 'MARIA', 'LOPEZ', 1, '1970-09-01', 'DIRECCION', 'F', 11);
+         - INSERT INTO "person" VALUES (2, '99182712', 'JOSE', 'PEREZ', 1, '1970-09-01', 'DIRECCION', 'M', 11);
+      Usuarios:
+         - INSERT INTO "user" VALUES (1, 1, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'MLOPEZ', 7, true);
+         - INSERT INTO "user" VALUES (2, 2, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'JPEREZ', 7, true);
+         
+   Coordinadores:
+      Personas:
+         - INSERT INTO "person" VALUES (3, '76281921', 'CARLOS', 'BRACAMONTE', 2, '1970-09-01', 'DIRECCION', 'M', 11);
+         - INSERT INTO "person" VALUES (4, '10291827', 'JOSEFINA', 'SANCHEZ', 2, '1970-09-01', 'DIRECCION', 'F', 11);
+      Usuarios:
+         - INSERT INTO "user" VALUES (3, 3, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'CBRACAMONTE', 8, true);
+         - INSERT INTO "user" VALUES (4, 4, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'JSANCHEZ', 8, true);
+         
+   Visitadores:
+      Personas:
+         - INSERT INTO "person" VALUES (5, '28371623', 'PAOLA', 'VERA', 3, '1970-09-01', 'DIRECCION', 'F', 11);
+         - INSERT INTO "person" VALUES (6, '11829182', 'ESTRELLA', 'COLMENARES', 3, '1970-09-01', 'DIRECCION', 'F', 11);
+      Usuarios:
+         - INSERT INTO "user" VALUES (5, 5, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'PVERA', 9, true);
+         - INSERT INTO "user" VALUES (6, 6, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'ECOLMENARES', 9, true);
+         
+
+Carabobo:
+   Analistas:
+      Personas:
+         - INSERT INTO "person" VALUES (7, '66172619', 'ANTONIA', 'MONTES', 1, '1970-09-01', 'DIRECCION', 'F', 7);
+         - INSERT INTO "person" VALUES (8, '77162510', 'MANUEL', 'RUIZ', 1, '1970-09-01', 'DIRECCION', 'M', 7);
+      Usuarios:
+         - INSERT INTO "user" VALUES (7, 7, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'AMONTES', 7, true);
+         - INSERT INTO "user" VALUES (8, 8, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'MRUIZ', 7, true);
+         
+   Coordinadores:
+      Personas:
+         - INSERT INTO "person" VALUES (9, '22716200', 'YARELIS', 'CORREA', 2, '1970-09-01', 'DIRECCION', 'F', 7);
+         - INSERT INTO "person" VALUES (10, '10296659', 'JOSEFINA', 'PAZ', 2, '1970-09-01', 'DIRECCION', 'F', 7);
+      Usuarios:
+         - INSERT INTO "user" VALUES (9, 9, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'YCORREA', 8, true);
+         - INSERT INTO "user" VALUES (10, 10, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'JPAZ', 8, true);
+         
+   Visitadores:
+      Personas:
+         - INSERT INTO "person" VALUES (11, '11772610', 'LUISA', 'MARTINEZ', 3, '1970-09-01', 'DIRECCION', 'F', 7);
+         - INSERT INTO "person" VALUES (12, '88991201', 'PEDRO', 'ROJO', 3, '1970-09-01', 'DIRECCION', 'F', 7);
+      Usuarios:
+         - INSERT INTO "user" VALUES (11, 11, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'LMARTINEZ', 9, true);
+         - INSERT INTO "user" VALUES (12, 12, '$2a$08$szk2fFxersgn4fIVF5dNp.NckBEipIHMJMfiFeazmovgnXRa7Tv9q', 'PROJO', 9, true);        
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
