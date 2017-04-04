@@ -174,12 +174,14 @@ module.exports = {
 		UserModel
 		.forge()
 		.query(function(qb) {
-			qb.whereIn('profileId', profiles);
+			qb.innerJoin('person', 'person.id', 'user.personId');
+			qb.where({'person.stateId': req.userData.stateId});
+			qb.whereIn('user.profileId', profiles);
 		})
 		.fetchPage({
 			page: page,
 			pageSize: pageSize,
-			columns: ['id', 'personId', 'profileId', 'available'],
+			columns: ['user.id', 'personId', 'user.profileId', 'available'],
 			withRelated: ['person.phones', 'profile', {'visitor': function(qb) { // esto es lo que me cuenta cuantas visitas asignadas tiene ese usuario (visitador)
 					qb.where({statusId: 3});
 				}}

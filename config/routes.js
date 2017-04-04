@@ -140,6 +140,10 @@ router.route('/request')
 	.get(Request.getAll) // no necesita statusGroups porque no la utilizo en el app
 	.post(Session.validSession, Request.create); // tiene statusGroups
 
+router.route('/request/:id/cancel')
+	.get(Request.cancel);
+
+
 router.route('/me/request')
 	.get(Session.validSession, Request.getAllByMe); // tiene statusGroups
 

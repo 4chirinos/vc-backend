@@ -3,6 +3,7 @@ var bookshelf = require('../../config/db/builder-knex');
 require('./Budget');
 require('./State');
 require('./affiliatedPhoneNumber');
+require('./affiliatedEmail');
 
 module.exports = bookshelf.model('Affiliated', {
 	tableName: 'affiliated',
@@ -14,5 +15,8 @@ module.exports = bookshelf.model('Affiliated', {
 	},
 	phones: function() {
 		return this.hasMany('affiliatedPhoneNumber', 'affiliatedId');
+	},
+	emails: function() {
+		return this.hasMany('affiliatedEmail', 'affiliatedId');
 	}
 });

@@ -23,7 +23,27 @@ module.exports = {
 
 		BudgetModel
 		.query(function(qb) {
+			
 			qb.where({'endVersion': null});
+			qb.innerJoin('guaranteeLetter', 'guaranteeLetter.budgetId', 'budget.id');
+			qb.innerJoin('person', 'person.id', 'guaranteeLetter.beneficiaryId');
+
+			if(req.query.code) {
+				qb.where({'budget.id': req.query.code});
+			}
+
+			if(req.query.firstName) {
+				qb.where({'person.firstName': req.query.firstName.toUpperCase()});
+			}
+
+			if(req.query.lastName) {
+				qb.where({'person.lastName': req.query.lastName.toUpperCase()});
+			}
+
+			if(req.query.identityCard) {
+				qb.where({'person.identityCard': req.query.identityCard.toUpperCase()});
+			}
+
 		})
 		.fetchPage({
 			page: page,

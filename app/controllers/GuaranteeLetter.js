@@ -115,7 +115,7 @@ module.exports = {
 		GuaranteeLetterModel
 		.forge({id: req.params.id})
 		.fetch({
-			withRelated: ['status', 'state', 'beneficiary.phones', 'budget.affiliated.state', 'budget.affiliated.phones', 'request.status', 'policy.holder', 'policy.owner']
+			withRelated: ['status', 'state', 'beneficiary.phones', 'beneficiary.emails', 'budget.affiliated.state', 'budget.affiliated.phones', 'budget.affiliated.emails', 'request.status', 'policy.holder', 'policy.owner']
 		})
 		.then(function(model) {
 

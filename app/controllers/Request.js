@@ -439,8 +439,8 @@ module.exports = {
 		.fetch({
 			withRelated: ['status', 
 				{'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}}, 
-				'analyst.person', 'coordinator.person', 'guaranteeLetter.budget.affiliated.phones',
-				'visitor.person', 'budgetImage', 'formImage', 'form.question', 'guaranteeLetter.state',
+				'analyst.person', 'coordinator.person', 'guaranteeLetter.budget.affiliated.phones', 'guaranteeLetter.budget.affiliated.emails',
+				'visitor.person', 'budgetImage', 'formImage', 'form.question', 'guaranteeLetter.state', 'guaranteeLetter.beneficiary.emails',
 				'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.budget.item', 'guaranteeLetter.beneficiary.phones', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
 			]
 		})
@@ -1027,7 +1027,8 @@ module.exports = {
 				.fetch({
 					withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
 					'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
-					'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+					'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner',
+					'guaranteeLetter.budget.affiliated.emails', 'guaranteeLetter.budget.affiliated.phones', 'guaranteeLetter.beneficiary.emails', 'guaranteeLetter.beneficiary.phones'
 				]
 				})
 				.then(function(model) {
@@ -1080,7 +1081,8 @@ module.exports = {
 					.fetch({
 						withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
 						'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
-						'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+						'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner',
+						'guaranteeLetter.budget.affiliated.emails', 'guaranteeLetter.budget.affiliated.phones', 'guaranteeLetter.beneficiary.emails', 'guaranteeLetter.beneficiary.phones'
 					]
 					})
 					.then(function(model) {
@@ -1123,7 +1125,8 @@ module.exports = {
 						.fetch({
 							withRelated: ['status', {'analyst': function(qb) {qb.column('id', 'personId', 'profileId', 'available')}},
 							'analyst.person', 'coordinator.person', 'visitor.person', 'formImage', 'budgetImage', 'form.question', 'guaranteeLetter.state',
-							'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner'
+							'guaranteeLetter.budget.affiliated.state', 'guaranteeLetter.beneficiary', 'guaranteeLetter.policy.holder', 'guaranteeLetter.policy.owner',
+							'guaranteeLetter.budget.affiliated.emails', 'guaranteeLetter.budget.affiliated.phones', 'guaranteeLetter.beneficiary.emails', 'guaranteeLetter.beneficiary.phones'
 						]
 						})
 						.then(function(model) {
@@ -1205,6 +1208,32 @@ module.exports = {
 
 			}
 
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	cancel: function(req, res) {
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch()
+		.then(function(model) {
+			if(model) {
+				if(model.get('statusId') == 2) {
+					model.destroy()
+					.then(function(model) {
+						res.send('ok');
+					});
+				} else {
+					res.send('deleteado');
+				}
+			} else {
+				res.send('deleteado');
+			}
 		})
 		.catch(function(err) {
 			console.log(err);
