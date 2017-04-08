@@ -67,7 +67,7 @@ module.exports = {
 	},
 
 	create: function(req, res) {
-
+		
 		BudgetModel
 		.forge({
 			id: req.body.items[0].budgetId,
@@ -75,19 +75,22 @@ module.exports = {
 		})
 		.fetch()
 		.then(function(model) {
+			
 			if(!model) {
 				res.sendStatus(404);
 				return;
 			}
-			model = model.toJSON();
-			var aux = model;
-			model.endVersion = new Date();
+			
+			//model = model.toJSON();
+			var aux = model.toJSON();
+			//model.endVersion = new Date();
+			model.set({endVersion: new Date()});
 
 			new BudgetModel().where({
 				id: req.body.items[0].budgetId,
 				version: req.body.items[0].version - 1
 			})
-			.save(model, {method: 'update'})
+			.save(model.toJSON(), {method: 'update'})
 			.then(function(model) {
 
 				aux.version++;
@@ -101,6 +104,8 @@ module.exports = {
 
 					model = model[0];
 
+					console.log(model);
+
 					bookshelf.knex.batchInsert('item', req.body.items)
 					.returning('*')
 					.then(function(fields) {
@@ -113,16 +118,17 @@ module.exports = {
 						})
 						.then(function(model) {
 							model = model.toJSON();
+							console.log(model);
 							res.send(model);
 						})
 						.catch(function(err) {
 							console.log(err);
-							res.sendStatus(err);
+							res.sendStatus(500);
 						});
 
 					}).catch(function(err) {
 						console.log(err);
-						res.send(err);
+						res.send(500);
 					});
 
 				})
@@ -133,6 +139,7 @@ module.exports = {
 
 			})
 			.catch(function(err) {
+				console.log("NOJODA");
 				console.log(err);
 				res.sendStatus(500);
 			});
@@ -301,6 +308,8 @@ module.exports = {
 		var page = req.query.page || 1,
 			pageSize = 1;
 
+		page = parseInt(page);
+
 		RequestModel
 		.forge({id: req.params.requestId})
 		.fetch({withRelated: ['guaranteeLetter']})
@@ -314,6 +323,8 @@ module.exports = {
 
 			BudgetModel.count(model.guaranteeLetter.budgetId, function(err, count) {
 
+				count[0].count = parseInt(count[0].count);
+
 				if(err) {
 					console.log(err);
 					res.sendStatus(500);
@@ -321,16 +332,28 @@ module.exports = {
 				}
 
 				if(req.query.lastPage) {
-					page = count[0].count
+					page = count[0].count;
+				}
+
+				if(!req.query.firstPage && count[0].count == 0) {
+					page = 1;
+				}
+
+				if(!req.query.firstPage && count[0].count != 0) {
+					page++;
 				}
 
 				BudgetModel
 				.query(function(qb) {
 					qb.where('id', model.guaranteeLetter.budgetId);
+					if(!req.query.firstPage && count[0].count != 0) {
+						//qb.whereNot('version', 1);
+						qb.whereRaw('version = ?', [page]);
+					}
 					//qb.where('version', page);
 				})
 				.fetchPage({
-					page: page,
+					page: 1,
 					pageSize: pageSize,
 					withRelated: [{'item': function(qb) {
 						qb.where('version', page);

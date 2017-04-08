@@ -22,7 +22,8 @@ module.exports = bookshelf.model('Budget', {
 
 		bookshelf.knex.from('budget')
 		.count('id')
-		.where({id: id})
+		//.where({id: id})
+		.whereRaw('id = ? AND version != ?', [id, 1])
 		.then(function(count) {
 			cb(null, count);
 		})
