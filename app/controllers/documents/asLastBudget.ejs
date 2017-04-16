@@ -93,17 +93,13 @@
 
       <br><br>
 
-      <div align="right"><strong>Campos para Corrección (*): </strong> Cantidad *, Precio (Bs) *</div>
-
       <table style="font-size: 10px;">
         <tr>
           <th><center><strong>No.</strong></center> </th>
           <th><center>Concepto</center> </th>
           <th><center>Descripción</center> </th>
           <th><center>Cantidad</center> </th>
-          <th><center>Cantidad*</center> </th>
           <th style="width:60px"><center>Precio (Bs)</center> </th>
-          <th style="width:60px"><center>Precio (Bs)*</center></th>
         </tr>
 
         <!--<% var final_cost = 0; %>-->
@@ -115,9 +111,7 @@
             <td><%= data.item[i].concept %></td>
             <td><%= data.item[i].description %></td>
             <td><center><%= data.item[i].quantity %></center></td>
-            <td><center></center></td>
             <td><center><%= data.item[i].cost %></center></td>
-            <td><center></center></td>
           </tr>
 
           <!--<% final_cost = final_cost + data.item[i].quantity * data.item[i].cost %>-->
@@ -129,9 +123,7 @@
           <td><center>- - - - - - -</center></td>
           <td><center>- - - - - - -</center></td>
           <td><center><strong>Total: <%= data.totalQuantity %></strong></center></td>
-          <td><center></center></td>
           <td><center><strong>Total: Bs <%= data.totalCost %></strong></center></td>
-          <td><center></center></td>
           <!--<td><center>- - - - - - -</center></td>-->
         </tr>
 

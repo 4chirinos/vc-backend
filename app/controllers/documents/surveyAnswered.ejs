@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+  <html>
+
+    <head>
+      
+      <meta charset="utf-8">
+
+      <style>
+
+        body {
+          font-size: 14px;
+        }
+
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        td, th {
+          border: 1px solid black;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+
+        #content {
+          position: relative;
+        }
+        #content img {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+        }
+
+      </style>
+    </head>
+
+    <body>
+
+      <div id="content">
+        <img src='http://localhost:3000/api/v1/image/logo.png' height="100" width="100">
+      </div>
+
+      <center><h3>Encuesta de Satisfacción del Paciente</h3></center>
+
+      <br><br><br>
+
+      <div align="left" style="border: 1px solid black;">
+        
+        <div>
+          <div>
+            <strong>Institución Prestadora de Servicio: </strong><%= data.guaranteeLetter.budget.affiliated.name %> <br>
+            <strong>RIF: </strong><%= data.guaranteeLetter.budget.affiliated.rif %> <br>
+            <strong>Dirección: </strong><%= data.guaranteeLetter.budget.affiliated.address %> <br>
+            <strong>Central Telefónica: </strong><%= data.guaranteeLetter.budget.affiliated.phoneNumber %> <br>
+          </div>
+          <br>
+          <div>
+            <strong>Paciente: </strong><%= data.guaranteeLetter.beneficiary.firstName %> <%= data.guaranteeLetter.beneficiary.lastName %>
+            <strong>CI: </strong><%= data.guaranteeLetter.beneficiary.identityCard %>
+            <strong>Edad: </strong><%= data.guaranteeLetter.beneficiary.age %>
+          </div>
+        </div>
+
+        <div>
+          <strong>Historia Nro: </strong><%= data.guaranteeLetter.budget.history %>
+        </div>
+
+        <div>
+          <strong>Médico: </strong><%= data.guaranteeLetter.budget.doctorFirstName %> <%= data.guaranteeLetter.budget.doctorLastName %>
+        </div>
+
+        <div>
+          <strong>Diagnóstico: </strong><%= data.guaranteeLetter.budget.diagnosis %>
+        </div>
+
+        <div>
+          <strong>Plan Médico: </strong><%= data.guaranteeLetter.budget.treatment %>
+        </div>
+
+      </div>
+
+      <br>
+
+      <div>
+        Por favor, dedique unos minutos para calificar cada uno de los aspectos presentes en esta breve encuesta. La información que nos proporcione será muy útil para medir su satisfacción acerca del servicio prestado por la Institución Prestadora de Servicio.
+      </div>
+
+      <br>
+
+      <table>
+        
+        <tr>
+          <th><center><strong>No.</strong></center> </th>
+          <th><center>Aspecto a Calificar</center> </th>
+          <th><center>Calificación</center> </th>
+        </tr>
+
+        <% for(var i = 0; i < data.form.question.length; i++) { %>  
+
+          <tr>
+            <td><strong><%= i + 1 %></strong></td>
+            <td><%= data.form.question[i].question %></td>
+            <td>
+              <center>
+                <% if(data.answer[i].answer == '5') { %>  
+                  <label class="radio-inline"><input type="radio" checked="true">Excelente</label>
+                  <label class="radio-inline"><input type="radio">Bueno</label>
+                  <label class="radio-inline"><input type="radio">Regular</label>
+                  <label class="radio-inline"><input type="radio">Malo</label>
+                  <label class="radio-inline"><input type="radio">Muy malo</label>
+                <% } %>
+                <% if(data.answer[i].answer == '4') { %>  
+                  <label class="radio-inline"><input type="radio">Excelente</label>
+                  <label class="radio-inline"><input type="radio" checked="true">Bueno</label>
+                  <label class="radio-inline"><input type="radio">Regular</label>
+                  <label class="radio-inline"><input type="radio">Malo</label>
+                  <label class="radio-inline"><input type="radio">Muy malo</label>
+                <% } %>
+                <% if(data.answer[i].answer == '3') { %>  
+                  <label class="radio-inline"><input type="radio">Excelente</label>
+                  <label class="radio-inline"><input type="radio">Bueno</label>
+                  <label class="radio-inline"><input type="radio" checked="true">Regular</label>
+                  <label class="radio-inline"><input type="radio">Malo</label>
+                  <label class="radio-inline"><input type="radio">Muy malo</label>
+                <% } %>
+                <% if(data.answer[i].answer == '2') { %>  
+                  <label class="radio-inline"><input type="radio">Excelente</label>
+                  <label class="radio-inline"><input type="radio">Bueno</label>
+                  <label class="radio-inline"><input type="radio">Regular</label>
+                  <label class="radio-inline"><input type="radio" checked="true">Malo</label>
+                  <label class="radio-inline"><input type="radio">Muy malo</label>
+                <% } %>
+                <% if(data.answer[i].answer == '1') { %>  
+                  <label class="radio-inline"><input type="radio">Excelente</label>
+                  <label class="radio-inline"><input type="radio">Bueno</label>
+                  <label class="radio-inline"><input type="radio">Regular</label>
+                  <label class="radio-inline"><input type="radio">Malo</label>
+                  <label class="radio-inline"><input type="radio" checked="true">Muy malo</label>
+                <% } %>
+              </center>
+            </td>
+          </tr>
+
+      <% } %>
+
+      </table>
+
+      <br>
+
+      <div>
+        <strong>Muchas gracias por su colaboración.</strong> Sus respuestas serán tratadas de forma confidencial y no serán utilizadas para ningún propósito distinto a la investigación llevada a cabo para medir su conformidad con el servicio prestado.
+      </div>
+
+    </body>
+</html>

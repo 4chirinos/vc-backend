@@ -173,7 +173,7 @@ module.exports = {
 		.fetch({withRelated: [
 			'state',
 			'beneficiary', 'policy.holder',
-			'policy.owner', 'budget.item',
+			'policy.owner', {'budget.item': function(qb) {qb.where('version', 1)}},
 			'budget.affiliated.state'
 		]})
 		.then(function(model) {
@@ -190,7 +190,7 @@ module.exports = {
 			var totalCost = 0, uncoveredCost = 0, coveredCost = 0;
 
 			for(var i = 0; i < data.budget.item.length; i++) {
-				totalCost += data.budget.item[i].cost;
+				totalCost += data.budget.item[i].cost * data.budget.item[i].quantity;
 			}
 
 			coveredCost = totalCost * data.coveredPercentage / 100;

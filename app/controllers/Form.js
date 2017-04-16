@@ -68,6 +68,66 @@ module.exports = {
 		});
 	},
 
+	getDocumentAnsweredById: function(req, res) {
+
+		RequestModel
+		.forge({id: req.params.id})
+		.fetch({withRelated: [
+			'form.question', 'guaranteeLetter.beneficiary', 'guaranteeLetter.beneficiary',
+			'guaranteeLetter.budget.affiliated.state',
+			{'answer': function(qb) {
+				qb.orderBy('answer.id');
+				qb.whereRaw('answer."requestFormId" = (SELECT MAX(ID) FROM "requestForm" WHERE "requestForm"."requestId" = answer."requestId")');
+			}}
+		]})
+		.then(function(model) {
+			
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			var data = model.toJSON();
+
+			var today = new Date();
+
+			var birthDate = data.guaranteeLetter.beneficiary.birthDate;
+
+            var age = today.getFullYear() - birthDate.getFullYear();
+
+            var aux1 = today.getMonth() + 1 - birthDate.getMonth(),
+            	aux2 = today.getDay() - birthDate.getDay();
+
+            if(aux1 > 0 || (aux1 == 0 && aux2 >= 0)) age++;
+
+            data.guaranteeLetter.beneficiary.age = age;
+
+			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/surveyAnswered.ejs', 'utf8'));
+
+			var html = compiled({data: data});
+
+			jsreport.render(html).then(function(out) {
+
+				res.writeHead(200, {
+		            'Content-Type': 'application/pdf',
+		            'Access-Control-Allow-Origin': '*',
+		            'Content-Disposition': 'attachment; filename=Encuesta'
+		        });
+
+				out.stream.pipe(res);
+
+			}).catch(function(e) {    
+			    res.sendStatus(500);
+			});
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
 	getDocumentById: function(req, res) {
 
 		RequestModel

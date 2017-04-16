@@ -88,6 +88,9 @@ router.route('/form/:id')
 router.route('/document/form/request/:id')
 	.get(Form.getDocumentById);
 
+router.route('/document/form/answered/request/:id')
+	.get(Form.getDocumentAnsweredById);
+
 
 /* #################### PRESUPUESTOS Y CARTAS AVALES ############################### */
 
@@ -114,7 +117,7 @@ router.route('/item')
 router.route('/item/:id')
 	.patch(Session.validSession, Item.partialUpdate); // tiene statusGroups
 
-router.route('/document/budget/:id')
+router.route('/document/budget/:id/:version/:last')
 	.get(Budget.getDocumentById);
 
 router.route('/image/:name')

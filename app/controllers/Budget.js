@@ -104,8 +104,6 @@ module.exports = {
 
 					model = model[0];
 
-					console.log(model);
-
 					bookshelf.knex.batchInsert('item', req.body.items)
 					.returning('*')
 					.then(function(fields) {
@@ -518,14 +516,25 @@ module.exports = {
 
 		var errors = req.validationErrors();
 
+		var version = req.params.version || 1;
+
 		if(errors) {
 			res.status(400).send(errors);
 			return;
 		}
 
 		BudgetModel
-		.forge({id: req.params.id})
-		.fetch({withRelated: [{'item': function(qb) {qb.orderBy('concept')}}, 'affiliated.state', 'guaranteeLetter.beneficiary']})
+		.forge({id: req.params.id, version: version})
+		.fetch({withRelated: [
+			{
+				'item': function(qb) {
+					qb.where('version', version);
+					qb.orderBy('concept');
+				}
+			},
+				'affiliated.state', 'guaranteeLetter.beneficiary'
+			]
+		})
 		.then(function(model) {
 
 			if(!model) {
@@ -533,13 +542,14 @@ module.exports = {
 				return;
 			}
 
-			var data = model.toJSON(), totalCost = 0;
+			var data = model.toJSON(), totalCost = 0, totalQuantity = 0;
 
 			//res.send(data); return;
 
 			for(var i = 0; i < data.item.length; i++) {
-				var aux = data.item[i].cost;
-				totalCost += aux;
+				var aux = data.item[i].cost, quantity = data.item[i].quantity;
+				totalCost += aux * quantity;
+				totalQuantity += data.item[i].quantity;
 				aux = aux.toFixed(2);
 				aux = parseFloat(aux);
 				aux = aux.toLocaleString('de-DE');
@@ -550,7 +560,10 @@ module.exports = {
 			totalCost = parseFloat(totalCost);
 			totalCost = totalCost.toLocaleString('de-DE');
 
+			totalQuantity = totalQuantity.toLocaleString('de-DE');
+
 			data.totalCost = totalCost;
+			data.totalQuantity = totalQuantity;
 
 			data.lastConcept = '';
 
@@ -581,7 +594,15 @@ module.exports = {
 
 			data.startDate = dd + '/' + mm + '/' + yyyy;
 
-			var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/budget.ejs', 'utf8'));
+			//var compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/budget.ejs', 'utf8'));
+
+			var compiled;
+
+			if(req.params.last != "false") {
+				compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/asLastBudget.ejs', 'utf8'));
+			} else {
+				compiled = ejs.compile(fs.readFileSync(__dirname + '/documents/budget.ejs', 'utf8'));
+			}
 
 			var html = compiled({data: data});
 
