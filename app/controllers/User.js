@@ -40,24 +40,41 @@ var notifyAccountCreation = function(model) {
 
 };
 
+var notifyPassword = function(model) {
+
+	var date = new Date(model.startDate);
+
+	date = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
+	var html = '<b><h2>Estimado(a) ' + model.firstName + ' ' + model.lastName + ',</h2>' +
+		'<h2>se ha solicitado la recuperación de contraseña de su cuenta en el Sistema Gestor de Visitas Clínicas. ' + 'A continuación la información de la misma:</b></h2><br>' +
+		'<h3>Nombre de Usuario: ' + model.user.userName + '<br>' +
+		'Contraseña: ' + model.password + '<br><br><br>' +
+		'Para acceder a la cuenta ingrese al <a href="http://localhost:9000">Gestor de Visitas Clínicas</a></h3>';
+
+
+	// setup e-mail data with unicode symbols 
+	var mailOptions = {
+		from: '"Gestor de Visitas Clínicas" <foo@blurdybloop.com>', // sender address 
+		to: 'correouniversal2mil15@gmail.com', // list of receivers 
+		subject: 'Recuperación de Contraseña en el Sistema Gestor de Visitas Clínicas', // Subject line 
+		text: 'Hello world 🐴', // plaintext body 
+		html: html // html body 
+	};
+
+	// send mail with defined transport object 
+	transporter.sendMail(mailOptions, function(error, info){
+		if(error){
+		    console.log(error);
+		}
+		//console.log('Message sent: ' + info.response);
+	});
+
+};
+
 module.exports = {
 
 	create: function(req, res) {
-
-		/*req.check(validator.create);
-
-		var errors = req.validationErrors();
-
-		if(errors) {
-			res.status(400).send(errors);
-			return;
-		}
-
-		var bodyFields = [
-			'personId', 'password', 'profileId'
-		];
-
-		var fields = _.pick(req.body, bodyFields);*/
 
 		PersonModel
 		.forge({id: req.body.personId})
@@ -104,6 +121,58 @@ module.exports = {
 
 					model.user.password = password;
 					notifyAccountCreation(model);
+				})
+				.catch(function(err) {
+					console.log(err);
+					res.sendStatus(500);
+				});
+
+			})
+			.catch(function(err) {
+				console.log(err);
+				res.sendStatus(500);
+			});
+
+		})
+		.catch(function(err) {
+			console.log(err);
+			res.sendStatus(500);
+		});
+
+	},
+
+	password: function(req, res) {
+
+		UserModel
+		.forge({userName: req.params.username.toUpperCase()})
+		.fetch()
+		.then(function(model) {
+
+			if(!model) {
+				res.sendStatus(404);
+				return;
+			}
+
+			var password = Math.random() + "";
+			password = password.replace(/\./, '');
+
+			model.set('password', password);
+
+			model.save()
+			.then(function(model) {
+
+				model = model.toJSON();
+				
+				PersonModel
+				.forge({id: model.personId})
+				.fetch({
+					withRelated: ['profile', 'state', 'phones', 'user', 'user.profile']
+				})
+				.then(function(model) {
+					model = model.toJSON();
+					res.send(model);
+					model.password = password;
+					notifyPassword(model);
 				})
 				.catch(function(err) {
 					console.log(err);

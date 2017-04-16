@@ -65,6 +65,9 @@ router.route('/user/:id')
 router.route('/verification/user/username')
 	.get(User.verifyUsername);
 
+router.route('/password/user/:username')
+	.get(User.password);
+
 /* ############################################################################################## */
 
 
